@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('employee_records', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade'); // Use references() method
             $table->string('first_name');
             $table->string('middle_name');
             $table->string('last_name');
