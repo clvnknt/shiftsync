@@ -9,7 +9,10 @@
 <body>
     <div class="container">
         <div class="login-container">
-            <h2>Login</h2>
+            <div class="logo-container">
+                <img src="{{ asset('media/images/cloudstaff-logo-share.png') }}" alt="CloudStaff Logo" class="logo">
+            </div>
+            <h2>Employee Login</h2>
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="form-group">
@@ -25,11 +28,15 @@
                 <button type="submit">Login</button>
 
                 @error('email')
-                    <div class="error-message">{{ $message }}</div>
+                    <div class="error-container">
+                        <div class="error-message">{{ $message }}</div>
+                    </div>
                 @enderror
 
                 @error('password')
-                    <div class="error-message">{{ $message }}</div>
+                    <div class="error-container">
+                        <div class="error-message">{{ $message }}</div>
+                    </div>
                 @enderror
             </form>
         </div>

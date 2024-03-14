@@ -7,67 +7,75 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\EmployeeShiftRecord;
 use App\Models\EmployeeRecord;
 
-use Illuminate\Http\Request;
-
 class ShiftController extends Controller
 {
-    public function startShift()
+    public function updateShiftRecord($userId)
     {
-        $userId = Auth::id();
         $userTimezone = Auth::user()->timezone;
-        $now = Carbon::now($userTimezone)->toDateTimeString(); // Convert to user's timezone
-
-        $today = Carbon::now()->toDateString();
+        $today = Carbon::now($userTimezone)->toDateString(); // Retrieve today's date in user's timezone
 
         // Fetch the user's default shift ID from the employee_records table
         $employeeRecord = EmployeeRecord::where('user_id', $userId)->firstOrFail();
         $defaultShiftId = $employeeRecord->default_shift_id;
 
-        // Check if shift record already exists for today
-        $employeeShiftRecord = EmployeeShiftRecord::where([
+        // Fetch or create the shift record for today
+        $employeeShiftRecord = EmployeeShiftRecord::firstOrNew([
             'employee_id' => $userId,
             'shift_date' => $today,
-        ])->first();
+        ]);
 
-        // If the record doesn't exist, create it
-        if (!$employeeShiftRecord) {
-            $employeeShiftRecord = new EmployeeShiftRecord([
-                'employee_id' => $userId,
+        // If the record already exists but the date has changed, reset the day
+        if ($employeeShiftRecord->exists && $employeeShiftRecord->shift_date != $today) {
+            // Reset the shift for the new day
+            $employeeShiftRecord->fill([
                 'shift_id' => $defaultShiftId,
-                'shift_date' => $today,
+                'shift_started' => null,
+                'lunch_started' => null,
+                'lunch_ended' => null,
+                'shift_ended' => null,
             ]);
-            $employeeShiftRecord->save();
+        } else {
+            // Compare the current shift with the default shift
+            if ($employeeShiftRecord->exists && $employeeShiftRecord->shift_id != $defaultShiftId) {
+                // Update the shift record to reflect the default shift
+                $employeeShiftRecord->shift_id = $defaultShiftId;
+            }
         }
 
-        // Set the shift_started column only if it's not already set
-        if (!$employeeShiftRecord->shift_started) {
-            $employeeShiftRecord->shift_started = $now; // Save in user's timezone
-            $employeeShiftRecord->save();
-        }
+        // Save the shift record
+        $employeeShiftRecord->save();
+    }
 
-        // Redirect back to the dashboard
+    public function startShift()
+    {
+        $userId = Auth::id();
+        $this->updateShiftRecord($userId);
+
+        $now = Carbon::now(Auth::user()->timezone)->toDateTimeString(); // Convert to user's timezone
+
+        // Update the shift start time
+        $employeeShiftRecord = EmployeeShiftRecord::where('employee_id', $userId)
+            ->where('shift_date', Carbon::now()->toDateString())
+            ->firstOrFail();
+        $employeeShiftRecord->shift_started = $now;
+        $employeeShiftRecord->save();
+
         return redirect()->back();
     }
 
-    
     public function endShift()
     {
         $userId = Auth::id();
-        $userTimezone = Auth::user()->timezone;
-        $now = Carbon::now($userTimezone)->toDateTimeString(); // Convert to user's timezone
+        $this->updateShiftRecord($userId);
 
-        $today = Carbon::now()->toDateString();
+        $now = Carbon::now(Auth::user()->timezone)->toDateTimeString(); // Convert to user's timezone
 
-        // Find existing shift record for today
+        // Update the shift end time
         $employeeShiftRecord = EmployeeShiftRecord::where('employee_id', $userId)
-            ->whereDate('shift_date', $today)
+            ->where('shift_date', Carbon::now()->toDateString())
             ->firstOrFail();
-
-        // Update shift end time only if it's not already set
-        if (!$employeeShiftRecord->shift_ended) {
-            $employeeShiftRecord->shift_ended = $now; // Save in user's timezone
-            $employeeShiftRecord->save();
-        }
+        $employeeShiftRecord->shift_ended = $now;
+        $employeeShiftRecord->save();
 
         return redirect()->back();
     }
@@ -75,21 +83,16 @@ class ShiftController extends Controller
     public function startLunch()
     {
         $userId = Auth::id();
-        $userTimezone = Auth::user()->timezone;
-        $now = Carbon::now($userTimezone)->toDateTimeString(); // Convert to user's timezone
+        $this->updateShiftRecord($userId);
 
-        $today = Carbon::now()->toDateString();
+        $now = Carbon::now(Auth::user()->timezone)->toDateTimeString(); // Convert to user's timezone
 
-        // Find existing shift record for today
+        // Update the lunch start time
         $employeeShiftRecord = EmployeeShiftRecord::where('employee_id', $userId)
-            ->whereDate('shift_date', $today)
+            ->where('shift_date', Carbon::now()->toDateString())
             ->firstOrFail();
-
-        // Update lunch start time only if it's not already set
-        if (!$employeeShiftRecord->lunch_started) {
-            $employeeShiftRecord->lunch_started = $now; // Save in user's timezone
-            $employeeShiftRecord->save();
-        }
+        $employeeShiftRecord->lunch_started = $now;
+        $employeeShiftRecord->save();
 
         return redirect()->back();
     }
@@ -97,22 +100,40 @@ class ShiftController extends Controller
     public function endLunch()
     {
         $userId = Auth::id();
-        $userTimezone = Auth::user()->timezone;
-        $now = Carbon::now($userTimezone)->toDateTimeString(); // Convert to user's timezone
+        $this->updateShiftRecord($userId);
 
-        $today = Carbon::now()->toDateString();
+        $now = Carbon::now(Auth::user()->timezone)->toDateTimeString(); // Convert to user's timezone
 
-        // Find existing shift record for today
+        // Update the lunch end time
         $employeeShiftRecord = EmployeeShiftRecord::where('employee_id', $userId)
-            ->whereDate('shift_date', $today)
+            ->where('shift_date', Carbon::now()->toDateString())
             ->firstOrFail();
-
-        // Update lunch end time only if it's not already set
-        if (!$employeeShiftRecord->lunch_ended) {
-            $employeeShiftRecord->lunch_ended = $now; // Save in user's timezone
-            $employeeShiftRecord->save();
-        }
+        $employeeShiftRecord->lunch_ended = $now;
+        $employeeShiftRecord->save();
 
         return redirect()->back();
     }
+
+    public function ensureShiftRecordExists($userId)
+{
+    $userTimezone = Auth::user()->timezone;
+    $today = Carbon::now($userTimezone)->toDateString(); // Retrieve today's date in user's timezone
+
+    // Fetch or create the shift record for today
+    $employeeShiftRecord = EmployeeShiftRecord::firstOrNew([
+        'employee_id' => $userId,
+        'shift_date' => $today,
+    ]);
+
+    // If the record doesn't exist, create a new one with default values
+    if (!$employeeShiftRecord->exists) {
+        // Fetch the user's default shift ID from the employee_records table
+        $employeeRecord = EmployeeRecord::where('user_id', $userId)->firstOrFail();
+        $defaultShiftId = $employeeRecord->default_shift_id;
+
+        $employeeShiftRecord->shift_id = $defaultShiftId;
+        $employeeShiftRecord->save();
+    }
+}
+
 }
