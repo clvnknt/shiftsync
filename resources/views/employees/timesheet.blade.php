@@ -33,57 +33,59 @@
     <!-- Main content section -->
     <h1>Timesheet</h1>
     <div class="timesheet-container">
-        <!-- Employee information container -->
-        <div class="employee-info-container">
-            <h2>Employee Information</h2>
-            @if($user)
-                <table class="employee-info-table">
-                    <tbody>
-                        <tr>
-                            <th>Full Name:</th>
-                            <td>{{ $employeeRecord->first_name }} {{ $employeeRecord->middle_name }} {{ $employeeRecord->last_name }}</td>
-                        </tr>
-                        <tr>
-                            <th>Email:</th>
-                            <td>{{ $user->email }}</td>
-                        </tr>
-                        <tr>
-                            <th>Role:</th>
-                            <td>{{ $user->employeeRecord ? $user->employeeRecord->role->name : 'N/A' }}</td>
-                        </tr>
-                        <tr>
-                            <th>Department:</th>
-                            <td>{{ $user->employeeRecord ? $user->employeeRecord->department->name : 'N/A' }}</td>
-                        </tr>
-                        <tr>
-                            <th>Default Shift:</th>
-                            <td>{{ $defaultShift ? $defaultShift->shift_name : 'N/A' }}</td>
-                        </tr>
-                        <tr>
-                            <th>Shift Schedule:</th>
-                            <td>{{ $defaultShift->shift_start_time ?? 'N/A' }} to {{ $defaultShift->shift_end_time ?? 'N/A' }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            @else
-                <p>User not found.</p>
-            @endif
-        </div>
+        <!-- Left grid container -->
+        <div class="left-grid-container">
+            <!-- Employee information container -->
+            <div class="employee-info-container">
+                <h2>Employee Information</h2>
+                @if($user)
+                    <table class="employee-info-table">
+                        <tbody>
+                            <tr>
+                                <th>Full Name:</th>
+                                <td>{{ $employeeRecord->first_name }} {{ $employeeRecord->middle_name }} {{ $employeeRecord->last_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td>{{ $user->email }}</td>
+                            </tr>
+                            <tr>
+                                <th>Role:</th>
+                                <td>{{ $user->employeeRecord ? $user->employeeRecord->role->name : 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Department:</th>
+                                <td>{{ $user->employeeRecord ? $user->employeeRecord->department->name : 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Default Shift:</th>
+                                <td>{{ $defaultShift ? $defaultShift->shift_name : 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Shift Schedule:</th>
+                                <td>{{ $defaultShift->shift_start_time ?? 'N/A' }} to {{ $defaultShift->shift_end_time ?? 'N/A' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                @else
+                    <p>User not found.</p>
+                @endif
+            </div>
 
-        <!-- Date range picker container -->
-        <div class="date-range-container">
-            <h2>Date Range</h2>
-            <label for="start-date">Start Date:</label>
-            <input type="date" id="start-date" name="start-date">
+            <!-- Date range picker container -->
+            <div class="date-range-container">
+                <h2>Date Range</h2>
+                <label for="start-date">Start Date:</label>
+                <input type="date" id="start-date" name="start-date">
 
-            <label for="end-date">End Date:</label>
-            <input type="date" id="end-date" name="end-date">
+                <label for="end-date">End Date:</label>
+                <input type="date" id="end-date" name="end-date">
 
-            <!-- Add button to trigger date range selection -->
-            <button id="apply-date-range">Apply</button>
-        </div>
+                <!-- Add button to trigger date range selection -->
+                <button id="apply-date-range">Apply</button>
+            </div>
 
-        <!-- Employee shift records container -->
+            <!-- Employee shift records container -->
 <div class="employee-shift-records-container">
     <h2>Employee Shift Records</h2>
     @if(!is_null($employeeShiftRecords) && $employeeShiftRecords->count() > 0)
@@ -96,6 +98,10 @@
                     <th>Lunch Started</th>
                     <th>Lunch Ended</th>
                     <th>Shift Ended</th>
+                    <th>SS Lateness</th>
+                    <!--<th>Late for Start Lunch</th>-->
+                    <th>EL Lateness</th>
+                    <th>Overtime</th>
                 </tr>
             </thead>
             <tbody>
@@ -107,6 +113,10 @@
                         <td>{{ $shiftRecord->lunch_started ? $shiftRecord->lunch_started->format('H:i') : 'N/A' }}</td>
                         <td>{{ $shiftRecord->lunch_ended ? $shiftRecord->lunch_ended->format('H:i') : 'N/A' }}</td>
                         <td>{{ $shiftRecord->shift_ended ? $shiftRecord->shift_ended->format('H:i') : 'N/A' }}</td>
+                        <td>{{ $shiftRecord->ss_lateness ?? 'N/A' }}</td>
+                        <!--<td>{{ $shiftRecord->late_for_start_lunch ? $shiftRecord->late_for_start_lunch : 'N/A' }}</td>-->
+                        <td>{{ $shiftRecord->late_for_end_lunch ? $shiftRecord->late_for_end_lunch : 'N/A' }}</td>
+                        <td>{{ $shiftRecord->late_for_end_shift ? $shiftRecord->late_for_end_shift : 'N/A' }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -115,6 +125,18 @@
         <p>No shift records found.</p>
     @endif
 </div>
+
+
+        <!-- Right grid container -->
+        <div class="grid-container">
+            <!-- Summary sheet container -->
+            <div class="summary-sheet-container">
+                <h2>Summary Sheet</h2>
+                <!-- Summary sheet content goes here -->
+            </div>
+        </div>
+    </div>
+    
     <!-- Include the timesheet-specific JavaScript file if needed -->
     <script src="{{ asset('js/timesheet.js') }}"></script>
 

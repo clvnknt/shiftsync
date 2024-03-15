@@ -129,3 +129,27 @@ h1 {
 .employee-shift-records-table tbody tr:hover {
     background-color: #e0e0e0; /* Hover effect for rows */
 }
+
+/* CSS for the new grid container */
+.grid-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 20px;
+}
+
+/* CSS for the summary sheet container */
+.summary-sheet-container {
+    color: black;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    margin: 20px auto; /* Center the container horizontally */
+    max-width: 800px; /* Limit the maximum width */
+    width: 100%; /* Occupy the full width */
+    box-sizing: border-box; /* Include padding and border in width calculation */
+}

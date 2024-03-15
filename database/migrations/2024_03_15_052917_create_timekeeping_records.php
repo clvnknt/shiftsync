@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('timekeeping_records', function (Blueprint $table) {
+            $table->id();
+            $table->bigInteger('employee_shift_record_id')->unsigned();
+            $table->dateTime('time');
+            $table->boolean('absent')->default(false);
+            $table->integer('shift_started_lateness')->nullable(); // Shift started lateness in minutes
+            $table->integer('end_lunch_lateness')->nullable(); // End lunch lateness in minutes
+            $table->boolean('overtime')->default(false);
+            $table->boolean('other')->default(false);
+            $table->timestamps();
+
+            $table->foreign('employee_shift_record_id')->references('id')->on('employee_shift_records')->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('timekeeping_records');
+    }
+};
