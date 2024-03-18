@@ -39,34 +39,24 @@
             <div class="employee-info-container">
                 <h2>Employee Information</h2>
                 @if($user)
-                    <table class="employee-info-table">
-                        <tbody>
-                            <tr>
-                                <th>Full Name:</th>
-                                <td>{{ $employeeRecord->first_name }} {{ $employeeRecord->middle_name }} {{ $employeeRecord->last_name }}</td>
-                            </tr>
-                            <tr>
-                                <th>Email:</th>
-                                <td>{{ $user->email }}</td>
-                            </tr>
-                            <tr>
-                                <th>Role:</th>
-                                <td>{{ $user->employeeRecord ? $user->employeeRecord->role->name : 'N/A' }}</td>
-                            </tr>
-                            <tr>
-                                <th>Department:</th>
-                                <td>{{ $user->employeeRecord ? $user->employeeRecord->department->name : 'N/A' }}</td>
-                            </tr>
-                            <tr>
-                                <th>Default Shift:</th>
-                                <td>{{ $defaultShift ? $defaultShift->shift_name : 'N/A' }}</td>
-                            </tr>
-                            <tr>
-                                <th>Shift Schedule:</th>
-                                <td>{{ $defaultShift->shift_start_time ?? 'N/A' }} to {{ $defaultShift->shift_end_time ?? 'N/A' }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div>
+                        <strong>Full Name:</strong> {{ $employeeRecord->first_name }} {{ $employeeRecord->last_name }}
+                    </div>
+                    <div>
+                        <strong>Email:</strong> {{ $user->email }}
+                    </div>
+                    <div>
+                        <strong>Role:</strong> {{ $employeeRecord->role ?? 'N/A' }}
+                    </div>
+                    <div>
+                        <strong>Department:</strong> {{ $employeeRecord->department ?? 'N/A' }}
+                    </div>
+                    <div>
+                        <strong>Default Shift:</strong> {{ $defaultShift->shift_name ?? 'N/A' }}
+                    </div>
+                    <div>
+                        <strong>Shift Schedule:</strong> {{ $defaultShift->shift_schedule ?? 'N/A' }}
+                    </div>
                 @else
                     <p>User not found.</p>
                 @endif
@@ -75,70 +65,50 @@
             <!-- Date range picker container -->
             <div class="date-range-container">
                 <h2>Date Range</h2>
-                <label for="start-date">Start Date:</label>
-                <input type="date" id="start-date" name="start-date">
+                <!-- Date range picker input fields -->
+                <div class="date-range-inputs">
+                    <label for="start-date">Start Date:</label>
+                    <input type="date" id="start-date" name="start-date" value="{{ now()->format('Y-m-d') }}">
 
-                <label for="end-date">End Date:</label>
-                <input type="date" id="end-date" name="end-date">
+                    <label for="end-date">End Date:</label>
+                    <input type="date" id="end-date" name="end-date">
+                </div>
 
                 <!-- Add button to trigger date range selection -->
                 <button id="apply-date-range">Apply</button>
             </div>
 
             <!-- Employee shift records container -->
-<div class="employee-shift-records-container">
-    <h2>Employee Shift Records</h2>
-    @if(!is_null($employeeShiftRecords) && $employeeShiftRecords->count() > 0)
-        <table class="employee-shift-records-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Shift Name</th>
-                    <th>Shift Started</th>
-                    <th>Lunch Started</th>
-                    <th>Lunch Ended</th>
-                    <th>Shift Ended</th>
-                    <th>SS Lateness</th>
-                    <!--<th>Late for Start Lunch</th>-->
-                    <th>EL Lateness</th>
-                    <th>Overtime</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($employeeShiftRecords as $shiftRecord)
-                    <tr>
-                        <td>{{ $shiftRecord->shift_date }}</td>
-                        <td>{{ $shiftRecord->shift->shift_name }}</td>
-                        <td>{{ $shiftRecord->shift_started ? $shiftRecord->shift_started->format('H:i') : 'N/A' }}</td>
-                        <td>{{ $shiftRecord->lunch_started ? $shiftRecord->lunch_started->format('H:i') : 'N/A' }}</td>
-                        <td>{{ $shiftRecord->lunch_ended ? $shiftRecord->lunch_ended->format('H:i') : 'N/A' }}</td>
-                        <td>{{ $shiftRecord->shift_ended ? $shiftRecord->shift_ended->format('H:i') : 'N/A' }}</td>
-                        <td>{{ $shiftRecord->ss_lateness ?? 'N/A' }}</td>
-                        <!--<td>{{ $shiftRecord->late_for_start_lunch ? $shiftRecord->late_for_start_lunch : 'N/A' }}</td>-->
-                        <td>{{ $shiftRecord->late_for_end_lunch ? $shiftRecord->late_for_end_lunch : 'N/A' }}</td>
-                        <td>{{ $shiftRecord->late_for_end_shift ? $shiftRecord->late_for_end_shift : 'N/A' }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @else
-        <p>No shift records found.</p>
-    @endif
-</div>
-
-
-        <!-- Right grid container -->
-        <div class="grid-container">
-            <!-- Summary sheet container -->
-            <div class="summary-sheet-container">
-                <h2>Summary Sheet</h2>
-                <!-- Summary sheet content goes here -->
+            <div class="employee-shift-records-container">
+                <h2>Employee Shift Record</h2>
+                @if($currentShiftRecord)
+                    <table class="employee-shift-records-table">
+                        <thead>
+                            <tr>
+                                <th>Shift Date</th>
+                                <th>Shift Started</th>
+                                <th>Lunch Started</th>
+                                <th>Lunch Ended</th>
+                                <th>Shift Ended</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ now()->format('d/m/Y') }}</td>
+                                <td>{{ $currentShiftRecord->shift_started ? $currentShiftRecord->shift_started->format('H:i') : '-' }}</td>
+                                <td>{{ $currentShiftRecord->lunch_started ? $currentShiftRecord->lunch_started->format('H:i') : '-' }}</td>
+                                <td>{{ $currentShiftRecord->lunch_ended ? $currentShiftRecord->lunch_ended->format('H:i') : '-' }}</td>
+                                <td>{{ $currentShiftRecord->shift_ended ? $currentShiftRecord->shift_ended->format('H:i') : '-' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                @else
+                    <p>No shift records found for today.</p>
+                @endif
             </div>
         </div>
+        <!-- Include the timesheet-specific JavaScript file if needed -->
+        <script src="{{ asset('js/timesheet.js') }}"></script>
     </div>
-    
-    <!-- Include the timesheet-specific JavaScript file if needed -->
-    <script src="{{ asset('js/timesheet.js') }}"></script>
-
 </body>
 </html>

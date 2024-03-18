@@ -6,8 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-
-
+use Faker\Factory as Faker;
 
 class EmployeeShiftRecordsTableSeeder extends Seeder
 {
@@ -16,16 +15,30 @@ class EmployeeShiftRecordsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('employee_shift_records')->insert([
-            'employee_id' => 1, // Assuming employee with ID 1 exists
-            'shift_id' => 1, // Assuming shift with ID 1 exists
-            'shift_date' => '2024-03-13',
-            'shift_started' => '2024-03-13 08:00:00',
-            'lunch_started' => '2024-03-13 12:00:00',
-            'lunch_ended' => '2024-03-13 13:00:00',
-            'shift_ended' => '2024-03-13 16:00:00',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $faker = Faker::create();
+
+        // Retrieve all user IDs
+        $userIds = DB::table('users')->pluck('id');
+
+        // Retrieve all shift IDs
+        $shiftIds = DB::table('shifts')->pluck('id');
+
+        // Loop through each user ID
+        foreach ($userIds as $userId) {
+            // Generate 10 shift records for each user
+            for ($i = 0; $i < 10; $i++) {
+                DB::table('employee_shift_records')->insert([
+                    'employee_id' => $userId,
+                    'shift_id' => $faker->randomElement($shiftIds),
+                    'shift_date' => $faker->dateTimeBetween('-1 month', 'now')->format('Y-m-d'),
+                    'shift_started' => $faker->dateTimeThisMonth()->format('Y-m-d H:i:s'),
+                    'lunch_started' => $faker->dateTimeThisMonth()->format('Y-m-d H:i:s'),
+                    'lunch_ended' => $faker->dateTimeThisMonth()->format('Y-m-d H:i:s'),
+                    'shift_ended' => $faker->dateTimeThisMonth()->format('Y-m-d H:i:s'),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
     }
 }

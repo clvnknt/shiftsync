@@ -8,7 +8,6 @@
 </head>
 <body>
     <nav class="navbar">
-        <!-- Navigation links -->
         <div class="nav-links">
             <img src="{{ asset('media/images/cloudstaff-logo-share.png') }}" alt="CloudStaff Logo" height="25px" style="margin-right: 10px;">
             <a href="{{ route('timesheet') }}">Dashboard</a>
@@ -16,7 +15,6 @@
             <a href="#">Support</a>
             <a href="#">My Account</a>
         </div>
-        <!-- Dropdown menu for user account -->
         <div class="dropdown">
             <button class="dropbtn">Welcome, {{ Auth::user()->name }}</button>
             <div class="dropdown-content">
@@ -31,27 +29,26 @@
     <h1>Dashboard</h1>
 
     <div class="dashboard-container">
-        <!-- User information section -->
         <div class="user-info-container">
-            <h2>User Information</h2>
+            <h2><strong>Employee Information</strong></h2>
             @if($employeeRecord)
-                <p>Full Name: {{ $employeeRecord->first_name }} {{ $employeeRecord->middle_name }} {{ $employeeRecord->last_name }}</p>
+                <p><strong>Name:</strong> {{ $employeeRecord->first_name }} {{ $employeeRecord->middle_name }} {{ $employeeRecord->last_name }}</p>
             @else
-                <p>Employee record not found.</p>
+                <p><strong>Employee record not found.</strong></p>
             @endif
-            <p>Email: {{ Auth::user()->email }}</p>
-            <p>Timezone: {{ Auth::user()->timezone }}</p>
-            <p>Default Shift: {{ $employeeRecord->defaultShift ? $employeeRecord->defaultShift->shift_name : 'N/A' }}</p>
-            <p>Start Time: {{ $employeeRecord->defaultShift ? $employeeRecord->defaultShift->shift_start_time : 'N/A' }}</p>
-            <p>End Time: {{ $employeeRecord->defaultShift ? $employeeRecord->defaultShift->shift_end_time : 'N/A' }}</p>
+            <p><strong>Email:</strong> {{ Auth::user()->email }}</p>
+            <p><strong>Timezone:</strong> {{ Auth::user()->timezone }}</p>
+            <p><strong>Default Shift:</strong> {{ $employeeRecord->defaultShift ? $employeeRecord->defaultShift->shift_name : 'N/A' }}</p>
+            <p><strong>Shift Schedule:</strong> 
+                {{ $employeeRecord->defaultShift ? \Carbon\Carbon::parse($employeeRecord->defaultShift->shift_start_time)->format('H:i') : 'N/A' }} - 
+                {{ $employeeRecord->defaultShift ? \Carbon\Carbon::parse($employeeRecord->defaultShift->shift_end_time)->format('H:i') : 'N/A' }}
+            </p>
         </div>
 
-        <!-- Today's shift section -->
         <div class="shifts-container">
             <h2>Today's Shift: {{ $employeeShift && $employeeShift->shift_date ? \Illuminate\Support\Carbon::parse($employeeShift->shift_date)->format('d/m/Y') : 'N/A' }}</h2>
             <table class="shifts-table">
                 <tbody>
-                    <!-- Shift Started section -->
                     <tr>
                         <th>Shift Started</th>
                         <td>
@@ -65,7 +62,6 @@
                             @endif
                         </td>
                     </tr>
-                    <!-- Lunch Started section -->
                     <tr>
                         <th>Lunch Started</th>
                         <td>
@@ -81,7 +77,6 @@
                             @endif
                         </td>
                     </tr>
-                    <!-- Lunch Ended section -->
                     <tr>
                         <th>Lunch Ended</th>
                         <td>
@@ -97,7 +92,6 @@
                             @endif
                         </td>
                     </tr>
-                    <!-- Shift Ended section -->
                     <tr>
                         <th>Shift Ended</th>
                         <td>

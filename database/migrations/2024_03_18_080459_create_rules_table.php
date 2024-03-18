@@ -11,18 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('timekeeping_records', function (Blueprint $table) {
+        Schema::create('rules', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('employee_shift_record_id')->unsigned();
-            $table->dateTime('time');
-            $table->boolean('absent')->default(false);
+            $table->integer('grace_period')->default(0); // Grace period in minutes
+            $table->integer('break_duration')->default(0); // Break duration in minutes
+            $table->integer('overtime_threshold')->default(0); // Overtime in minutes
             $table->integer('shift_started_lateness')->nullable(); // Shift started lateness in minutes
             $table->integer('end_lunch_lateness')->nullable(); // End lunch lateness in minutes
-            $table->boolean('overtime')->default(false);
-            $table->boolean('other')->default(false);
+            $table->boolean('absent')->default(false); // Status: Absent
+            $table->integer('hours_rendered')->nullable(); // Hours Rendered
             $table->timestamps();
-
-            $table->foreign('employee_shift_record_id')->references('id')->on('employee_shift_records')->onDelete('cascade');
         });
     }
 
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('timekeeping_records');
+        Schema::dropIfExists('rules');
     }
 };
