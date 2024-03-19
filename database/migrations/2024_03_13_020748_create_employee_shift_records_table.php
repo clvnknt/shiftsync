@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('employee_shift_records', function (Blueprint $table) {
-            $table->id(); // This will create the primary key column 'id'
+            $table->id(); 
             $table->bigInteger('employee_id')->unsigned();
             $table->bigInteger('shift_id')->unsigned();
-            $table->date('shift_date');
-            $table->dateTime('shift_started')->nullable();
-            $table->dateTime('lunch_started')->nullable();
-            $table->dateTime('lunch_ended')->nullable();
-            $table->dateTime('shift_ended')->nullable();
+            $table->date('shift_date'); //Date of employee's shift
+            $table->time('start_shift')->nullable(); //Time when employee started shift
+            $table->time('start_lunch')->nullable(); //Time when employee started lunch
+            $table->time('end_lunch')->nullable(); //Time when employee ended lunch
+            $table->time('end_shift')->nullable(); //Time when employee ended shift
             $table->foreign('employee_id')->references('id')->on('employee_records')->onDelete('cascade');
             $table->foreign('shift_id')->references('id')->on('shifts')->onDelete('cascade');
             $table->timestamps();

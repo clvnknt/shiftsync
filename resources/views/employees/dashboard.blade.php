@@ -40,8 +40,8 @@
             <p><strong>Timezone:</strong> {{ Auth::user()->timezone }}</p>
             <p><strong>Default Shift:</strong> {{ $employeeRecord->defaultShift ? $employeeRecord->defaultShift->shift_name : 'N/A' }}</p>
             <p><strong>Shift Schedule:</strong> 
-                {{ $employeeRecord->defaultShift ? \Carbon\Carbon::parse($employeeRecord->defaultShift->shift_start_time)->format('H:i') : 'N/A' }} - 
-                {{ $employeeRecord->defaultShift ? \Carbon\Carbon::parse($employeeRecord->defaultShift->shift_end_time)->format('H:i') : 'N/A' }}
+                {{ $employeeRecord->defaultShift ? \Carbon\Carbon::parse($employeeRecord->defaultShift->start_shift_time)->format('H:i') : 'N/A' }} - 
+                {{ $employeeRecord->defaultShift ? \Carbon\Carbon::parse($employeeRecord->defaultShift->end_shift_time)->format('H:i') : 'N/A' }}
             </p>
         </div>
 
@@ -52,8 +52,8 @@
                     <tr>
                         <th>Shift Started</th>
                         <td>
-                            @if ($employeeShift && $employeeShift->shift_started)
-                                {{ $employeeShift->shift_started->format('H:i') }}
+                            @if ($employeeShift && $employeeShift->start_shift)
+                                {{ \Illuminate\Support\Carbon::parse($employeeShift->start_shift)->format('H:i') }}
                             @else
                                 <form action="{{ route('startShift') }}" method="POST">
                                     @csrf
@@ -65,9 +65,9 @@
                     <tr>
                         <th>Lunch Started</th>
                         <td>
-                            @if ($employeeShift && $employeeShift->lunch_started)
-                                {{ $employeeShift->lunch_started->format('H:i') }}
-                            @elseif ($employeeShift && $employeeShift->shift_started && !$employeeShift->shift_ended)
+                            @if ($employeeShift && $employeeShift->start_lunch)
+                                {{ $employeeShift->start_lunch->format('H:i') }}
+                            @elseif ($employeeShift && $employeeShift->start_shift && !$employeeShift->end_shift)
                                 <form action="{{ route('startLunch') }}" method="POST">
                                     @csrf
                                     <button type="submit">START LUNCH</button>
@@ -80,9 +80,9 @@
                     <tr>
                         <th>Lunch Ended</th>
                         <td>
-                            @if ($employeeShift && $employeeShift->lunch_ended)
-                                {{ $employeeShift->lunch_ended->format('H:i') }}
-                            @elseif ($employeeShift && $employeeShift->lunch_started)
+                            @if ($employeeShift && $employeeShift->end_lunch)
+                                {{ $employeeShift->end_lunch->format('H:i') }}
+                            @elseif ($employeeShift && $employeeShift->start_lunch)
                                 <form action="{{ route('endLunch') }}" method="POST">
                                     @csrf
                                     <button type="submit">END LUNCH</button>
@@ -95,13 +95,13 @@
                     <tr>
                         <th>Shift Ended</th>
                         <td>
-                            @if ($employeeShift && $employeeShift->shift_started && $employeeShift->lunch_started && $employeeShift->lunch_ended && !$employeeShift->shift_ended)
+                            @if ($employeeShift && $employeeShift->start_shift && $employeeShift->start_lunch && $employeeShift->end_lunch && !$employeeShift->end_shift)
                                 <form action="{{ route('endShift') }}" method="POST">
                                     @csrf
                                     <button type="submit">END SHIFT</button>
                                 </form>
-                            @elseif ($employeeShift && $employeeShift->shift_ended)
-                                {{ $employeeShift->shift_ended->format('H:i') }}
+                            @elseif ($employeeShift && $employeeShift->end_shift)
+                                {{ $employeeShift->end_shift->format('H:i') }}
                             @else
                                 <button type="button" disabled>END SHIFT</button>
                             @endif

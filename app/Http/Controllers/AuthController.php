@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Jobs\AuthJobs\AttemptUserLoginJob;
+use App\Jobs\AuthJobs\UserLogoutJob;
 
 class AuthController extends Controller
 {
@@ -18,22 +20,22 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
-        if (Auth::attempt($credentials)) {
+    
+        AttemptUserLoginJob::dispatch($credentials)->handle();
+    
+        if (Auth::check()) {
             return redirect('/dashboard')->with('success', 'Logged in successfully!');
         }
-
+    
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ]);
     }
+    
 
     public function logout(Request $request)
     {
-        Auth::logout();
-        
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        UserLogoutJob::dispatch()->handle();
 
         return redirect('login')->with('success', 'Logged out successfully!');
     }

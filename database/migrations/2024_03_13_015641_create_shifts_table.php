@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('shifts', function (Blueprint $table) {
             $table->id();
-            $table->string('shift_name');
-            $table->time('shift_start_time');
-            $table->time('shift_end_time');
-            $table->time('lunch_start_time');
-            $table->time('lunch_end_time');
+            $table->string('shift_name'); // Shift Name (Morning Shift, Night Shift)
+            $table->time('start_shift_time'); // Time when shift will start
+            $table->time('shift_start_grace_period'); // Grace period when shift started but hasn't clocked in
+            $table->time('lunch_start_time'); // Time when lunch will start
+            $table->time('end_lunch_time'); // Time when lunch will end
+            $table->time('end_shift_time'); // Time when shift will end
+            $table->integer('break_frequency'); // Number of breaks the employee can have
+            $table->time('break_duration')->default('00:00:00'); // Duration of the break (5 minutes, 10 minutes, 15 minutes)
             $table->timestamps();
         });
     }

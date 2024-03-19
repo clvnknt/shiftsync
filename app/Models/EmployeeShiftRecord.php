@@ -14,10 +14,10 @@ class EmployeeShiftRecord extends Model
         'employee_id',
         'shift_id',
         'shift_date',
-        'shift_started',
-        'lunch_started',
-        'lunch_ended',
-        'shift_ended',
+        'start_shift',
+        'start_lunch',
+        'end_lunch',
+        'end_shift',
     ];
 
     // Define your relationships here
@@ -32,10 +32,8 @@ class EmployeeShiftRecord extends Model
     }
 
     protected $casts = [
-        'shift_started' => 'datetime',
-        'lunch_started' => 'datetime',
-        'lunch_ended' => 'datetime',
-        'shift_ended' => 'datetime',
+        'start_lunch' => 'datetime',
+        'end_lunch' => 'datetime',
+        'end_shift' => 'datetime',
     ];
-
 }

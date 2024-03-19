@@ -25,19 +25,24 @@ class EmployeeShiftRecordsTableSeeder extends Seeder
 
         // Loop through each user ID
         foreach ($userIds as $userId) {
-            // Generate 10 shift records for each user
+            $shiftDate = now()->startOfMonth(); // Start with the first day of the current month
+
+            // Generate 10 consecutive shift records for each user
             for ($i = 0; $i < 10; $i++) {
                 DB::table('employee_shift_records')->insert([
                     'employee_id' => $userId,
                     'shift_id' => $faker->randomElement($shiftIds),
-                    'shift_date' => $faker->dateTimeBetween('-1 month', 'now')->format('Y-m-d'),
-                    'shift_started' => $faker->dateTimeThisMonth()->format('Y-m-d H:i:s'),
-                    'lunch_started' => $faker->dateTimeThisMonth()->format('Y-m-d H:i:s'),
-                    'lunch_ended' => $faker->dateTimeThisMonth()->format('Y-m-d H:i:s'),
-                    'shift_ended' => $faker->dateTimeThisMonth()->format('Y-m-d H:i:s'),
+                    'shift_date' => $shiftDate->format('Y-m-d'),
+                    'start_shift' => $faker->time(),
+                    'start_lunch' => $faker->time(),
+                    'end_lunch' => $faker->time(),
+                    'end_shift' => $faker->time(),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
+
+                // Move to the next day
+                $shiftDate->addDay();
             }
         }
     }

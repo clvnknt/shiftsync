@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Jobs\EnsureUserShiftRecordExistsJob;
+use App\Jobs\DashboardJobs\EnsureUserShiftRecordExistsJob;
+use App\Jobs\DashboardJobs\GetEmployeeShiftRecordJob;
 use App\Models\EmployeeRecord;
-use App\Models\User;
-use App\Models\EmployeeShiftRecord;
 
 class DashboardController extends Controller
 {
@@ -15,25 +14,23 @@ class DashboardController extends Controller
     {
         $userId = Auth::id();
         $employeeRecord = EmployeeRecord::where('user_id', $userId)->first();
-        
+
         if (!$employeeRecord) {
             return redirect()->back()->with('error', 'Employee record not found.');
         }
-        
-        EnsureUserShiftRecordExistsJob::dispatch($userId);
-        $employeeShift = $this->getEmployeeShiftRecord($userId);
-        
+
+        // Dispatch the jobs synchronously
+        $ensureJob = new EnsureUserShiftRecordExistsJob($userId);
+        $ensureJob->handle();
+
+        $getJob = new GetEmployeeShiftRecordJob($userId);
+        $employeeShift = $getJob->handle();
+
         return view('employees.dashboard', [
             'user' => Auth::user(),
             'employeeRecord' => $employeeRecord,
             'employeeShift' => $employeeShift,
-        ]);        
-    }
-
-    private function getEmployeeShiftRecord($userId)
-    {
-        return EmployeeShiftRecord::where('employee_id', $userId)
-            ->whereDate('shift_date', now()->timezone(Auth::user()->timezone)->toDateString())
-            ->first();
+        ]);
     }
 }
+

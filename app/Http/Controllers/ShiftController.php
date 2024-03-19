@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-use App\Jobs\{
+use App\Jobs\ShiftJobs\{
     UpdateShiftRecordJob,
     StartShiftJob,
     EndShiftJob,

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\ShiftJobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,13 +18,13 @@ class UpdateShiftRecordJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $userId;
+
     /**
      * Create a new job instance.
      */
     public function __construct($userId)
     {
         $this->userId = $userId;
-        //
     }
 
     /**
@@ -33,23 +33,23 @@ class UpdateShiftRecordJob implements ShouldQueue
     public function handle(): void
     {
         $userTimezone = Auth::user()->timezone;
-        $today = Carbon::now($userTimezone)->toDateString();
+        $now = Carbon::now($userTimezone);
 
         $employeeRecord = EmployeeRecord::where('user_id', $this->userId)->firstOrFail();
         $defaultShiftId = $employeeRecord->default_shift_id;
 
         $employeeShiftRecord = EmployeeShiftRecord::firstOrNew([
             'employee_id' => $this->userId,
-            'shift_date' => $today,
+            'shift_date' => $now->toDateString(),
         ]);
 
-        if ($employeeShiftRecord->exists && $employeeShiftRecord->shift_date != $today) {
+        if ($employeeShiftRecord->exists && $employeeShiftRecord->shift_date != $now->toDateString()) {
             $employeeShiftRecord->fill([
                 'shift_id' => $defaultShiftId,
-                'shift_started' => null,
-                'lunch_started' => null,
-                'lunch_ended' => null,
-                'shift_ended' => null,
+                'start_shift' => $now->toTimeString(),
+                'start_lunch' => null,
+                'end_lunch' => null,
+                'end_shift' => null,
             ]);
         } elseif ($employeeShiftRecord->exists && $employeeShiftRecord->shift_id != $defaultShiftId) {
             $employeeShiftRecord->shift_id = $defaultShiftId;

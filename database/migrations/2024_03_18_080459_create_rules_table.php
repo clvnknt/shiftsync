@@ -13,13 +13,16 @@ return new class extends Migration
     {
         Schema::create('rules', function (Blueprint $table) {
             $table->id();
-            $table->integer('grace_period')->default(0); // Grace period in minutes
-            $table->integer('break_duration')->default(0); // Break duration in minutes
-            $table->integer('overtime_threshold')->default(0); // Overtime in minutes
-            $table->integer('shift_started_lateness')->nullable(); // Shift started lateness in minutes
-            $table->integer('end_lunch_lateness')->nullable(); // End lunch lateness in minutes
-            $table->boolean('absent')->default(false); // Status: Absent
-            $table->integer('hours_rendered')->nullable(); // Hours Rendered
+            $table->foreignId('employee_shift_record_id')->nullable()->constrained()->onDelete('cascade');
+            $table->time('grace_period_end'); // Time when employee starts shifts during the grace period
+            $table->time('late_shift_start'); // Minutes/Hours when employee starts shift late
+            $table->time('early_start_lunch'); // Minutes/Hours when employee starts lunch early
+            $table->time('late_end_lunch'); // Minutes/Hours when employee ends lunch late
+            $table->time('overtime'); // Minutes/Hours the employee is overtime
+            $table->time('hours_rendered'); // Hours rendered that day
+            $table->enum('leave', ['paid', 'unpaid']); // Indicates if the employee's leave is paid or unpaid
+            $table->boolean('is_absent')->default(false); // Indicates if the employee is absent that day (not started shift)
+            $table->boolean('is_holiday')->default(false); // Indicates if the employee's shift that day is during a holiday
             $table->timestamps();
         });
     }

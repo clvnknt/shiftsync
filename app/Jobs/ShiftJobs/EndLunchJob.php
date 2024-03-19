@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\ShiftJobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -37,7 +37,7 @@ class EndLunchJob implements ShouldQueue
             ->where('shift_date', Carbon::now()->toDateString())
             ->firstOrFail();
 
-        $employeeShiftRecord->lunch_ended = $now;
+        $employeeShiftRecord->end_lunch = $now;
         $employeeShiftRecord->save();
     }
 }

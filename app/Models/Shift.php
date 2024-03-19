@@ -11,10 +11,13 @@ class Shift extends Model
 
     protected $fillable = [
         'shift_name',
-        'shift_start_time',
-        'shift_end_time',
+        'start_shift_time',
+        'shift_start_grace_period',
         'lunch_start_time',
-        'lunch_end_time',
+        'end_lunch_time',
+        'end_shift_time',
+        'break_frequency',
+        'break_duration',
     ];
 
     // Define your relationships here
@@ -28,3 +31,4 @@ class Shift extends Model
         return $this->hasMany(EmployeeShiftRecord::class);
     }
 }
+

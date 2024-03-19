@@ -1,35 +1,36 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\DashboardJobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-
-use App\Models\EmployeeRecord;
+use App\Models\EmployeeShiftRecord;
 use Illuminate\Support\Facades\Auth;
 
-class FetchDefaultShiftJob implements ShouldQueue
+class GetEmployeeShiftRecordJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $userId;
 
+    /**
+     * Create a new job instance.
+     */
     public function __construct($userId)
     {
         $this->userId = $userId;
     }
 
+    /**
+     * Execute the job.
+     */
     public function handle()
     {
-        // Fetch the default shift associated with the user's employee record
-        $employeeRecord = EmployeeRecord::where('user_id', $this->userId)->first();
-        $defaultShift = $employeeRecord ? $employeeRecord->defaultShift : null;
-        
-        // You can handle further processing if required
-
-        return $defaultShift;
+        return EmployeeShiftRecord::where('employee_id', $this->userId)
+            ->whereDate('shift_date', now()->timezone(Auth::user()->timezone)->toDateString())
+            ->first();
     }
 }

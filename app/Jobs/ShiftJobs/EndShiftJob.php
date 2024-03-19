@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\ShiftJobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,7 +12,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\EmployeeShiftRecord;
 
-class StartShiftJob implements ShouldQueue
+
+class EndShiftJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -37,7 +38,7 @@ class StartShiftJob implements ShouldQueue
             ->where('shift_date', Carbon::now()->toDateString())
             ->firstOrFail();
 
-        $employeeShiftRecord->shift_started = $now;
+        $employeeShiftRecord->end_shift = $now;
         $employeeShiftRecord->save();
     }
 }
