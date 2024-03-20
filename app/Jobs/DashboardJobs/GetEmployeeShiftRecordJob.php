@@ -7,8 +7,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\EmployeeShiftRecord;
 use Illuminate\Support\Facades\Auth;
+use App\Models\EmployeeShiftRecord;
+use Illuminate\Support\Carbon;
 
 class GetEmployeeShiftRecordJob implements ShouldQueue
 {
@@ -29,8 +30,11 @@ class GetEmployeeShiftRecordJob implements ShouldQueue
      */
     public function handle()
     {
-        return EmployeeShiftRecord::where('employee_id', $this->userId)
-            ->whereDate('shift_date', now()->timezone(Auth::user()->timezone)->toDateString())
+        $user = Auth::user();
+        $today = Carbon::now($user->timezone)->toDateString();
+        
+        return EmployeeShiftRecord::where('employee_id', $user->id)
+            ->where('shift_date', $today)
             ->first();
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\ShiftJobs;
+namespace App\Jobs\DashboardJobs; // Update namespace
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

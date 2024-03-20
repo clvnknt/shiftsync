@@ -4,55 +4,124 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Jobs\ShiftJobs\{
-    UpdateShiftRecordJob,
     StartShiftJob,
-    EndShiftJob,
     StartLunchJob,
     EndLunchJob,
-    EnsureShiftRecordExistsJob
+    EndShiftJob,
+    UpdateShiftRecordJob,
 };
 
 class ShiftController extends Controller
 {
-    public function updateShiftRecord($userId)
-    {
-        UpdateShiftRecordJob::dispatch($userId);
-    }
-
+    /**
+     * Start the shift for the authenticated user.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function startShift()
     {
-        $userId = Auth::id();
-        $this->updateShiftRecord($userId);
-        StartShiftJob::dispatch($userId);
-        return redirect()->back();
+        try {
+            // Get the authenticated user's ID
+            $userId = Auth::id();
+            
+            // Update the shift record for the user
+            $this->updateShiftRecord($userId);
+
+            // Dispatch the job to start the shift
+            StartShiftJob::dispatch($userId);
+
+            // Redirect back with success message
+            return redirect()->back()->with('success', 'Shift started successfully!');
+        } catch (\Exception $e) {
+            // Log and handle unexpected errors
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred. Please try again later.']);
+        }
     }
 
-    public function endShift()
-    {
-        $userId = Auth::id();
-        $this->updateShiftRecord($userId);
-        EndShiftJob::dispatch($userId);
-        return redirect()->back();
-    }
-
+    /**
+     * Start lunch break for the authenticated user.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function startLunch()
     {
-        $userId = Auth::id();
-        $this->updateShiftRecord($userId);
-        StartLunchJob::dispatch($userId);
-        return redirect()->back();
+        try {
+            // Get the authenticated user's ID
+            $userId = Auth::id();
+            
+            // Update the shift record for the user
+            $this->updateShiftRecord($userId);
+
+            // Dispatch the job to start lunch break
+            StartLunchJob::dispatch($userId);
+
+            // Redirect back with success message
+            return redirect()->back()->with('success', 'Lunch break started successfully!');
+        } catch (\Exception $e) {
+            // Log and handle unexpected errors
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred. Please try again later.']);
+        }
     }
 
+    /**
+     * End lunch break for the authenticated user.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function endLunch()
     {
-        $userId = Auth::id();
-        $this->updateShiftRecord($userId);
-        EndLunchJob::dispatch($userId);
-        return redirect()->back();
+        try {
+            // Get the authenticated user's ID
+            $userId = Auth::id();
+            
+            // Update the shift record for the user
+            $this->updateShiftRecord($userId);
+
+            // Dispatch the job to end lunch break
+            EndLunchJob::dispatch($userId);
+
+            // Redirect back with success message
+            return redirect()->back()->with('success', 'Lunch break ended successfully!');
+        } catch (\Exception $e) {
+            // Log and handle unexpected errors
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred. Please try again later.']);
+        }
     }
 
-    public function ensureShiftRecordExists($userId)
+    /**
+     * End the shift for the authenticated user.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function endShift()
     {
-        EnsureShiftRecordExistsJob::dispatch($userId);
+        try {
+            // Get the authenticated user's ID
+            $userId = Auth::id();
+            
+            // Update the shift record for the user
+            $this->updateShiftRecord($userId);
+
+            // Dispatch the job to end the shift
+            EndShiftJob::dispatch($userId);
+
+            // Redirect back with success message
+            return redirect()->back()->with('success', 'Shift ended successfully!');
+        } catch (\Exception $e) {
+            // Log and handle unexpected errors
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred. Please try again later.']);
+        }
+    }
+
+    /**
+     * Update the shift record for the user.
+     *
+     * @param  int  $userId
+     * @return void
+     */
+    private function updateShiftRecord($userId)
+    {
+        // Dispatch the job to update the shift record
+        UpdateShiftRecordJob::dispatch($userId);
     }
 }

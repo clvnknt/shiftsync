@@ -51,11 +51,23 @@
                     <div>
                         <strong>Department:</strong> {{ $employeeRecord->department ?? 'N/A' }}
                     </div>
+                    <!-- Default Shift -->
                     <div>
-                        <strong>Default Shift:</strong> {{ $defaultShift->shift_name ?? 'N/A' }}
+                        <strong>Default Shift:</strong>
+                        @if($timesheetData['defaultShift'])
+                            {{ $timesheetData['defaultShift']->shift_name }}
+                        @else
+                            N/A
+                        @endif
                     </div>
+                    <!-- Shift Schedule -->
                     <div>
-                        <strong>Shift Schedule:</strong> {{ $defaultShift->shift_schedule ?? 'N/A' }}
+                        <strong>Shift Schedule:</strong>
+                        @if($timesheetData['defaultShift'])
+                            {{ $timesheetData['defaultShift']->start_shift_time . ' - ' . $timesheetData['defaultShift']->end_shift_time }}
+                        @else
+                            N/A
+                        @endif
                     </div>
                 @else
                     <p>User not found.</p>
@@ -67,10 +79,10 @@
                 <h2>Date Range</h2>
                 <!-- Date range picker input fields -->
                 <div class="date-range-inputs">
-                    <label for="start-date">Start Date:</label>
+                    <label for="start-date"><b>Start Date:</b></label>
                     <input type="date" id="start-date" name="start-date" value="{{ now()->format('Y-m-d') }}">
 
-                    <label for="end-date">End Date:</label>
+                    <label for="end-date"><b>End Date:</b></label>
                     <input type="date" id="end-date" name="end-date">
                 </div>
 
@@ -86,19 +98,19 @@
                         <thead>
                             <tr>
                                 <th>Shift Date</th>
-                                <th>Shift Started</th>
-                                <th>Lunch Started</th>
-                                <th>Lunch Ended</th>
-                                <th>Shift Ended</th>
+                                <th>Start Shift</th>
+                                <th>Start Lunch</th>
+                                <th>End Lunch</th>
+                                <th>End Shift</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>{{ now()->format('d/m/Y') }}</td>
-                                <td>{{ $currentShiftRecord->shift_started ? $currentShiftRecord->shift_started->format('H:i') : '-' }}</td>
-                                <td>{{ $currentShiftRecord->lunch_started ? $currentShiftRecord->lunch_started->format('H:i') : '-' }}</td>
-                                <td>{{ $currentShiftRecord->lunch_ended ? $currentShiftRecord->lunch_ended->format('H:i') : '-' }}</td>
-                                <td>{{ $currentShiftRecord->shift_ended ? $currentShiftRecord->shift_ended->format('H:i') : '-' }}</td>
+                                <td>{{ $currentShiftRecord->start_shift ? \Illuminate\Support\Carbon::parse($currentShiftRecord->start_shift)->format('H:i') : '-' }}</td>
+                                <td>{{ $currentShiftRecord->start_lunch ? \Illuminate\Support\Carbon::parse($currentShiftRecord->start_lunch)->format('H:i') : '-' }}</td>
+                                <td>{{ $currentShiftRecord->end_lunch ? \Illuminate\Support\Carbon::parse($currentShiftRecord->end_lunch)->format('H:i') : '-' }}</td>
+                                <td>{{ $currentShiftRecord->end_shift ? \Illuminate\Support\Carbon::parse($currentShiftRecord->end_shift)->format('H:i') : '-' }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -107,8 +119,8 @@
                 @endif
             </div>
         </div>
-        <!-- Include the timesheet-specific JavaScript file if needed -->
-        <script src="{{ asset('js/timesheet.js') }}"></script>
     </div>
+    <!-- Include the timesheet-specific JavaScript file if needed -->
+    <script src="{{ asset('js/timesheet.js') }}"></script>
 </body>
 </html>

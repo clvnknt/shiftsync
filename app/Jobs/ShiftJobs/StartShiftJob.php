@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\EmployeeShiftRecord;
@@ -16,11 +15,11 @@ class StartShiftJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $userId;
+
     /**
      * Create a new job instance.
      */
-    protected $userId;
-
     public function __construct($userId)
     {
         $this->userId = $userId;
@@ -31,13 +30,14 @@ class StartShiftJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $now = Carbon::now(Auth::user()->timezone); // Get current datetime
+        $user = Auth::user();
+        $now = Carbon::now($user->timezone)->toDateTimeString();
 
         $employeeShiftRecord = EmployeeShiftRecord::where('employee_id', $this->userId)
-            ->whereDate('shift_date', $now->toDateString()) // Compare with date part only
+            ->whereDate('shift_date', Carbon::now()->timezone($user->timezone)->toDateString())
             ->firstOrFail();
 
-        $employeeShiftRecord->start_shift = $now->toDateTimeString(); // Store current datetime
+        $employeeShiftRecord->start_shift = $now;
         $employeeShiftRecord->save();
     }
 }

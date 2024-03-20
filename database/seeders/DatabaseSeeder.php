@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             ShiftsTableSeeder::class,
             EmployeeRecordsSeeder::class,
-            EmployeeShiftRecordsTableSeeder::class,
+            //EmployeeShiftRecordsTableSeeder::class,
         ]);
     }
 }
