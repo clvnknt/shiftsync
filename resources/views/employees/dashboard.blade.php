@@ -13,7 +13,7 @@
     <div class="dashboard-container">
 
         <!-- Container 1: Employee Information -->
-        <div class="card user-info-container">
+        <div class="card employee-information">
             <h2><strong>Employee Information</strong></h2>
             <!-- Display employee information if available -->
             @if($employeeRecord)
@@ -32,14 +32,14 @@
             @endif
         </div>
 
-        <!-- Container 2: Date & Time of Last Shift -->
-        <div class="card updates-container">
-            <h2>Updates</h2>
-            <p><strong>Update 1:</strong> Implemented new authentication system for improved security.</p>
-            <p><strong>Update 2:</strong> Enhanced user interface with responsive design for better mobile experience.</p>
-            <p><strong>Update 3:</strong> Refactored backend code for better performance and scalability.</p>
-            <p><strong>Update 4:</strong> Added new feature to allow users to customize their profiles according to their preferences.</p>
-            <p><strong>Update 5:</strong> Optimized database queries to improve overall application speed and efficiency.</p>
+        <!-- Container 2: Upcoming Holidays -->
+        <div class="card upcoming-holidays">
+            <h2>Upcoming Holidays</h2>
+            <p><strong>Date 1:</strong> Sample Holiday</p>
+            <p><strong>Date 2:</strong> Sample Holiday.</p>
+            <p><strong>Date 3:</strong> Sample Holiday.</p>
+            <p><strong>Date 4:</strong> Sample Holiday.</p>
+            <p><strong>Date 5:</strong> Sample Holiday.</p>
         </div>
 
         <!-- Container 3: Today's Shift -->
@@ -76,7 +76,7 @@
                                 <button type="submit">START</button>
                             </form>
                         @else
-                            <button type="button" disabled>START</button>
+                            <button type="button" disabled>-</button>
                         @endif
                     </div>
                 </div>
@@ -94,7 +94,7 @@
                                 <button type="submit">END</button>
                             </form>
                         @else
-                            <button type="button" disabled>END</button>
+                            <button type="button" disabled>-</button>
                         @endif
                     </div>
                 </div>
@@ -109,15 +109,20 @@
                         @elseif ($employeeShift && $employeeShift->start_shift && $employeeShift->start_lunch && $employeeShift->end_lunch && !$employeeShift->end_shift)
                             <form action="{{ route('endShift') }}" method="POST">
                                 @csrf
-                                <button class="orange" type="submit">END SHIFT</button>
+                                <button class="submit" type="submit">END</button>
                             </form>
                         @else
-                            <button type="button" disabled>END</button>
+                            <button type="button" disabled>-</button>
                         @endif
                     </div>
                 </div>
-
             </div>
+        </div>
+
+        <!-- Container 4: Events -->
+        <div class="card">
+            <h2>Events</h2>
+            <p>Sample Event</p>
         </div>
     </div>
 @endsection

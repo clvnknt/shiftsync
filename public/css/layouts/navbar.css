@@ -1,69 +1,83 @@
-.navbar {
-    background-color: #fff;
-    padding: 10px 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%; /* Make the navbar full width */
-    font-family: Arial, sans-serif; /* Set the font family */
-}
+/* login.css */
 
-.nav-links {
-    display: flex;
-    gap: 20px;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: #000;
-    font-size: 16px; /* Set the font size */
-}
-
-.navbar h1 {
+body {
+    background-color: #D5DBDB;
+    font-family: Arial, sans-serif;
     margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+    padding: 0 15px;
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    max-width: 200px;
+    height: auto;
+}
+
+.login-container {
+    background-color: #fff;
     color: #000;
-    font-size: 20px; /* Set the font size */
-    font-weight: normal; /* Make the font weight normal */
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.dropbtn {
-    background-color: transparent;
-    color: #000;
-    padding: 8px 15px;
-    border: none;
-    cursor: pointer;
-    font-weight: normal; /* Make the font weight normal */
-    font-size: 16px; /* Set the font size */
+form {
+    margin-top: 20px;
 }
 
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-    z-index: 1;
-    right: 0;
+.form-group {
+    margin-bottom: 15px;
 }
 
-.dropdown-content form {
+label {
     display: block;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
     padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-.dropdown-content button {
-    background-color: transparent;
-    color: #000;
+button {
+    background-color: #196F3D;
+    color: #fff;
+    padding: 10px 20px;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px; /* Set the font size */
-}
-
-.dropdown-content button:hover {
-    background-color: #f1f1f1;
-}
-
-.dropdown:hover .dropdown-content {
+    width: 100%;
     display: block;
+    margin-top: 10px;
 }
 
+button:hover {
+    background-color: #14532D;
+}
+
+.error-message {
+    color: #ff0000;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.error-container {
+    margin-top: 5px;
+}

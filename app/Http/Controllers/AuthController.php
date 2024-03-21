@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -22,29 +23,26 @@ class AuthController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function login(Request $request)
     {
-        try {
-            // Validate user credentials
-            $credentials = $request->validate([
-                'email' => 'required|email',
-                'password' => 'required',
-            ]);
+        $request->validate([
+            'username_or_email' => 'required',
+            'password' => 'required',
+        ]);
 
-            // Attempt user login
-            if (Auth::attempt($credentials)) {
-                return redirect('/dashboard')->with('success', 'Logged in successfully!');
-            }
+        $credentials = $request->only('password');
+        $field = filter_var($request->username_or_email, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+        $credentials[$field] = $request->username_or_email;
 
-            // Redirect back with error if login fails
-            return back()->withErrors([
-                'email' => 'The provided credentials do not match our records.',
-            ]);
-        } catch (\Exception $e) {
-            // Log and handle unexpected errors
-            return back()->withErrors(['error' => 'An unexpected error occurred. Please try again later.']);
+        if (Auth::attempt($credentials)) {
+            return redirect('/dashboard')->with('success', 'Logged in successfully!');
         }
+
+        throw ValidationException::withMessages([
+            'username_or_email' => ['The provided credentials are incorrect.'],
+        ]);
     }
 
     /**
@@ -56,13 +54,9 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         try {
-            // Logout user
             Auth::logout();
-
-            // Redirect to login page with success message
             return redirect('login')->with('success', 'Logged out successfully!');
         } catch (\Exception $e) {
-            // Log and handle unexpected errors
             return back()->withErrors(['error' => 'An unexpected error occurred. Please try again later.']);
         }
     }

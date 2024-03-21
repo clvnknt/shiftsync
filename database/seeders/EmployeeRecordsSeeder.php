@@ -15,57 +15,21 @@ class EmployeeRecordsSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        // Seed multiple employees
-        $employees = [
-            [
-                'user_id' => 1,
-                'first_name' => 'John',
-                'middle_name' => $faker->firstName(),
-                'last_name' => 'Doe',
-                'default_shift_id' => 1,
+        for ($i = 0; $i < 10; $i++) {
+            DB::table('employee_records')->insert([
+                'id' => $i + 1,
+                'address_id' => rand(1, 10), // Assuming you have addresses seeded already
+                'first_name' => $faker->firstName,
+                'middle_name' => $faker->lastName,
+                'last_name' => $faker->lastName,
+                'profile_picture' => $faker->imageUrl(), // Generate a random profile picture URL
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
-            [
-                'user_id' => 2,
-                'first_name' => 'Jane',
-                'middle_name' => $faker->firstName(),
-                'last_name' => 'Smith',
-                'default_shift_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'user_id' => 3,
-                'first_name' => 'Alice',
-                'middle_name' => $faker->firstName(),
-                'last_name' => 'Johnson',
-                'default_shift_id' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'user_id' => 4,
-                'first_name' => 'Bob',
-                'middle_name' => $faker->firstName(),
-                'last_name' => 'Williams',
-                'default_shift_id' => 4,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'user_id' => 5,
-                'first_name' => 'Eva',
-                'middle_name' => $faker->firstName(),
-                'last_name' => 'Brown',
-                'default_shift_id' => 5,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ];
-
-        // Insert the employees into the database
-        DB::table('employee_records')->insert($employees);
+                'department_id' => rand(1, 10), // Assuming you have departments seeded already
+                'role_id' => rand(1, 10), // Assuming you have roles seeded already
+                'default_shift_id' => rand(1, 10), // Assuming you have shifts seeded already
+                'user_id' => rand(1, 10),
+            ]);
+        }
     }
 }
-

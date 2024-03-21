@@ -10,14 +10,14 @@
     <div class="container">
         <div class="login-container">
             <div class="logo-container">
-                <img src="{{ asset('media/images/cloudstaff-logo-share.png') }}" alt="CloudStaff Logo" class="logo">
+                <!-- Add your logo here -->
             </div>
             <h2>Employee Login</h2>
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus placeholder="Enter your email">
+                    <label for="username_or_email">Email or Username</label>
+                    <input id="username_or_email" type="text" name="username_or_email" value="{{ old('username_or_email') }}" required autofocus placeholder="Enter your email or username">
                 </div>
 
                 <div class="form-group">
@@ -27,7 +27,7 @@
 
                 <button type="submit">Login</button>
 
-                @error('email')
+                @error('username_or_email')
                     <div class="error-container">
                         <div class="error-message">{{ $message }}</div>
                     </div>

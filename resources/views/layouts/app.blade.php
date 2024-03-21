@@ -11,16 +11,21 @@
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
     <link href="{{ asset('css/layouts/navbar.css') }}" rel="stylesheet">
 
+    <!-- Include the timesheet-specific CSS file -->
+    @section('timesheet_styles')
+        <link href="{{ asset('css/timesheet.css') }}" rel="stylesheet">
+    @show
+
 </head>
 <body>
     <!-- Navbar section -->
     <nav class="navbar">
         <div class="nav-links">
             <!-- Company logo and navigation links -->
-            <img src="{{ asset('media/images/cloudstaff-logo-share.png') }}" alt="CloudStaff Logo" height="25px" style="margin-right: 10px;">
-            <a href="{{ route('timesheet') }}">Dashboard</a>
+            <img src="{{ asset('media/images/cloudstaff-logo-share.png') }}" alt="CloudStaff Logo" height="20px" style="margin-right: 5px;">
+            <a href="{{ route('dashboard') }}">Dashboard</a>
             <a href="{{ route('timesheet') }}">Timesheet</a>
-            <a href="#">Support</a>
+            <a href="#">File Ticket</a>
             <a href="#">My Account</a>
         </div>
         <!-- User dropdown menu -->

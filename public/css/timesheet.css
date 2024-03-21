@@ -21,6 +21,19 @@ h1 {
     align-items: center;
 }
 
+/* New container styles */
+.new-container {
+    color: black;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    background-color: #fff;
+    margin: 20px auto;
+    max-width: 800px;
+    width: calc(50% - 40px);
+    box-sizing: border-box;
+}
+
 .nav-links {
     display: flex;
     gap: 20px;
@@ -81,7 +94,7 @@ h1 {
     color: black;
     padding: 20px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 20px;
     background-color: #fff;
     margin: 20px auto;
     max-width: 800px;
@@ -171,3 +184,4 @@ h1 {
 #apply-date-range:hover {
     background-color: #45a049;
 }
+
