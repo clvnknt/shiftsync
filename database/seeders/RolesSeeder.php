@@ -2,29 +2,30 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
+use App\Models\Role;
 
 class RolesSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
-    {
-        $faker = Faker::create();
 
-        for ($i = 0; $i < 10; $i++) {
-            DB::table('roles')->insert([
-                'name' => $faker->jobTitle,
-                'description' => $faker->sentence,
-                'department_id' => $faker->numberBetween(1, 10), // Assuming departments are already seeded
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+    public function run()
+    {
+        $roles = [
+            [
+                'department_id' => 1, // Software Development
+                'role_name' => 'Software Engineer',
+                'role_description' => 'Develops and maintains software applications.',
+            ],
+            [
+                'department_id' => 2, // Customer Support
+                'role_name' => 'Support Specialist',
+                'role_description' => 'Provides technical support to customers.',
+            ],
+        ];
+
+        foreach ($roles as $rolesData) {
+            Role::create($rolesData);
         }
     }
 }

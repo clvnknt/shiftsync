@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Models\EmployeeRecord;
+use Illuminate\Database\Seeder; 
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,13 +17,10 @@ class DatabaseSeeder extends Seeder
             DepartmentsSeeder::class,
             RolesSeeder::class,
             ShiftsSeeder::class,
-            EmployeeRecordsSeeder::class,
-            EmployeeShiftRecordsSeeder::class,
-            RulesSeeder::class,
-            HolidaysSeeder::class,
-            BreaksSeeder::class,
-            EmergencyContactsSeeder::class,
             AddressesSeeder::class,
+            EmergencyContactsSeeder::class,
+            ShiftBreaksSeeder::class,
+            EmployeeRecordsSeeder::class,
         ]);
     }
 }

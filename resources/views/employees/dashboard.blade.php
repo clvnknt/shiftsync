@@ -1,128 +1,113 @@
 @extends('layouts.app')
 
-@section('dashboard_styles')
-    <!-- Include the dashboard-specific CSS file -->
-    <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
-@endsection
+@section('title', 'Dashboard')
 
 @section('content')
-    <!-- Dashboard title -->
-    <h1>Dashboard</h1>
-
-    <!-- Dashboard container -->
-    <div class="dashboard-container">
-
-        <!-- Container 1: Employee Information -->
-        <div class="card employee-information">
-            <h2><strong>Employee Information</strong></h2>
-            <!-- Display employee information if available -->
-            @if($employeeRecord)
-                <div class="info-left">
-                    <div class="info-box">Name: {{ $employeeRecord->first_name ?: 'N/A' }} {{ $employeeRecord->middle_name ?: 'N/A' }} {{ $employeeRecord->last_name ?: 'N/A' }}</div>
-                    <div class="info-box">Email: {{ $employeeRecord->email ?: 'N/A' }}</div>
-                    <div class="info-box">Timezone: {{ $employeeRecord->timezone ?: 'N/A' }}</div>
-                </div>
-                <div class="info-right">
-                    <div class="info-box">Default Shift: {{ $employeeRecord->default_shift ?: 'N/A' }}</div>
-                    <div class="info-box">Shift Schedule: {{ $employeeRecord->shift_schedule ?: 'N/A' }}</div>
-                </div>
-            @else
-                <!-- Display error message if employee record not found -->
-                <p><strong>Employee record not found.</strong></p>
-            @endif
+    <div class="container">
+        <!-- World Clock -->
+        <h2 class="text-center mt-5 mb-4">Your Dashboard</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>PH Time</th>
+                        <th>AU Time</th>
+                        <th>UK Time</th>
+                        <th>US Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="ph_time"></td>
+                        <td id="au_time"></td>
+                        <td id="uk_time"></td>
+                        <td id="us_time"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <!-- Container 2: Upcoming Holidays -->
-        <div class="card upcoming-holidays">
-            <h2>Upcoming Holidays</h2>
-            <p><strong>Date 1:</strong> Sample Holiday</p>
-            <p><strong>Date 2:</strong> Sample Holiday.</p>
-            <p><strong>Date 3:</strong> Sample Holiday.</p>
-            <p><strong>Date 4:</strong> Sample Holiday.</p>
-            <p><strong>Date 5:</strong> Sample Holiday.</p>
-        </div>
-
-        <!-- Container 3: Today's Shift -->
-        <div class="card shifts-container">
-            <h2><strong>Today's Shift</strong></h2>
-            <!-- Shifts table -->
-            <div class="shift-details">
-                <!-- Row for shift start -->
-                <div class="shift-row">
-                    <div class="shift-label">Shift Started</div>
-                    <div class="shift-value">
-                        <!-- Display shift start time or start shift button -->
-                        @if ($employeeShift && $employeeShift->start_shift)
-                            <button class="orange">{{ \Illuminate\Support\Carbon::parse($employeeShift->start_shift)->format('H:i') }}</button>
-                        @else
-                            <form action="{{ route('startShift') }}" method="POST">
-                                @csrf
-                                <button type="submit">START</button>
-                            </form>
-                        @endif
+        <!-- Additional containers -->
+        <div class="row mt-4">
+            <!-- Containers 1 and 2 side by side -->
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Holidays</h5>
+                        <p class="card-text">Placeholder text for Container 1</p>
                     </div>
                 </div>
-
-                <!-- Row for lunch start -->
-                <div class="shift-row">
-                    <div class="shift-label">Lunch Started</div>
-                    <div class="shift-value">
-                        <!-- Display lunch start time or start lunch button -->
-                        @if ($employeeShift && $employeeShift->start_lunch)
-                            <button class="orange">{{ $employeeShift->start_lunch->format('H:i') }}</button>
-                        @elseif ($employeeShift && $employeeShift->start_shift && !$employeeShift->end_shift)
-                            <form action="{{ route('startLunch') }}" method="POST">
-                                @csrf
-                                <button type="submit">START</button>
-                            </form>
-                        @else
-                            <button type="button" disabled>-</button>
-                        @endif
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Upcoming Leaves</h5>
+                        <p class="card-text">Placeholder text for Container 2</p>
                     </div>
                 </div>
+            </div>
 
-                <!-- Row for lunch end -->
-                <div class="shift-row">
-                    <div class="shift-label">Lunch Ended</div>
-                    <div class="shift-value">
-                        <!-- Display lunch end time or end lunch button -->
-                        @if ($employeeShift && $employeeShift->end_lunch)
-                            <button class="orange">{{ $employeeShift->end_lunch->format('H:i') }}</button>
-                        @elseif ($employeeShift && $employeeShift->start_lunch)
-                            <form action="{{ route('endLunch') }}" method="POST">
-                                @csrf
-                                <button type="submit">END</button>
-                            </form>
-                        @else
-                            <button type="button" disabled>-</button>
-                        @endif
+            <!-- Containers 3 and 4 below -->
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Events</h5>
+                        <p class="card-text">Placeholder text for Container 3</p>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">UberTickets</h5>
+                        <p class="card-text">Placeholder text for Container 4</p>
+                    </div>
+                </div>
+            </div>
 
-                <!-- Row for shift end -->
-                <div class="shift-row">
-                    <div class="shift-label">Shift Ended</div>
-                    <div class="shift-value">
-                        <!-- Display shift end time or end shift button -->
-                        @if ($employeeShift && $employeeShift->end_shift)
-                            <button class="orange">{{ $employeeShift->end_shift->format('H:i') }}</button>
-                        @elseif ($employeeShift && $employeeShift->start_shift && $employeeShift->start_lunch && $employeeShift->end_lunch && !$employeeShift->end_shift)
-                            <form action="{{ route('endShift') }}" method="POST">
-                                @csrf
-                                <button class="submit" type="submit">END</button>
-                            </form>
-                        @else
-                            <button type="button" disabled>-</button>
-                        @endif
+            <!-- Additional containers next to Containers 3 and 4 -->
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">News</h5>
+                        <p class="card-text">Placeholder text for Container 5</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Pending Requests</h5>
+                        <p class="card-text">Placeholder text for Container 6</p>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Container 4: Events -->
-        <div class="card">
-            <h2>Events</h2>
-            <p>Sample Event</p>
-        </div>
     </div>
+@endsection
+
+@section('scripts')
+    <!-- Function to update time every second -->
+    <script>
+        function updateTime() {
+            var options = {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false // Use 24-hour format
+            };
+            var phTime = new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', ...options });
+            var auTime = new Date().toLocaleTimeString('en-US', { timeZone: 'Australia/Sydney', ...options });
+            var ukTime = new Date().toLocaleTimeString('en-US', { timeZone: 'Europe/London', ...options });
+            var usTime = new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York', ...options });
+
+            document.getElementById('ph_time').innerHTML = phTime;
+            document.getElementById('au_time').innerHTML = auTime;
+            document.getElementById('uk_time').innerHTML = ukTime;
+            document.getElementById('us_time').innerHTML = usTime;
+        }
+
+        // Update time initially and then every second
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
 @endsection

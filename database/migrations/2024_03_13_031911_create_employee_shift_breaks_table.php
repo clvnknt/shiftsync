@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employee_shift_records', function (Blueprint $table) {
-            $table->id(); 
+        Schema::create('employee_shift_breaks', function (Blueprint $table) {
+            $table->id();
             //Shift
             $table->unsignedBigInteger('employee_record_id');
             //Shift Columns
-            $table->date('shift_date');
-            $table->time('start_shift')->nullable();
-            $table->time('start_lunch')->nullable();
-            $table->time('end_lunch')->nullable();
-            $table->time('end_shift')->nullable();
+            $table->date('break_date');
+            $table->time('break_start')->nullable();
+            $table->time('break_end')->nullable();
             $table->timestamps();
             //Employee Record Foreign Keys
             $table->foreign('employee_record_id')->references('id')->on('employee_records')->onDelete('cascade');
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employee_shift_records');
+        Schema::dropIfExists('employee_shift_breaks');
     }
 };

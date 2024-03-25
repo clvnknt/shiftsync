@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('breaks', function (Blueprint $table) {
+        Schema::create('departments', function (Blueprint $table) {
             $table->id();
-            $table->date('break_date');
-            $table->time('break_start');
-            $table->time('break_end');
+            $table->string('department_name'); //name of department (ex. Software Development, Finance)
+            $table->string('department_description')->nullable(); //short description of that department
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('breaks');
+        Schema::dropIfExists('departments');
     }
 };

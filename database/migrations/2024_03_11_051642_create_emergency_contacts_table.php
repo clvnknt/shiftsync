@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('contact_first_name', 100);
             $table->string('contact_last_name', 100);
-            $table->string('relationship', 50);
-            $table->string('phone_number', 50);
-            $table->string('street', 255);
-            $table->string('city', 100);
-            $table->string('country', 100);
-            $table->string('postal_code', 20);
+            $table->string('contact_relationship', 50);
+            $table->string('contact_phone_number', 50);
+            $table->string('contact_street', 255);
+            $table->string('contact_city', 100);
+            $table->string('contact_country', 100);
+            $table->string('contact_postal_code', 20);
             $table->timestamps();
         });
     }

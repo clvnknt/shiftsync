@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // Name of the role
-            $table->string('description')->nullable(); // Description of the role
-            $table->bigInteger('department_id')->unsigned()->nullable(); // Reference to the department the role belongs to
+            //IDs
+            $table->unsignedBigInteger('department_id'); //associates each role to a department
+            //Columns
+            $table->string('role_name'); //role name (ex. software engineer, ui/ux specialist)
+            $table->string('role_description')->nullable(); //description of the role
             $table->timestamps();
+            //Foreign Keys
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade'); //create a connection between the users table
         });
     }
 

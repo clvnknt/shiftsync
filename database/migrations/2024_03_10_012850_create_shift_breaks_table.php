@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('departments', function (Blueprint $table) {
+        Schema::create('shift_breaks', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // Name of the department
-            $table->string('description')->nullable(); // Description of the department
+            $table->string('break_name')->nullable(); //name of break (ex. Coffee Break, Bathroom Break, etc.)
+            $table->time('break_duration'); //the times the employee is able to break
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('shift_breaks');
     }
 };

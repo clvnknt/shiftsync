@@ -3,8 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
+use App\Models\EmergencyContact;
 
 class EmergencyContactsSeeder extends Seeder
 {
@@ -13,23 +12,31 @@ class EmergencyContactsSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker::create();
+        $emergencyContacts = [
+            [
+                'contact_first_name' => 'Emergency',
+                'contact_last_name' => 'Contact1',
+                'contact_relationship' => 'Parent',
+                'contact_phone_number' => '123-456-7890',
+                'contact_street' => '789 Elm Street',
+                'contact_city' => 'CityC',
+                'contact_country' => 'CountryZ',
+                'contact_postal_code' => '54321',
+            ],
+            [
+                'contact_first_name' => 'Emergency',
+                'contact_last_name' => 'Contact2',
+                'contact_relationship' => 'Spouse',
+                'contact_phone_number' => '987-654-3210',
+                'contact_street' => '321 Oak Street',
+                'contact_city' => 'CityD',
+                'contact_country' => 'CountryZ',
+                'contact_postal_code' => '98765',
+            ],
+        ];
 
-        for ($i = 0; $i < 10; $i++) {
-            DB::table('emergency_contacts')->insert([
-                'id' => $i + 1,
-                'contact_first_name' => $faker->firstName,
-                'contact_last_name' => $faker->lastName,
-                'relationship' => $faker->randomElement(['Parent', 'Sibling', 'Spouse', 'Friend']),
-                'phone_number' => $faker->phoneNumber,
-                'street' => $faker->streetAddress,
-                'city' => $faker->city,
-                'country' => $faker->country,
-                'postal_code' => $faker->postcode,
-                'created_at' => now(),
-                'updated_at' => now(),
-                'employee_record_id' => rand(1, 10), // Assuming you have employee_records seeded already
-            ]);
+        foreach ($emergencyContacts as $emergencyContactData) {
+            EmergencyContact::create($emergencyContactData);
         }
     }
 }

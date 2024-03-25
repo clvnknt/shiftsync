@@ -9,10 +9,7 @@ class EmployeeShiftRecord extends Model
 {
     use HasFactory;
 
-    // Define your fillable fields here
     protected $fillable = [
-        'employee_id',
-        'shift_id',
         'shift_date',
         'start_shift',
         'start_lunch',
@@ -20,20 +17,8 @@ class EmployeeShiftRecord extends Model
         'end_shift',
     ];
 
-    // Define your relationships here
-    public function employee()
+    public function user()
     {
-        return $this->belongsTo(EmployeeRecord::class, 'employee_id');
+        return $this->hasMany(User::class);
     }
-
-    public function shift()
-    {
-        return $this->belongsTo(Shift::class, 'shift_id');
-    }
-
-    protected $casts = [
-        'start_lunch' => 'datetime',
-        'end_lunch' => 'datetime',
-        'end_shift' => 'datetime',
-    ];
 }

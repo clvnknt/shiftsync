@@ -6,7 +6,6 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
 
 class DepartmentsSeeder extends Seeder
 {
@@ -15,15 +14,34 @@ class DepartmentsSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker::create();
-
-        for ($i = 0; $i < 10; $i++) {
-            DB::table('departments')->insert([
-                'name' => $faker->word,
-                'description' => $faker->sentence,
+        $departments = [
+            [
+                'department_name' => 'Finance',
+                'department_description' => 'Responsible for financial activities and management.',
                 'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
+            ],
+            [
+                'department_name' => 'Human Resources',
+                'department_description' => 'Handles recruitment, employee relations, and benefits administration.',
+                'created_at' => now(),
+            ],
+            [
+                'department_name' => 'IT',
+                'department_description' => 'Manages technology infrastructure and systems.',
+                'created_at' => now(),
+            ],
+            [
+                'department_name' => 'Operations',
+                'department_description' => 'Oversees day-to-day operations and process management.',
+                'created_at' => now(),
+            ],
+            [
+                'department_name' => 'Customer Service',
+                'department_description' => 'Provides support and assistance to customers.',
+                'created_at' => now(),
+            ],
+        ];
+
+        DB::table('departments')->insert($departments);
     }
 }

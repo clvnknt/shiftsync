@@ -5,17 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Shift extends Model
+class Role extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'shift_name', 
-        'start_shift_time', 
-        'shift_start_grace_period', 
-        'lunch_start_time', 
-        'end_lunch_time', 
-        'end_shift_time'];
+        'department_id',
+        'role_name',
+        'role_description',
+    ];
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 
     public function employeeRecords()
     {

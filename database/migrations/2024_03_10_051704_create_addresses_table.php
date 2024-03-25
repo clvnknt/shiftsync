@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
-            $table->string('street', 255);
-            $table->string('city', 100);
-            $table->string('country', 100);
-            $table->string('postal_code', 20);
+            $table->string('employee_street', 255);
+            $table->string('employee_city', 100);
+            $table->string('employee_country', 100);
+            $table->string('employee_postal_code', 20);
             $table->enum('type', ['primary', 'temporary'])->default('primary');
             $table->timestamps();
         });

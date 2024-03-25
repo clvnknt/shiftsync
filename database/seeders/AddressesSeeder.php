@@ -3,30 +3,32 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
+use App\Models\Address;
+
 
 class AddressesSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $faker = Faker::create();
-
-        for ($i = 0; $i < 10; $i++) {
-            DB::table('addresses')->insert([
-                'id' => $i + 1,
-                'street' => $faker->streetAddress,
-                'city' => $faker->city,
-                'country' => $faker->country,
-                'postal_code' => $faker->postcode,
-                'type' => $faker->randomElement(['primary', 'temporary']),
-                'created_at' => now(),
-                'updated_at' => now(),
-                'employee_record_id' => rand(1, 10), // Assuming you have employee_records seeded already
-            ]);
+        $addresses = [
+            [
+                'employee_street' => '123 Main Street',
+                'employee_city' => 'CityA',
+                'employee_country' => 'CountryX',
+                'employee_postal_code' => '12345',
+                'type' => 'primary',
+            ],
+            [
+                'employee_street' => '456 Park Avenue',
+                'employee_city' => 'CityB',
+                'employee_country' => 'CountryY',
+                'employee_postal_code' => '67890',
+                'type' => 'primary',
+            ],
+        ];
+        
+        foreach ($addresses as $addressData) {
+            Address::create($addressData);
         }
     }
 }

@@ -18,13 +18,10 @@ return new class extends Migration
             $table->id();
             $table->string('shift_name');
             $table->time('start_shift_time');
-            $table->time('shift_start_grace_period');
+            $table->time('shift_start_grace_period')->nullable();
             $table->time('lunch_start_time');
             $table->time('end_lunch_time');
             $table->time('end_shift_time');
-            $table->string('break_name')->nullable();
-            $table->integer('break_frequency');
-            $table->time('break_duration')->default('00:00:00');
             $table->timestamps();
         });
     }
