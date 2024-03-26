@@ -62,12 +62,7 @@ class EmployeeRecord extends Model
         return $this->belongsTo(ShiftBreak::class);
     }
 
-    public function shiftRecords()
-    {
-        return $this->hasMany(EmployeeShiftRecord::class);
-    }
-
-    public function shiftBreaks()
+    public function employeeShiftBreaks()
     {
         return $this->hasMany(EmployeeShiftBreak::class);
     }
@@ -76,4 +71,10 @@ class EmployeeRecord extends Model
     {
         return $this->hasMany(Rule::class);
     }
+
+    public function employeeShiftRecords()
+    {
+        return $this->hasMany(EmployeeShiftRecord::class);
+    }
+
 }

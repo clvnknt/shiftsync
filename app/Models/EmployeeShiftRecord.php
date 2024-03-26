@@ -10,6 +10,7 @@ class EmployeeShiftRecord extends Model
     use HasFactory;
 
     protected $fillable = [
+        'employee_record_id',
         'shift_date',
         'start_shift',
         'start_lunch',
@@ -19,6 +20,6 @@ class EmployeeShiftRecord extends Model
 
     public function user()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class);
     }
 }
