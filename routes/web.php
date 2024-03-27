@@ -17,7 +17,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/dashboard', [DashboardController::class, 'show'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
 
 Route::get('/inout', [InoutController::class, 'show'])->name('inout');
 

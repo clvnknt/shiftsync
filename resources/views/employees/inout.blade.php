@@ -3,8 +3,7 @@
 @section('title', 'In/Out')
 
 @section('content')
-
-<div class="container mt-4 mb-5">
+<div class="container mt-2 mb-5">
 
     <h2 class="text-center mb-4">In/Out</h2>
 
@@ -34,12 +33,18 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <p>Start Shift: {{ \Carbon\Carbon::parse(Auth::user()->employeeRecord->shift->start_shift_time)->format('H:i') }}</p>
-                            <p>Start Lunch: {{ \Carbon\Carbon::parse(Auth::user()->employeeRecord->shift->lunch_start_time)->format('H:i') }}</p>
+                            @if($employeeShiftRecord)
+                                <p>Start Shift: {{ \Carbon\Carbon::parse($employeeShiftRecord->start_shift)->format('H:i') }}</p>
+                                <p>Start Lunch: {{ \Carbon\Carbon::parse($employeeShiftRecord->start_lunch)->format('H:i') }}</p>
+                            @else
+                                <p>No shift record found for today.</p>
+                            @endif
                         </div>
                         <div class="col-md-6">
-                            <p>End Lunch: {{ \Carbon\Carbon::parse(Auth::user()->employeeRecord->shift->end_lunch_time)->format('H:i') }}</p>
-                            <p>End Shift: {{ \Carbon\Carbon::parse(Auth::user()->employeeRecord->shift->end_shift_time)->format('H:i') }}</p>
+                            @if($employeeShiftRecord)
+                                <p>End Lunch: {{ \Carbon\Carbon::parse($employeeShiftRecord->end_lunch)->format('H:i') }}</p>
+                                <p>End Shift: {{ \Carbon\Carbon::parse($employeeShiftRecord->end_shift)->format('H:i') }}</p>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -56,7 +61,7 @@
                 <div class="card-body">
                     <div class="col-md-6">
                         @if($employeeShiftRecord)
-                        <h4>Current Shift Date: {{ $employeeShiftRecord ? \Carbon\Carbon::parse($employeeShiftRecord->shift_date)->format('F d, Y') : 'No shift record found for today.' }}</h4>
+                            <h4>Current Shift Date: {{ $employeeShiftRecord ? \Carbon\Carbon::parse($employeeShiftRecord->shift_date)->format('F d, Y') : 'No shift record found for today.' }}</h4>
                         @else
                             <p>No shift record found for today.</p>
                         @endif

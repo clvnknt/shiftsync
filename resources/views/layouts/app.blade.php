@@ -34,11 +34,11 @@
     
 <!-- Navbar -->
 @unless(request()->is('login')) <!-- Hide navbar on login page -->
-<nav class="navbar navbar-expand-lg navbar-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-white border border-dark">
     <div class="container">
         <a class="navbar-brand" href="/">IAOS</a>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+            <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
@@ -58,7 +58,7 @@
                     <a class="nav-link" href="#">Help</a>
                 </li>
             </ul>
-            <span class="navbar-text me-3 text-white">
+            <span class="navbar-text me-3 text-black">
                 @auth
                     Welcome, {{ auth()->user()->name }}
                 @endauth
