@@ -38,37 +38,37 @@
     <div class="container">
         <a class="navbar-brand" href="/">IAOS</a>
         <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('inout') }}">In/Out</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('timesheet') }}">Timesheet</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">File Ticket</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">My Account</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Help</a>
-                </li>
-            </ul>
-            <span class="navbar-text me-3 text-black">
-                @auth
-                    Welcome, {{ auth()->user()->name }}
-                @endauth
-            </span>
-            @auth
-                <!-- Logout Modal Trigger Button -->
-                <button type="button" class="btn btn-link nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal">
-                    Logout
-                </button>
-            @endauth
+            <div class="d-flex align-items-center">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('inout') }}">In/Out</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('timesheet') }}">Timesheet</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">File Ticket</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Help</a>
+                    </li>
+                </ul>
+                <div class="nav-item dropdown ms-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{{ Auth::user()->employeeRecord->employee_profile_picture ? asset('storage/' . Auth::user()->employeeRecord->employee_profile_picture) : asset('media/images/icons/inout/EmployeeDefault.png') }}" alt="Profile Picture" style="max-width: 50px; max-height: 50px;">
+                        Welcome, {{ auth()->user()->name }}
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li>
+                            <!-- Add an ID to the logout link for JavaScript reference -->
+                            <a class="dropdown-item" href="#" id="logout-link">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </nav>
@@ -88,10 +88,11 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-primary">Logout</button>
-                </form>
+                <!-- Add an onclick event to trigger the logout action -->
+                <a class="btn btn-primary" href="{{ route('logout') }}"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    Logout
+                </a>
             </div>
         </div>
     </div>
@@ -110,9 +111,21 @@
     </footer>
     @endunless
 
+    <!-- Logout form -->
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="{{ asset('js/jquery.js') }}"></script>
+    <script>
+        // Add click event listener to the logout link
+        document.getElementById('logout-link').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default link behavior
+            $('#logoutModal').modal('show'); // Show the logout confirmation modal
+        });
+    </script>
     @yield('scripts') <!-- Additional scripts specific to each page -->
 </body>
 </html>

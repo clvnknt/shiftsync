@@ -19,7 +19,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
 
-Route::get('/inout', [InoutController::class, 'show'])->name('inout');
+Route::get('/inout', [InoutController::class, 'showInout'])->name('inout');
 
 Route::post('/shift/start', [ShiftController::class, 'startShift'])->name('startShift');
 Route::post('/shift/lunch/start', [ShiftController::class, 'startLunch'])->name('startLunch');
