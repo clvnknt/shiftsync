@@ -30,34 +30,32 @@ class CreateDailyShiftRecord extends Command
      */
     public function handle()
     {
-        // Retrieve all employee records with their associated shift records
-        $employeeRecords = EmployeeRecord::with('employeeShiftRecords')->get();
+        // Retrieve all employee records
+        $employeeRecords = EmployeeRecord::all();
 
         foreach ($employeeRecords as $employeeRecord) {
-            // Retrieve the current shift details for the employee
-            $shift = $employeeRecord->shift;
-            $userTimezone = $employeeRecord->user->timezone;
-            $currentDate = now()->timezone($userTimezone)->format('Y-m-d');
+            // Retrieve the current shift record for the employee and today's date
+            $currentDate = now()->toDateString();
+            $shiftRecord = $employeeRecord->employeeShiftRecords()
+                ->where('shift_date', $currentDate)
+                ->first();
 
-            // Check if there's an existing shift record for the current day
-            $existingShiftRecord = $employeeRecord->employeeShiftRecords()->where('shift_date', $currentDate)->first();
-
-            // Check if the current shift is over and it's already the next day or there's a need to update for the next shift
-            if (!$existingShiftRecord || ($existingShiftRecord->end_shift && $existingShiftRecord->end_shift < now()->timezone($userTimezone)->format('H:i:s'))) {
-                $nextShiftDate = now()->timezone($userTimezone)->addDay()->format('Y-m-d');
-
-                EmployeeShiftRecord::updateOrCreate(
-                    ['employee_record_id' => $employeeRecord->id, 'shift_date' => $nextShiftDate],
-                    [
-                        'start_shift' => null,
-                        'start_lunch' => null,
-                        'end_lunch' => null,
-                        'end_shift' => null,
-                    ]
-                );
+            // Create or update the shift record
+            if (!$shiftRecord) {
+                // If no shift record exists for today, create a new one with null values
+                $employeeRecord->employeeShiftRecords()->create([
+                    'shift_date' => $currentDate,
+                    'start_shift' => null,
+                    'start_lunch' => null,
+                    'end_lunch' => null,
+                    'end_shift' => null,
+                ]);
+            } else {
+                // If a shift record already exists for today, do nothing
+                $this->info("Shift record already exists for employee ID: {$employeeRecord->id} on {$currentDate}. No changes made.");
             }
         }
-        
+
         $this->info('Daily shift records created or updated successfully.');
     }
 }

@@ -2,30 +2,38 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\EmployeeRecord;
 use App\Models\EmployeeShiftRecord;
-use App\Models\Shift; // Add this line
-use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class InoutController extends Controller
 {
-    public function showInout()
+    public function showInout(Request $request)
     {
         // Retrieve the current user's employee record
         $employeeRecord = Auth::user()->employeeRecord;
 
-        // Check if the employee record exists
-        if ($employeeRecord) {
-            // Retrieve the current shift record for the employee
-            $employeeShiftRecord = $employeeRecord->employeeShiftRecords()->whereDate('shift_date', now()->toDateString())->first();
-            $currentShift = $employeeRecord->shift; // Retrieve the current shift assigned to the employee
-        } else {
-            $employeeShiftRecord = null;
-            $currentShift = null;
+        // Retrieve the shift record from the database for the current date
+        $employeeShiftRecord = $employeeRecord->employeeShiftRecords()
+            ->where('shift_date', now()->toDateString())
+            ->first();
+
+        // Check if the current shift has ended more than 5 hours ago
+        if ($employeeShiftRecord && $employeeShiftRecord->end_shift) {
+            $currentShiftEndTime = Carbon::parse($employeeShiftRecord->end_shift);
+            if ($currentShiftEndTime->addHours(5)->isPast()) {
+                // Update the current shift to the next one
+                $nextShiftDate = Carbon::parse($employeeShiftRecord->shift_date)->addDay();
+                // Retrieve the next shift record from the database for the next date
+                $employeeShiftRecord = $employeeRecord->employeeShiftRecords()
+                    ->where('shift_date', $nextShiftDate->toDateString())
+                    ->first();
+            }
         }
 
-        // Pass the $employeeRecord and $currentShift variables to the view
-        return view('employees.inout', compact('employeeShiftRecord', 'employeeRecord', 'currentShift'));
+        // Pass the $employeeShiftRecord and $employeeRecord variables to the view
+        return view('employees.inout', compact('employeeShiftRecord', 'employeeRecord'));
     }   
 }

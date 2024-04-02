@@ -7,9 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-
 use Illuminate\Support\Facades\Auth;
-
 use Carbon\Carbon;
 use App\Models\EmployeeRecord;
 use App\Models\EmployeeShiftRecord;
@@ -19,25 +17,22 @@ class EndShiftJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * Create a new job instance.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Execute the job.
      */
     public function handle(): void
     {
         $user = Auth::user();
-        $employeeRecord = EmployeeRecord::where('user_id', $user->id)->first();
-        $shiftRecord = EmployeeShiftRecord::where('employee_record_id', $employeeRecord->id)
-            ->orderBy('created_at', 'desc')
+        $employeeRecord = $user->employeeRecord;
+
+        // Retrieve the shift record for the current date
+        $shiftRecord = $employeeRecord->employeeShiftRecords()
+            ->where('shift_date', Carbon::today()->toDateString())
             ->first();
 
-        $shiftRecord->end_shift = Carbon::now();
-        $shiftRecord->save();
+        // Set the end_shift field
+        if ($shiftRecord && !$shiftRecord->end_shift) {
+            $shiftRecord->update(['end_shift' => Carbon::now()->toTimeString()]);
+        }
     }
 }
+

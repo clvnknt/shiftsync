@@ -5,7 +5,7 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
-use \App\Jobs\ShiftJobs\CreateEmployeeShiftRecordsJob;
+use App\Console\Commands\CreateDailyShiftRecord; // Import the CreateDailyShiftRecord command
 
 class Kernel extends ConsoleKernel
 {
@@ -14,9 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        /**$schedule->command('app:create-daily-shift-record')->everyMinute();*/
-        $schedule->job(new CreateEmployeeShiftRecordsJob)->hourly();
-
+        $schedule->command('app:create-daily-shift-record')->everyMinute();
     }
 
     /**

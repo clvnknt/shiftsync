@@ -44,7 +44,7 @@ class EmployeeRecordsSeeder extends Seeder
             'employee_gender' => 'male', // Assuming male as default, adjust as needed
             'employee_age' => 21, // Adjust as needed
             'employee_birthdate' => '2002-05-21', // Adjust as needed
-            'employee_profile_picture' => 'path/to/profile_picture.jpg', // Adjust as needed
+            'employee_profile_picture' => '', // Adjust as needed
         ]);
 
         // Create employee record for VincentG
@@ -63,7 +63,7 @@ class EmployeeRecordsSeeder extends Seeder
             'employee_gender' => 'male', // Assuming male as default, adjust as needed
             'employee_age' => 2, // Adjust as needed
             'employee_birthdate' => '1994-01-01', // Adjust as needed
-            'employee_profile_picture' => 'path/to/profile_picture.jpg', // Adjust as needed
+            'employee_profile_picture' => '', // Adjust as needed
         ]);
     }
 }

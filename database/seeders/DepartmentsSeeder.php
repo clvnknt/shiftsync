@@ -16,13 +16,13 @@ class DepartmentsSeeder extends Seeder
     {
         $departments = [
             [
-                'department_name' => 'Finance',
-                'department_description' => 'Responsible for financial activities and management.',
+                'department_name' => 'Software Development',
+                'department_description' => 'Develops and maintains software for end users.',
                 'created_at' => now(),
             ],
             [
                 'department_name' => 'Human Resources',
-                'department_description' => 'Handles recruitment, employee relations, and benefits administration.',
+                'department_description' => 'Manages technology infrastructure and systems.',
                 'created_at' => now(),
             ],
             [
