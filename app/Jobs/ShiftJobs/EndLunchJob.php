@@ -29,9 +29,15 @@ class EndLunchJob implements ShouldQueue
             ->where('shift_date', Carbon::today()->toDateString())
             ->first();
 
+        // Get the employee's timezone
+        $employeeTimezone = $employeeRecord->user->timezone;
+
         // Set the end_lunch field
         if ($shiftRecord && !$shiftRecord->end_lunch) {
-            $shiftRecord->update(['end_lunch' => Carbon::now()->toTimeString()]);
+            // Convert current time to employee's timezone
+            $endLunchTime = Carbon::now()->setTimezone($employeeTimezone)->toTimeString();
+            $shiftRecord->update(['end_lunch' => $endLunchTime]);
         }
     }
 }
+

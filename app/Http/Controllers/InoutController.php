@@ -15,6 +15,9 @@ class InoutController extends Controller
         // Retrieve the current user's employee record
         $employeeRecord = Auth::user()->employeeRecord;
 
+        // Retrieve the default shift for the employee
+        $defaultShift = $employeeRecord->shift;
+
         // Retrieve the shift record from the database for the current date
         $employeeShiftRecord = $employeeRecord->employeeShiftRecords()
             ->where('shift_date', now()->toDateString())
@@ -33,7 +36,7 @@ class InoutController extends Controller
             }
         }
 
-        // Pass the $employeeShiftRecord and $employeeRecord variables to the view
-        return view('employees.inout', compact('employeeShiftRecord', 'employeeRecord'));
+        // Pass the $employeeShiftRecord, $employeeRecord, and $defaultShift variables to the view
+        return view('employees.inout', compact('employeeShiftRecord', 'employeeRecord', 'defaultShift'));
     }   
 }

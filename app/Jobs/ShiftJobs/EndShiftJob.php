@@ -29,10 +29,16 @@ class EndShiftJob implements ShouldQueue
             ->where('shift_date', Carbon::today()->toDateString())
             ->first();
 
+        // Get the employee's timezone
+        $employeeTimezone = $employeeRecord->user->timezone;
+
         // Set the end_shift field
         if ($shiftRecord && !$shiftRecord->end_shift) {
-            $shiftRecord->update(['end_shift' => Carbon::now()->toTimeString()]);
+            // Convert current time to employee's timezone
+            $endShiftTime = Carbon::now()->setTimezone($employeeTimezone)->toTimeString();
+            $shiftRecord->update(['end_shift' => $endShiftTime]);
         }
     }
 }
+
 

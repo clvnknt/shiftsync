@@ -3,9 +3,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-
 use App\Models\EmployeeRecord;
 use App\Models\EmployeeShiftRecord;
+use Carbon\Carbon;
+use DateTimeZone;
 
 class CreateDailyShiftRecord extends Command
 {
@@ -34,8 +35,13 @@ class CreateDailyShiftRecord extends Command
         $employeeRecords = EmployeeRecord::all();
 
         foreach ($employeeRecords as $employeeRecord) {
+            // Retrieve the timezone of the employee
+            $employeeTimezone = $employeeRecord->timezone;
+
+            // Calculate today's date based on the employee's timezone
+            $currentDate = Carbon::now($employeeTimezone)->toDateString();
+
             // Retrieve the current shift record for the employee and today's date
-            $currentDate = now()->toDateString();
             $shiftRecord = $employeeRecord->employeeShiftRecords()
                 ->where('shift_date', $currentDate)
                 ->first();

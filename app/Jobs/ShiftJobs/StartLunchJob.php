@@ -24,14 +24,19 @@ class StartLunchJob implements ShouldQueue
         $user = Auth::user();
         $employeeRecord = $user->employeeRecord;
 
-        // Create or update the shift record for the current date
-        $shiftRecord = $employeeRecord->employeeShiftRecords()->firstOrCreate([
-            'shift_date' => Carbon::today()->toDateString(),
-        ]);
+        // Retrieve the shift record for the current date
+        $shiftRecord = $employeeRecord->employeeShiftRecords()
+            ->where('shift_date', Carbon::today()->toDateString())
+            ->first();
+
+        // Get the employee's timezone
+        $employeeTimezone = $employeeRecord->user->timezone;
 
         // Set the start_lunch field
-        if (!$shiftRecord->start_lunch) {
-            $shiftRecord->update(['start_lunch' => Carbon::now()->toTimeString()]);
+        if ($shiftRecord && !$shiftRecord->start_lunch) {
+            // Convert current time to employee's timezone
+            $startLunchTime = Carbon::now()->setTimezone($employeeTimezone)->toTimeString();
+            $shiftRecord->update(['start_lunch' => $startLunchTime]);
         }
     }
 }

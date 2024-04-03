@@ -29,9 +29,14 @@ class StartShiftJob implements ShouldQueue
             ->where('shift_date', Carbon::today()->toDateString())
             ->first();
 
+        // Get the employee's timezone
+        $employeeTimezone = $employeeRecord->user->timezone;
+
         // Set the start_shift field
         if ($shiftRecord && !$shiftRecord->start_shift) {
-            $shiftRecord->update(['start_shift' => Carbon::now()->toTimeString()]);
+            // Convert current time to employee's timezone
+            $startTime = Carbon::now()->setTimezone($employeeTimezone)->toTimeString();
+            $shiftRecord->update(['start_shift' => $startTime]);
         }
     }
 }

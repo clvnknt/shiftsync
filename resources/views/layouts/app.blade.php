@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title')</title>
@@ -23,93 +24,86 @@
     </style>
     @yield('styles') <!-- Additional styles specific to each page -->
 </head>
-
-@if (!auth()->check() && !request()->is('login'))
-    <script>
-        window.location = "{{ route('login') }}";
-    </script>
-@endif
-
 <body>
     
-<!-- Navbar -->
-@unless(request()->is('login')) <!-- Hide navbar on login page -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white border border-dark">
-    <div class="container">
-        <a class="navbar-brand" href="/">IAOS</a>
-        <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-            <div class="d-flex align-items-center">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('inout') }}">In/Out</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('timesheet') }}">Timesheet</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">File Ticket</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Help</a>
-                    </li>
-                </ul>
-                <div class="nav-item dropdown ms-2">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{{ Auth::user()->employeeRecord->employee_profile_picture ? asset('storage/' . Auth::user()->employeeRecord->employee_profile_picture) : asset('media/images/icons/inout/EmployeeDefault.png') }}" alt="Profile Picture" style="max-width: 50px; max-height: 50px;">
-                        Welcome, {{ auth()->user()->name }}
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li>
-                            <!-- Add an ID to the logout link for JavaScript reference -->
-                            <a class="dropdown-item" href="#" id="logout-link">Logout</a>
+@if(auth()->check()) <!-- Only show navbar when user is authenticated -->
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border border-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">StaffCentral</a>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <div class="d-flex align-items-center">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('inout') }}">In/Out</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('timesheet') }}">Timesheet</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">File Ticket</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Help</a>
                         </li>
                     </ul>
+                    <div class="nav-item dropdown ms-2">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ Auth::user()->employeeRecord->employee_profile_picture ? asset('storage/' . Auth::user()->employeeRecord->employee_profile_picture) : asset('media/images/icons/inout/EmployeeDefault.png') }}" alt="Profile Picture" style="max-width: 50px; max-height: 50px;">
+                            Welcome, {{ auth()->user()->name }}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li>
+                                <!-- Add an ID to the logout link for JavaScript reference -->
+                                <a class="dropdown-item" href="#" id="logout-link">Logout</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</nav>
-@endunless
-
-<!-- Logout Modal -->
-@auth
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="logoutModalLabel">Logout Confirmation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to logout?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <!-- Add an onclick event to trigger the logout action -->
-                <a class="btn btn-primary" href="{{ route('logout') }}"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    Logout
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-@endauth
+    </nav>
+@endif
 
     <!-- Page content -->
     @yield('content')
 
+@if(auth()->check()) <!-- Only show footer when user is authenticated -->
     <!-- Footer -->
-    @unless(request()->is('login')) <!-- Hide footer on login page -->
     <footer class="footer py-3 text-center">
         <div class="container">
-            <span>&copy; {{ date('Y') }} IAOS</span>
+            <span>&copy; {{ date('Y') }} StaffCentral</span>
         </div>
     </footer>
-    @endunless
+@endif
+
+    <!-- Logout Modal -->
+    @auth <!-- Only show logout modal when user is authenticated -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Logout Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to logout?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <!-- Add an onclick event to trigger the logout action -->
+                    <a class="btn btn-primary" href="{{ route('logout') }}"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endauth
 
     <!-- Logout form -->
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

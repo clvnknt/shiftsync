@@ -29,13 +29,13 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>Shift Name:</strong> N/A</p>
-                            <p><strong>Start Shift:</strong> N/A</p>
-                            <p><strong>Start Lunch:</strong> N/A</p>
+                            <p><strong>Shift Name:</strong> {{ $defaultShift->shift_name }}</p>
+                            <p><strong>Start Shift:</strong> {{ $defaultShift->start_shift_time }}</p>
+                            <p><strong>Start Lunch:</strong> {{ $defaultShift->lunch_start_time }}</p>
                         </div>
                         <div class="col-md-6">
-                            <p><strong>End Lunch:</strong> N/A</p>
-                            <p><strong>End Shift:</strong> N/A</p>
+                            <p><strong>End Lunch:</strong> {{ $defaultShift->end_lunch_time }}</p>
+                            <p><strong>End Shift:</strong> {{ $defaultShift->end_shift_time }}</p>
                         </div>
                     </div>
                 </div>
@@ -49,6 +49,13 @@
                 <div class="card-header">Today's Shift</div>
                 <div class="card-body">
                     <p><strong>Shift Date:</strong> {{ $employeeShiftRecord ? \Carbon\Carbon::parse($employeeShiftRecord->shift_date)->format('F d, Y') : 'No shift record found for today.' }}</p>
+                    @if($employeeShiftRecord)
+                        <?php
+                            $nextShiftDate = \Carbon\Carbon::parse($employeeShiftRecord->shift_date)->addDay();
+                            $nextShiftDay = $nextShiftDate->format('l');
+                        ?>
+                        <p>(Your next shift will be on {{ $nextShiftDate->format('F d, Y') }}), {{ $nextShiftDay }}.</p>
+                    @endif
                     <div class="row">
                         <div class="col-md-3">
                             <div class="text-center">
@@ -103,24 +110,6 @@
                                 @else
                                     <p><strong>End Shift:</strong> {{ $employeeShiftRecord->end_shift ?? '-' }}</p>
                                 @endif
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row mt-4">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">Next Shift</div>
-                                <div class="card-body">
-                                    @if($employeeShiftRecord)
-                                        <?php
-                                            $nextShiftDate = \Carbon\Carbon::parse($employeeShiftRecord->shift_date)->addDay();
-                                        ?>
-                                        <p>The employee's next shift will be on {{ $nextShiftDate->format('F d, Y') }}</p>
-                                    @else
-                                        <p>No shift record found for today.</p>
-                                    @endif
-                                </div>
                             </div>
                         </div>
                     </div>
