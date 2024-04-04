@@ -9,12 +9,18 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Models\EmployeeRecord;
-use App\Models\EmployeeShiftRecord;
 
 class StartShiftJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+   
+    /**
+     * Create a new job instance.
+     */
+    public function __construct()
+    {
+        //
+    }
 
     /**
      * Execute the job.

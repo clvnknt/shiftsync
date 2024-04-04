@@ -4,9 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\EmployeeRecord;
-use App\Models\EmployeeShiftRecord;
-use Carbon\Carbon;
-use DateTimeZone;
+use App\Jobs\ShiftJobs\CheckDuplicateEmployeeShiftRecordJob;
+use App\Jobs\ShiftJobs\CreateEmployeeShiftRecordJob;
 
 class CreateDailyShiftRecord extends Command
 {
@@ -35,33 +34,13 @@ class CreateDailyShiftRecord extends Command
         $employeeRecords = EmployeeRecord::all();
 
         foreach ($employeeRecords as $employeeRecord) {
-            // Retrieve the timezone of the employee
-            $employeeTimezone = $employeeRecord->timezone;
+            // Dispatch CheckDuplicateEmployeeShiftRecordJob
+            CheckDuplicateEmployeeShiftRecordJob::dispatch($employeeRecord);
 
-            // Calculate today's date based on the employee's timezone
-            $currentDate = Carbon::now($employeeTimezone)->toDateString();
-
-            // Retrieve the current shift record for the employee and today's date
-            $shiftRecord = $employeeRecord->employeeShiftRecords()
-                ->where('shift_date', $currentDate)
-                ->first();
-
-            // Create or update the shift record
-            if (!$shiftRecord) {
-                // If no shift record exists for today, create a new one with null values
-                $employeeRecord->employeeShiftRecords()->create([
-                    'shift_date' => $currentDate,
-                    'start_shift' => null,
-                    'start_lunch' => null,
-                    'end_lunch' => null,
-                    'end_shift' => null,
-                ]);
-            } else {
-                // If a shift record already exists for today, do nothing
-                $this->info("Shift record already exists for employee ID: {$employeeRecord->id} on {$currentDate}. No changes made.");
-            }
+            // Dispatch CreateEmployeeShiftRecordJob
+            CreateEmployeeShiftRecordJob::dispatch($employeeRecord);
         }
 
-        $this->info('Daily shift records created or updated successfully.');
+        $this->info('Daily shift records creation or update jobs dispatched successfully.');
     }
 }

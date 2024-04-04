@@ -14,6 +14,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            background-color: #f0f0f0;
         }
 
         .footer {
@@ -28,9 +29,12 @@
     
 @if(auth()->check()) <!-- Only show navbar when user is authenticated -->
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border border-dark">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="/">StaffCentral</a>
+            <a class="navbar-brand" href="/">
+                <!-- Use Bootstrap's 'img-fluid' class to make the image responsive -->
+                <img src="{{ asset('media/images/staffcentral-login-logo.png') }}" alt="StaffCentral Logo" class="img-fluid me-2" style="max-height: 40px;">
+            </a>
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <div class="d-flex align-items-center">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">

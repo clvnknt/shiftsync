@@ -3,108 +3,13 @@
 @section('title', 'Login')
 
 @section('styles')
-    <style>
-        .background-container {
-            height: 100vh;
-            background-image: url('{{ asset('media/images/backgrounds/bg-login-2.jpg') }}');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .login-container {
-            background-color: #FFFFFF; /* White background color for the container */
-            border-radius: 10px;
-            padding: 2rem; /* Increase padding for more space */
-            max-width: 600px; /* Set maximum width to prevent it from becoming too wide on larger screens */
-            margin: auto; /* Center the container horizontally */
-        }
-
-        .login-card {
-            background-color: #FFFFFF; /* White background color for the card */
-            border: none; /* Remove border */
-            border-radius: 10px;
-            padding: 1.5rem; /* Add padding */
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
-        }
-
-        .login-form {
-            padding: 1.5rem; /* Add padding to the form */
-        }
-
-        .card-body {
-            padding: 1.5rem; /* Decrease vertical padding inside the card body */
-            margin: 0; /* Remove margin */
-        }
-
-        .or-divider {
-            text-align: center;
-            margin: 1rem 0;
-        }
-
-        .or-divider hr {
-            margin-top: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .or-text {
-            margin-bottom: 0.5rem;
-        }
-
-        /* Style for the Remember Me checkbox */
-        .remember-me-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-
-        .remember-me-label {
-            margin-bottom: 0;
-        }
-
-        /* Center the logo */
-        .logo-container {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .login-container {
-                padding: 1rem;
-            }
-            .login-card {
-                padding: 1rem;
-            }
-            .login-form {
-                padding: 1rem;
-            }
-            .card-body {
-                padding: 1rem;
-            }
-            .or-divider {
-                margin: 1rem 0;
-            }
-            .or-divider hr {
-                margin-top: 0.25rem;
-                margin-bottom: 0.25rem;
-            }
-            .or-text {
-                margin-bottom: 0.25rem;
-            }
-            .remember-me-container {
-                margin-bottom: 0.75rem;
-            }
-            .logo-container {
-                margin-bottom: 1.5rem;
-            }
-        }
-    </style>
+    <link href="{{ asset('css/login.css') }}" rel="stylesheet">
 @endsection
 
 @section('content')
 <div class="container-fluid">
     <div class="row">
+        <!-- Login Form Container -->
         <div class="col-md-6 d-flex justify-content-center align-items-center">
             <div class="login-container">
                 <!-- Centered logo -->
@@ -143,10 +48,10 @@
 
                             <!-- Remember Me checkbox -->
                             <div class="remember-me-container">
-                                <label for="remember" class="form-check-label remember-me-label">
+                                <div class="form-check">
                                     <input id="remember" type="checkbox" class="form-check-input" name="remember">
-                                    Remember Me
-                                </label>
+                                    <label for="remember" class="form-check-label">Remember Me</label>
+                                </div>
                                 <!-- Placeholder for Forgot Your Password? -->
                                 <a href="#" class="text-muted">Forgot Your Password?</a>
                             </div>
@@ -158,6 +63,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Background Image Container -->
         <div class="col-md-6 background-container"></div>
     </div>
 </div>

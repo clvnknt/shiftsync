@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Models\EmployeeRecord;
-use App\Models\EmployeeShiftRecord;
 use Carbon\Carbon;
 
 class InoutController extends Controller

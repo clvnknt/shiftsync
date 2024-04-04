@@ -4,9 +4,13 @@
 
 @section('content')
     <!-- Your timesheet content goes here -->
-    <div class="container mt-2">
-        <h2 class ='text-center'>Timesheet</h2>
-        <!-- Add your timesheet-related HTML content here -->
+    <div class="container mt-4 mb-5">
+        <!-- Header: Timesheet -->
+        <div class="row">
+            <div class="col-md-6">
+                <h2 class="mb-4">Timesheet</h2>
+            </div>
+        </div>
     </div>
 @endsection
 

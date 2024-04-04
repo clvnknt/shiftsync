@@ -2,50 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Jobs\ShiftJobs\StartShiftJob;
-use App\Jobs\ShiftJobs\StartLunchJob;
-use App\Jobs\ShiftJobs\EndLunchJob;
-use App\Jobs\ShiftJobs\EndShiftJob;
-use App\Models\EmployeeRecord;
-use App\Models\EmployeeShiftRecord;
+use App\Jobs\ShiftJobs\{
+    StartShiftJob,
+    StartLunchJob,
+    EndLunchJob,
+    EndShiftJob
+};
 
 class ShiftController extends Controller
 {
     public function startShift(Request $request)
     {
-        // Dispatch the StartShiftJob
-        StartShiftJob::dispatch();
-
-        // Redirect to the 'inout' route
-        return redirect()->route('inout');
+        return $this->dispatchJobAndRedirect(StartShiftJob::class, $request->input('employeeRecordId'));
     }
-    
+
     public function startLunch(Request $request)
     {
-        // Dispatch the StartLunchJob
-        StartLunchJob::dispatch();
-
-        // Redirect to the 'inout' route
-        return redirect()->route('inout');
+        return $this->dispatchJobAndRedirect(StartLunchJob::class, $request->input('employeeRecordId'));
     }
     
     public function endLunch(Request $request)
     {
-        // Dispatch the EndLunchJob
-        EndLunchJob::dispatch();
-
-        // Redirect to the 'inout' route
-        return redirect()->route('inout');
+        return $this->dispatchJobAndRedirect(EndLunchJob::class, $request->input('employeeRecordId'));
     }
     
     public function endShift(Request $request)
     {
-        // Dispatch the EndShiftJob
-        EndShiftJob::dispatch();
-
-        // Redirect to the 'inout' route
+        return $this->dispatchJobAndRedirect(EndShiftJob::class, $request->input('employeeRecordId'));
+    }
+    
+    protected function dispatchJobAndRedirect($jobClass, $employeeRecordId)
+    {
+        dispatch(new $jobClass($employeeRecordId));
         return redirect()->route('inout');
-    }    
+    }
 }

@@ -5,15 +5,23 @@
 @section('content')
     <div class="container">
         <!-- World Clock -->
-        <h2 class="text-center mt-5 mb-4">Your Dashboard</h2>
+        <div class="container mt-4">
+            <!-- Header: Your Dashboard -->
+            <div class="row">
+                <div class="col-md-6">
+                    <h2 class="mb-4">Your Dashboard</h2>
+                </div>
+            </div>
+        </div>
+
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>PH Time</th>
-                        <th>AU Time</th>
-                        <th>UK Time</th>
-                        <th>US Time</th>
+                        <th>{{ date_default_timezone_get() }} (UTC+8)</th>
+                        <th>Australia/Sydney (UTC+10)</th>
+                        <th>Europe/London (UTC+0)</th>
+                        <th>America/New York (UTC-5)</th>
                     </tr>
                 </thead>
                 <tbody>
