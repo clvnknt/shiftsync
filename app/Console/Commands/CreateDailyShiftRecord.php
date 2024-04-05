@@ -4,8 +4,10 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\EmployeeRecord;
-use App\Jobs\ShiftJobs\CheckDuplicateEmployeeShiftRecordJob;
-use App\Jobs\ShiftJobs\CreateEmployeeShiftRecordJob;
+use App\Jobs\ShiftJobs\{
+    CheckDuplicateEmployeeShiftRecordJob,
+    CreateEmployeeShiftRecordJob
+};
 
 class CreateDailyShiftRecord extends Command
 {
@@ -30,17 +32,13 @@ class CreateDailyShiftRecord extends Command
      */
     public function handle()
     {
-        // Retrieve all employee records
-        $employeeRecords = EmployeeRecord::all();
-
-        foreach ($employeeRecords as $employeeRecord) {
-            // Dispatch CheckDuplicateEmployeeShiftRecordJob
+        // Retrieve all employee records and dispatch jobs
+        EmployeeRecord::all()->each(function ($employeeRecord) {
             CheckDuplicateEmployeeShiftRecordJob::dispatch($employeeRecord);
-
-            // Dispatch CreateEmployeeShiftRecordJob
             CreateEmployeeShiftRecordJob::dispatch($employeeRecord);
-        }
+        });
 
+        // Output success message
         $this->info('Daily shift records creation or update jobs dispatched successfully.');
     }
 }

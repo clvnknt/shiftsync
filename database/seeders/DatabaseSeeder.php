@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             EmergencyContactsSeeder::class,
             ShiftBreaksSeeder::class,
             EmployeeRecordsSeeder::class,
+            RulesSeeder::class,
         ]);
     }
 }

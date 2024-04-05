@@ -16,7 +16,7 @@
         <!-- Employee Information Card -->
         <div class="col-md-6">
             <div class="card h-100">
-                <div class="card-header"><strong>Employee Information</strong></div>
+                <div class="card-header bg-primary text-white"><strong>Employee Information</strong></div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
@@ -35,7 +35,7 @@
         <!-- Current Shift Card -->
         <div class="col-md-6">
             <div class="card h-100">
-                <div class="card-header"><strong>Current Shift</strong></div>
+                <div class="card-header bg-primary text-white"><strong>Current Shift</strong></div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
@@ -58,7 +58,7 @@
         <!-- Today's Shift Card -->
         <div class="col-md-6">
             <div class="card  h-100">
-                <div class="card-header"><strong>Today's Shift</strong></div>
+                <div class="card-header bg-primary text-white"><strong>Today's Shift</strong></div>
                 <div class="card-body">
                     <p><strong>Shift Date:</strong> {{ $employeeShiftRecord ? \Carbon\Carbon::parse($employeeShiftRecord->shift_date)->format('F d, Y') : 'No shift record found for today.' }}</p>
                     @if($employeeShiftRecord)
@@ -114,7 +114,7 @@
                         <div class="col-md-3">
                             <div class="text-center">
                                 <img src="{{ asset('media/images/icons/inout/SE.png') }}" alt="End Shift Icon" class="mb-2 img-fluid" style="max-width: 70px;">
-                                @if($employeeShiftRecord && $employeeShiftRecord->start_shift && !$employeeShiftRecord->end_shift)
+                                @if($employeeShiftRecord && $employeeShiftRecord->start_shift && $employeeShiftRecord->start_lunch && $employeeShiftRecord->end_lunch && !$employeeShiftRecord->end_shift)
                                     <form action="{{ route('endShift') }}" method="POST">
                                         @csrf
                                         <button type="submit" class="btn btn-primary btn-block">End Shift</button>
@@ -132,7 +132,7 @@
         <!-- Additional Information Card -->
         <div class="col-md-6">
             <div class="card h-100">
-                <div class="card-header"><strong>Notifications | Metrics | Tasks</strong></div>
+                <div class="card-header bg-primary text-white"><strong>Notifications | Metrics | Tasks</strong></div>
                 <div class="card-body">
                     <!-- Placeholder information for additional details -->
                 </div>

@@ -3,34 +3,54 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
+use App\Models\Rule;
 
 class RulesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @return void
      */
-    public function run(): void
+    public function run()
     {
-        $faker = Faker::create();
+        Rule::create([
+            'name' => 'Maximum Shift Duration',
+            'description' => 'Employees cannot work more than 8 hours per shift.',
+            'type' => 'shift_duration',
+            'start_time' => null,
+            'end_time' => null,
+            'applicable_days' => null,
+            'applicable_users' => null,
+            'status' => 'active',
+            'value' => 8 // 8 hours
+        ]);
 
-        for ($i = 0; $i < 10; $i++) {
-            DB::table('rules')->insert([
-                'id' => $i + 1,
-                'grace_period_end' => $faker->time(),
-                'late_shift_start' => $faker->time(),
-                'early_start_lunch' => $faker->time(),
-                'late_end_lunch' => $faker->time(),
-                'overtime' => $faker->time(),
-                'hours_rendered' => $faker->time(),
-                'leave' => $faker->randomElement(['paid', 'unpaid']),
-                'is_absent' => $faker->boolean(),
-                'is_holiday' => $faker->boolean(),
-                'created_at' => now(),
-                'updated_at' => now(),
-                'employee_shift_record_id' => rand(1, 10), // Assuming you have employee_shift_records seeded already
-            ]);
-        }
+        Rule::create([
+            'name' => 'Minimum Break Duration',
+            'description' => 'Employees must take at least a 30-minute break after working for 5 hours.',
+            'type' => 'break_duration',
+            'start_time' => null,
+            'end_time' => null,
+            'applicable_days' => null,
+            'applicable_users' => null,
+            'status' => 'active',
+            'value' => 30 // 30 minutes
+        ]);
+
+        // Add other rules similarly
+        // ...
+
+        Rule::create([
+            'name' => 'Minimum Notice for Shift Change',
+            'description' => 'Employees must be given at least a 24-hour notice for any shift changes.',
+            'type' => 'shift_change_notice',
+            'start_time' => null,
+            'end_time' => null,
+            'applicable_days' => null,
+            'applicable_users' => null,
+            'status' => 'active',
+            'value' => 24 // 24 hours
+        ]);
     }
 }
