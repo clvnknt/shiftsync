@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             ShiftBreaksSeeder::class,
             EmployeeRecordsSeeder::class,
             RulesSeeder::class,
+            EmployeeShiftPivotSeeder::class
         ]);
     }
 }

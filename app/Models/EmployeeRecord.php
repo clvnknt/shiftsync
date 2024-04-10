@@ -15,7 +15,6 @@ class EmployeeRecord extends Model
         'role_id', 
         'address_id', 
         'emergency_contact_id', 
-        'shift_id', 
         'shift_break_id', 
         'employee_first_name', 
         'employee_middle_name', 
@@ -52,11 +51,6 @@ class EmployeeRecord extends Model
         return $this->belongsTo(EmergencyContact::class);
     }
 
-    public function shift()
-    {
-        return $this->belongsTo(Shift::class);
-    }
-
     public function shiftBreak()
     {
         return $this->belongsTo(ShiftBreak::class);
@@ -77,4 +71,10 @@ class EmployeeRecord extends Model
         return $this->hasMany(EmployeeShiftRecord::class);
     }
 
+    public function shifts()
+    {
+        return $this->belongsToMany(Shift::class, 'employee_shift_pivot')
+                    ->using(EmployeeShiftPivot::class)
+                    ->withPivot('is_active');
+    }
 }

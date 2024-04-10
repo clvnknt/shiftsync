@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title')</title>
-    <!-- CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" crossorigin="anonymous" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -23,36 +21,25 @@
             color: white;
         }
     </style>
-    @yield('styles') <!-- Additional styles specific to each page -->
+    @yield('styles')
 </head>
 <body>
-    
-@if(auth()->check()) <!-- Only show navbar when user is authenticated -->
-    <!-- Navbar -->
+
+@if(auth()->check() && !in_array(request()->route()->getName(), ['login', 'landing']))
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <!-- Use Bootstrap's 'img-fluid' class to make the image responsive -->
                 <img src="{{ asset('media/images/staffcentral-login-logo.png') }}" alt="StaffCentral Logo" class="img-fluid me-2" style="max-height: 40px;">
             </a>
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                @auth
                 <div class="d-flex align-items-center">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('inout') }}">In/Out</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('timesheet') }}">Timesheet</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">File Ticket</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Help</a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('inout') }}">In/Out</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('timesheet') }}">Timesheet</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">File Ticket</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Help</a></li>
                     </ul>
                     <div class="nav-item dropdown ms-2">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -60,23 +47,19 @@
                             Welcome, {{ auth()->user()->name }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li>
-                                <!-- Add an ID to the logout link for JavaScript reference -->
-                                <a class="dropdown-item" href="#" id="logout-link">Logout</a>
-                            </li>
+                            <li><a class="dropdown-item" href="#" id="logout-link">Logout</a></li>
                         </ul>
                     </div>
                 </div>
+                @endauth
             </div>
         </div>
     </nav>
 @endif
 
-    <!-- Page content -->
-    @yield('content')
+@yield('content')
 
-@if(auth()->check()) <!-- Only show footer when user is authenticated -->
-    <!-- Footer -->
+@if(auth()->check() && !in_array(request()->route()->getName(), ['login', 'landing']))
     <footer class="footer py-3 text-center">
         <div class="container">
             <span>&copy; {{ date('Y') }} StaffCentral</span>
@@ -84,8 +67,7 @@
     </footer>
 @endif
 
-    <!-- Logout Modal -->
-    @auth <!-- Only show logout modal when user is authenticated -->
+@auth
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -98,32 +80,25 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <!-- Add an onclick event to trigger the logout action -->
-                    <a class="btn btn-primary" href="{{ route('logout') }}"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        Logout
-                    </a>
+                    <a class="btn btn-primary" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                 </div>
             </div>
         </div>
     </div>
-    @endauth
+@endauth
 
-    <!-- Logout form -->
-    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-        @csrf
-    </form>
+<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="{{ asset('js/jquery.js') }}"></script>
-    <script>
-        // Add click event listener to the logout link
-        document.getElementById('logout-link').addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default link behavior
-            $('#logoutModal').modal('show'); // Show the logout confirmation modal
-        });
-    </script>
-    @yield('scripts') <!-- Additional scripts specific to each page -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="{{ asset('js/jquery.js') }}"></script>
+<script>
+    document.getElementById('logout-link').addEventListener('click', function(event) {
+        event.preventDefault();
+        $('#logoutModal').modal('show');
+    });
+</script>
+@yield('scripts')
 </body>
 </html>

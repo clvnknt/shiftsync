@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('shift_breaks', function (Blueprint $table) {
             $table->id();
-            $table->string('break_name')->nullable(); //name of break (ex. Coffee Break, Bathroom Break, etc.)
-            $table->time('break_duration'); //the times the employee is able to break
+            $table->string('break_name')->nullable(); 
+            $table->time('break_duration');
             $table->timestamps();
         });
     }

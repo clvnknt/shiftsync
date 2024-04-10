@@ -17,8 +17,8 @@ class CreateRulesTable extends Migration
             $table->time('end_time')->nullable();
             $table->string('applicable_days')->nullable();
             $table->string('applicable_users')->nullable();
-            $table->enum('status', ['active', 'inactive', 'draft'])->default('active');
-            $table->float('value')->nullable(); // Adding the 'value' column
+            $table->enum('status', ['active', 'inactive', 'draft'])->default('inactive');
+            $table->float('value')->nullable();
             $table->timestamps();
         });
     }

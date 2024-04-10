@@ -9,7 +9,6 @@ use App\Models\Department;
 use App\Models\Role;
 use App\Models\Address;
 use App\Models\EmergencyContact;
-use App\Models\Shift;
 use App\Models\ShiftBreak;
 
 class EmployeeRecordsSeeder extends Seeder
@@ -20,12 +19,11 @@ class EmployeeRecordsSeeder extends Seeder
         $userCKPa = User::where('email', 'ckpa@cloudstaff.com')->first();
         $userVincentG = User::where('email', 'vincentg@cloudstaff.com')->first();
 
-        // Assuming you have only one department, role, address, emergency contact, shift, and shift break available
+        // Assuming you have only one department, role, address, and emergency contact available
         $department = Department::first();
         $role = Role::first();
         $address = Address::first();
         $emergencyContact = EmergencyContact::first();
-        $shift = Shift::first();
         $shiftBreak = ShiftBreak::first();
 
         // Create employee record for CKPa
@@ -35,7 +33,6 @@ class EmployeeRecordsSeeder extends Seeder
             'role_id' => $role->id,
             'address_id' => $address->id,
             'emergency_contact_id' => $emergencyContact->id,
-            'shift_id' => $shift->id,
             'shift_break_id' => $shiftBreak->id,
             'employee_first_name' => 'Calvin Kent',
             'employee_middle_name' => 'Roman', // Adjust as needed
@@ -54,7 +51,6 @@ class EmployeeRecordsSeeder extends Seeder
             'role_id' => $role->id,
             'address_id' => $address->id,
             'emergency_contact_id' => $emergencyContact->id,
-            'shift_id' => $shift->id,
             'shift_break_id' => $shiftBreak->id,
             'employee_first_name' => 'Vincent Kurt',
             'employee_middle_name' => '', // Adjust as needed

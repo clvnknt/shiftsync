@@ -2,26 +2,35 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\EmployeeRecord;
 use App\Models\Shift;
+use App\Models\EmployeeShiftPivot;
 
 class EmployeeShiftPivotSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @return void
      */
-    public function run(): void
+    public function run()
     {
-        // Get some employee records and shifts from your database
+        // Retrieve all existing employees and the first two shifts created by ShiftsSeeder
         $employees = EmployeeRecord::all();
-        $shifts = Shift::all();
-        
-        // Loop through the employee records and assign them to shifts
+        $shifts = Shift::all()->take(2); // Take the first two shifts
+
+        // Create pivot entries for each combination of employee and shift
         foreach ($employees as $employee) {
-            // Assign each employee to one or more shifts (You need to adjust this logic based on your requirements)
-            $employee->shifts()->attach($shifts->random(rand(1, 2))->pluck('id'), ['employee_record_id' => $employee->id]);
+            foreach ($shifts as $index => $shift) {
+                // Create pivot entry for the employee and shift
+                $isActive = $index == 0 ? true : false;
+                EmployeeShiftPivot::create([
+                    'employee_record_id' => $employee->id,
+                    'shift_id' => $shift->id,
+                    'is_active' => $isActive,
+                ]);
+            }
         }
     }
 }

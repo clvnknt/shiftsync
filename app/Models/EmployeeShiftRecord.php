@@ -11,6 +11,7 @@ class EmployeeShiftRecord extends Model
 
     protected $fillable = [
         'employee_record_id',
+        'employee_shift_pivot_id',
         'shift_date',
         'start_shift',
         'start_lunch',
@@ -18,8 +19,14 @@ class EmployeeShiftRecord extends Model
         'end_shift',
     ];
 
-    public function user()
+    public function employeeRecord()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(EmployeeRecord::class, 'employee_record_id');
+    }
+
+    public function employeeShiftPivot()
+    {
+        return $this->belongsTo(EmployeeShiftPivot::class, 'employee_shift_pivot_id');
     }
 }
+

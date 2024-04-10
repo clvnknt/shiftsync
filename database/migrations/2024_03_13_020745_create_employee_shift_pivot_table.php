@@ -13,16 +13,13 @@ return new class extends Migration
     {
         Schema::create('employee_shift_pivot', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('employee_id');
-            $table->unsignedBigInteger('shift_id');
+            $table->unsignedBigInteger('employee_record_id');
+            $table->unsignedBigInteger('shift_id')->nullable();
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
 
-            // Add the employee_record_id column
-            $table->unsignedBigInteger('employee_record_id');
-
-            $table->foreign('employee_id')->references('id')->on('employee_records')->onDelete('cascade');
+            $table->foreign('employee_record_id')->references('id')->on('employee_records')->onDelete('cascade');
             $table->foreign('shift_id')->references('id')->on('shifts')->onDelete('cascade');
-            $table->foreign('employee_record_id')->references('id')->on('employee_records')->onDelete('cascade'); // Add foreign key constraint
         });
     }
 

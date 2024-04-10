@@ -13,14 +13,12 @@ return new class extends Migration
     {
         Schema::create('employee_shift_breaks', function (Blueprint $table) {
             $table->id();
-            //Shift
             $table->unsignedBigInteger('employee_record_id');
-            //Shift Columns
             $table->date('break_date');
             $table->time('break_start')->nullable();
             $table->time('break_end')->nullable();
             $table->timestamps();
-            //Employee Record Foreign Keys
+
             $table->foreign('employee_record_id')->references('id')->on('employee_records')->onDelete('cascade');
         });
     }

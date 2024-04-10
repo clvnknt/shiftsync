@@ -15,10 +15,14 @@ class Shift extends Model
         'shift_start_grace_period', 
         'lunch_start_time', 
         'end_lunch_time', 
-        'end_shift_time'];
+        'end_shift_time'
+    ];
 
     public function employeeRecords()
     {
-        return $this->hasMany(EmployeeRecord::class);
+        return $this->belongsToMany(EmployeeRecord::class, 'employee_shift_pivot')
+                    ->using(EmployeeShiftPivot::class)
+                    ->withPivot('is_active');
     }
 }
+

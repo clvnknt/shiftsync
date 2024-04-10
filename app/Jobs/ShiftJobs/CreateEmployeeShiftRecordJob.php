@@ -8,7 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\EmployeeRecord;
-use App\Models\Shift;
+use App\Models\EmployeeShiftPivot;
 use Carbon\Carbon;
 
 class CreateEmployeeShiftRecordJob implements ShouldQueue
@@ -23,28 +23,22 @@ class CreateEmployeeShiftRecordJob implements ShouldQueue
     }
 
     public function handle(): void
-    {
-        // Retrieve the employee's assigned shift
-        $assignedShift = Shift::find($this->employeeRecord->shift_id);
+{
+    // Retrieve the current date
+    $currentDate = Carbon::today();
 
-        if ($assignedShift) {
-            // Retrieve the current date using the assigned shift's timezone
-            $employeeTimezone = $assignedShift->timezone;
-            $currentDate = Carbon::now($employeeTimezone)->toDateString();
-        } else {
-            // Fallback to the employee's timezone if no assigned shift found
-            $employeeTimezone = $this->employeeRecord->timezone;
-            $currentDate = Carbon::now($employeeTimezone)->toDateString();
-        }
+    // Retrieve all active shift pivots for the current date
+    $shiftPivots = EmployeeShiftPivot::where('is_active', true)
+        ->whereDate('shift_date', $currentDate)
+        ->get();
 
-        // Check if a shift record already exists for the current date
-        $shiftRecord = $this->employeeRecord->employeeShiftRecords()
-            ->where('shift_date', $currentDate)
-            ->first();
-
-        // If no shift record exists, create a new one
-        if (!$shiftRecord) {
+    // Iterate through each active shift pivot
+    foreach ($shiftPivots as $pivot) {
+        // Add null check before accessing is_active property
+        if ($pivot && $pivot->is_active) {
+            // Create a new shift record for the employee
             $this->employeeRecord->employeeShiftRecords()->create([
+                'employee_shift_pivot_id' => $pivot->id,
                 'shift_date' => $currentDate,
                 'start_shift' => null,
                 'start_lunch' => null,
@@ -53,4 +47,5 @@ class CreateEmployeeShiftRecordJob implements ShouldQueue
             ]);
         }
     }
+}
 }

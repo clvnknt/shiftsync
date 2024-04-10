@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('holidays', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('department_id'); //Each holiday will be associated to one ore more holidays
-            $table->string('holiday_name'); //name of the holiday
-            $table->date('holiday_date'); //date of the said holiday
+            $table->unsignedBigInteger('department_id');
+            $table->string('holiday_name'); 
+            $table->date('holiday_date'); 
             $table->timestamps();
+            
             $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
         });
     }

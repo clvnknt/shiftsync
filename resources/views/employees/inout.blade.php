@@ -20,9 +20,9 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>Name:</strong> {{ Auth::user()->employeeRecord->employee_first_name }} {{ Auth::user()->employeeRecord->employee_last_name }}</p>
-                            <p><strong>Position:</strong> {{ Auth::user()->employeeRecord->role->role_name }}</p>
-                            <p><strong>Department:</strong> {{ Auth::user()->employeeRecord->department->department_name }}</p>
+                            <p><strong>Name:</strong> {{ $employeeRecord->employee_first_name }} {{ $employeeRecord->employee_last_name }}</p>
+                            <p><strong>Position:</strong> {{ $employeeRecord->role->role_name }}</p>
+                            <p><strong>Department:</strong> {{ $employeeRecord->department->department_name }}</p>
                         </div>
                         <div class="col-md-6">
                             <p><strong>Timezone:</strong> {{ Auth::user()->timezone }}</p>
@@ -32,26 +32,28 @@
             </div>
         </div>
 
-        <!-- Current Shift Card -->
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-primary text-white"><strong>Current Shift</strong></div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Shift Name:</strong> {{ $defaultShift->shift_name }}</p>
-                            <p><strong>Start Shift:</strong> {{ $defaultShift->start_shift_time }}</p>
-                            <p><strong>Start Lunch:</strong> {{ $defaultShift->lunch_start_time }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>End Lunch:</strong> {{ $defaultShift->end_lunch_time }}</p>
-                            <p><strong>End Shift:</strong> {{ $defaultShift->end_shift_time }}</p>
-                        </div>
+<!-- Current Shifts Card -->
+<div class="col-md-6">
+    <div class="card h-100">
+        <div class="card-header bg-primary text-white"><strong>Current Shifts</strong></div>
+        <div class="card-body">
+            @if($currentShifts->isEmpty())
+                <p>No current shifts</p>
+            @else
+                @foreach($currentShifts as $shift)
+                    <div class="mb-4">
+                        <p><strong>Shift Name:</strong> {{ $shift->shift_name }}</p>
+                        <p><strong>Start Shift:</strong> {{ $shift->start_shift_time }}</p>
+                        <p><strong>Start Lunch:</strong> {{ $shift->lunch_start_time }}</p>
+                        <p><strong>End Lunch:</strong> {{ $shift->end_lunch_time }}</p>
+                        <p><strong>End Shift:</strong> {{ $shift->end_shift_time }}</p>
                     </div>
-                </div>
-            </div>
-        </div>        
+                @endforeach
+            @endif
+        </div>
     </div>
+</div>
+</div>
 
     <!-- Today's Shift and Additional Information Cards -->
     <div class="row mt-4">

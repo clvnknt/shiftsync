@@ -23,7 +23,7 @@ class BreaksSeeder extends Seeder
                 'break_end' => $faker->time(),
                 'created_at' => now(),
                 'updated_at' => now(),
-                'employee_shift_record_id' => rand(1, 10), // Assuming you have employee_shift_records seeded already
+                'employee_shift_record_id' => rand(1, 10),
             ]);
         }
     }
