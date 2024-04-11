@@ -3,143 +3,59 @@
 @section('title', 'In/Out')
 
 @section('content')
-<div class="container mt-4 mb-5">
-    <!-- Header: In/Out -->
-    <div class="row">
-        <div class="col-md-6">
-            <h2 class="mb-4">In/Out</h2>
-        </div>
-    </div>
-
-    <!-- Employee Information and Current Shift Cards -->
-    <div class="row">
-        <!-- Employee Information Card -->
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-primary text-white"><strong>Employee Information</strong></div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Name:</strong> {{ $employeeRecord->employee_first_name }} {{ $employeeRecord->employee_last_name }}</p>
-                            <p><strong>Position:</strong> {{ $employeeRecord->role->role_name }}</p>
-                            <p><strong>Department:</strong> {{ $employeeRecord->department->department_name }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Timezone:</strong> {{ Auth::user()->timezone }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-<!-- Current Shifts Card -->
-<div class="col-md-6">
-    <div class="card h-100">
-        <div class="card-header bg-primary text-white"><strong>Current Shifts</strong></div>
-        <div class="card-body">
-            @if($currentShifts->isEmpty())
-                <p>No current shifts</p>
-            @else
-                @foreach($currentShifts as $shift)
-                    <div class="mb-4">
-                        <p><strong>Shift Name:</strong> {{ $shift->shift_name }}</p>
-                        <p><strong>Start Shift:</strong> {{ $shift->start_shift_time }}</p>
-                        <p><strong>Start Lunch:</strong> {{ $shift->lunch_start_time }}</p>
-                        <p><strong>End Lunch:</strong> {{ $shift->end_lunch_time }}</p>
-                        <p><strong>End Shift:</strong> {{ $shift->end_shift_time }}</p>
-                    </div>
+    <div class="container mt-4">
+        <h2>Assigned Shifts</h2>
+        @if($assignedShifts->isEmpty())
+            <p>No assigned shifts found.</p>
+        @else
+            <ul>
+                @foreach($assignedShifts as $assignedShift)
+                    <li>{{ $assignedShift->shiftSchedule->shift_name }} ({{ $assignedShift->shiftSchedule->start_shift_time }} - {{ $assignedShift->shiftSchedule->end_shift_time }})</li>
                 @endforeach
-            @endif
-        </div>
-    </div>
-</div>
-</div>
+            </ul>
+        @endif
 
-    <!-- Today's Shift and Additional Information Cards -->
-    <div class="row mt-4">
-        <!-- Today's Shift Card -->
-        <div class="col-md-6">
-            <div class="card  h-100">
-                <div class="card-header bg-primary text-white"><strong>Today's Shift</strong></div>
-                <div class="card-body">
-                    <p><strong>Shift Date:</strong> {{ $employeeShiftRecord ? \Carbon\Carbon::parse($employeeShiftRecord->shift_date)->format('F d, Y') : 'No shift record found for today.' }}</p>
-                    @if($employeeShiftRecord)
-                        <?php
-                            $nextShiftDate = \Carbon\Carbon::parse($employeeShiftRecord->shift_date)->addDay();
-                            $nextShiftDay = $nextShiftDate->format('l');
-                        ?>
-                        <p>Your next shift will be on {{ $nextShiftDate->format('F d, Y') }}, {{ $nextShiftDay }}.</p>
-                    @endif
-                    <div class="row">
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <h2>Active Shift Record</h2>
+                @if($activeShiftRecord)
+                    <p>Shift Name: {{ optional($activeShiftRecord->employeeAssignedShift)->shiftSchedule->shift_name ?? 'Not available' }}</p>
+                    <p>Shift Date: {{ $activeShiftRecord->shift_date }}</p>
+                    <p>Start Shift: {{ $activeShiftRecord->start_shift ?: 'Not logged' }}</p>
+                    <p>Start Lunch: {{ $activeShiftRecord->start_lunch ?: 'Not logged' }}</p>
+                    <p>End Lunch: {{ $activeShiftRecord->end_lunch ?: 'Not logged' }}</p>
+                    <p>End Shift: {{ $activeShiftRecord->end_shift ?: 'Not logged' }}</p>
+
+                    <div class="row mt-4">
                         <div class="col-md-3">
-                            <div class="text-center">
-                                <img src="{{ asset('media/images/icons/inout/SS.png') }}" alt="Start Shift Icon" class="mb-2 img-fluid" style="max-width: 70px;">
-                                @if($employeeShiftRecord && !$employeeShiftRecord->start_shift)
-                                    <form action="{{ route('startShift') }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-primary btn-block">Start Shift</button>
-                                    </form>
-                                @else
-                                    <p><strong>Shift Started</strong> {{ $employeeShiftRecord->start_shift ?? 'N/A' }}</p>
-                                @endif
-                            </div>
+                            <form action="{{ route('startShift', ['employeeRecordId' => $activeShiftRecord->id]) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">Log Start Shift</button>
+                            </form>
                         </div>
-                        
                         <div class="col-md-3">
-                            <div class="text-center">
-                                <img src="{{ asset('media/images/icons/inout/LS.png') }}" alt="Start Lunch Icon" class="mb-2 img-fluid" style="max-width: 70px;">
-                                @if($employeeShiftRecord && $employeeShiftRecord->start_shift && !$employeeShiftRecord->start_lunch)
-                                    <form action="{{ route('startLunch') }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-primary btn-block">Start Lunch</button>
-                                    </form>
-                                @else
-                                    <p><strong>Lunch Started</strong> {{ $employeeShiftRecord->start_lunch ?? '-' }}</p>
-                                @endif
-                            </div>
+                            <form action="{{ route('startLunch', ['employeeRecordId' => $activeShiftRecord->id]) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">Log Start Lunch</button>
+                            </form>
                         </div>
-                        
                         <div class="col-md-3">
-                            <div class="text-center">
-                                <img src="{{ asset('media/images/icons/inout/LE.png') }}" alt="End Lunch Icon" class="mb-2 img-fluid" style="max-width: 70px;">
-                                @if($employeeShiftRecord && $employeeShiftRecord->start_lunch && !$employeeShiftRecord->end_lunch)
-                                    <form action="{{ route('endLunch') }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-primary btn-block">End Lunch</button>
-                                    </form>
-                                @else
-                                    <p><strong>Lunch Ended</strong> {{ $employeeShiftRecord->end_lunch ?? '-' }}</p>
-                                @endif
-                            </div>
+                            <form action="{{ route('endLunch', ['employeeRecordId' => $activeShiftRecord->id]) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">Log End Lunch</button>
+                            </form>
                         </div>
-                        
                         <div class="col-md-3">
-                            <div class="text-center">
-                                <img src="{{ asset('media/images/icons/inout/SE.png') }}" alt="End Shift Icon" class="mb-2 img-fluid" style="max-width: 70px;">
-                                @if($employeeShiftRecord && $employeeShiftRecord->start_shift && $employeeShiftRecord->start_lunch && $employeeShiftRecord->end_lunch && !$employeeShiftRecord->end_shift)
-                                    <form action="{{ route('endShift') }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-primary btn-block">End Shift</button>
-                                    </form>
-                                @else
-                                    <p><strong>Shift Ended</strong> {{ $employeeShiftRecord->end_shift ?? '-' }}</p>
-                                @endif
-                            </div>
+                            <form action="{{ route('endShift', ['employeeRecordId' => $activeShiftRecord->id]) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">Log End Shift</button>
+                            </form>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Additional Information Card -->
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-primary text-white"><strong>Notifications | Metrics | Tasks</strong></div>
-                <div class="card-body">
-                    <!-- Placeholder information for additional details -->
-                </div>
-            </div>
+                @else
+                    <p>No active shift record found for today or not all shift details are logged.</p>
+                @endif
+            </div>            
         </div>
     </div>
-</div>
 @endsection

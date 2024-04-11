@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEmployeeShiftRecordsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class CreateEmployeeShiftRecordsTable extends Migration
         Schema::create('employee_shift_records', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('employee_record_id');
-            $table->unsignedBigInteger('employee_shift_pivot_id')->nullable();
+            $table->unsignedBigInteger('employee_assigned_shift_id')->nullable();
             $table->date('shift_date');
             $table->time('start_shift')->nullable();
             $table->time('start_lunch')->nullable();
@@ -22,8 +22,9 @@ class CreateEmployeeShiftRecordsTable extends Migration
             $table->time('end_shift')->nullable();
             $table->timestamps();
 
-            $table->foreign('employee_record_id')->references('id')->on('employee_records')->onDelete('cascade');
-            $table->foreign('employee_shift_pivot_id')->references('id')->on('employee_shift_pivot')->onDelete('set null');
+            // Correcting the foreign key constraint name
+            $table->foreign('employee_record_id', 'fk_shift_record_employee_record_id')->references('id')->on('employee_records')->onDelete('cascade');
+            $table->foreign('employee_assigned_shift_id', 'fk_shift_record_assigned_shift_id')->references('id')->on('employee_assigned_shifts')->onDelete('set null');
         });
     }
 
@@ -34,4 +35,4 @@ class CreateEmployeeShiftRecordsTable extends Migration
     {
         Schema::dropIfExists('employee_shift_records');
     }
-}
+};

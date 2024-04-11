@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\EmployeeRecord;
+use AssignedShiftsSeeder;
+use Database\Seeders\AssignedShiftsSeeder as SeedersAssignedShiftsSeeder;
 use Illuminate\Database\Seeder; 
 
 class DatabaseSeeder extends Seeder
@@ -16,13 +18,13 @@ class DatabaseSeeder extends Seeder
             UsersSeeder::class,
             DepartmentsSeeder::class,
             RolesSeeder::class,
-            ShiftsSeeder::class,
+            ShiftSchedulesSeeder::class,
             AddressesSeeder::class,
             EmergencyContactsSeeder::class,
             ShiftBreaksSeeder::class,
             EmployeeRecordsSeeder::class,
             RulesSeeder::class,
-            EmployeeShiftPivotSeeder::class
+            SeedersAssignedShiftsSeeder::class,
         ]);
     }
 }

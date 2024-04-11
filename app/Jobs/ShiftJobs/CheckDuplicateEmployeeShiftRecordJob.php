@@ -15,12 +15,16 @@ class CheckDuplicateEmployeeShiftRecordJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $employeeRecord;
+
     /**
      * Create a new job instance.
+     *
+     * @param EmployeeRecord $employeeRecord
      */
-    public function __construct()
+    public function __construct(EmployeeRecord $employeeRecord)
     {
-        //
+        $this->employeeRecord = $employeeRecord;
     }
 
     /**
@@ -28,30 +32,29 @@ class CheckDuplicateEmployeeShiftRecordJob implements ShouldQueue
      */
     public function handle(): void
     {
-        // Retrieve all employee records
-        $employeeRecords = EmployeeRecord::all();
+        // Retrieve the timezone of the employee
+        $employeeTimezone = $this->employeeRecord->timezone;
 
-        foreach ($employeeRecords as $employeeRecord) {
-            // Retrieve the timezone of the employee
-            $employeeTimezone = $employeeRecord->timezone;
+        // Calculate today's date based on the employee's timezone
+        $currentDate = Carbon::now($employeeTimezone)->toDateString();
 
-            // Calculate today's date based on the employee's timezone
-            $currentDate = Carbon::now($employeeTimezone)->toDateString();
+        // Retrieve the current shift records for the employee and today's date
+        $shiftRecords = $this->employeeRecord->employeeShiftRecords()
+            ->where('shift_date', $currentDate)
+            ->get();
 
-            // Retrieve the current shift record for the employee and today's date
-            $shiftRecord = $employeeRecord->employeeShiftRecords()
-                ->where('shift_date', $currentDate)
-                ->first();
+        // If multiple shift records exist for today, find and delete duplicate records
+        if ($shiftRecords->count() > 1) {
+            $uniqueAssignedShiftIds = $shiftRecords->pluck('employee_assigned_shift_id')->unique()->values();
 
-            // If a shift record already exists for today, find and delete any duplicate records
-            if ($shiftRecord) {
-                $duplicateShiftRecords = $employeeRecord->employeeShiftRecords()
-                    ->where('shift_date', $currentDate)
-                    ->where('id', '!=', $shiftRecord->id) // Exclude the current shift record
-                    ->get();
+            foreach ($uniqueAssignedShiftIds as $assignedShiftId) {
+                $recordsWithAssignedShiftId = $shiftRecords->where('employee_assigned_shift_id', $assignedShiftId);
 
-                foreach ($duplicateShiftRecords as $duplicateShiftRecord) {
-                    $duplicateShiftRecord->delete();
+                if ($recordsWithAssignedShiftId->count() > 1) {
+                    // Keep the first record and delete the rest
+                    $recordsWithAssignedShiftId->slice(1)->each(function ($record) {
+                        $record->delete();
+                    });
                 }
             }
         }

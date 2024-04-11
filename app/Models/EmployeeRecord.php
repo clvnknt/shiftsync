@@ -55,26 +55,4 @@ class EmployeeRecord extends Model
     {
         return $this->belongsTo(ShiftBreak::class);
     }
-
-    public function employeeShiftBreaks()
-    {
-        return $this->hasMany(EmployeeShiftBreak::class);
-    }
-
-    public function rules()
-    {
-        return $this->hasMany(Rule::class);
-    }
-
-    public function employeeShiftRecords()
-    {
-        return $this->hasMany(EmployeeShiftRecord::class);
-    }
-
-    public function shifts()
-    {
-        return $this->belongsToMany(Shift::class, 'employee_shift_pivot')
-                    ->using(EmployeeShiftPivot::class)
-                    ->withPivot('is_active');
-    }
 }

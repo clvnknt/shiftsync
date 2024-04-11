@@ -4,8 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Shift;
+use App\Models\ShiftSchedule;
 
-class ShiftsSeeder extends Seeder
+class ShiftSchedulesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +15,7 @@ class ShiftsSeeder extends Seeder
      */
     public function run()
     {
-        $shifts = [
+        $shiftSchedules = [
             [
                 'shift_name' => 'Day Shift',
                 'start_shift_time' => '08:00:00',
@@ -32,8 +33,8 @@ class ShiftsSeeder extends Seeder
                 'end_shift_time' => '04:00:00', // 4:00 AM
             ],
         ];
-        foreach ($shifts as $shiftData) {
-            Shift::create($shiftData);
+        foreach ($shiftSchedules as $shiftScheduleData) {
+            ShiftSchedule::create($shiftScheduleData);
         }
         
     }

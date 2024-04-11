@@ -3,38 +3,30 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
+use App\Models\EmployeeAssignedShift;
+use App\Models\EmployeeShiftRecord;
 use Carbon\Carbon;
+use App\Models\ShiftSchedule;
+
 
 class InoutController extends Controller
 {
-    public function showInout(Request $request)
+    public function showInout()
     {
-        // Retrieve the current user's employee record
+        // Retrieve the authenticated user's employee record
         $employeeRecord = Auth::user()->employeeRecord;
 
-        // Retrieve the default shift for the employee
-        $defaultShift = $employeeRecord->shift;
+        // Retrieve the assigned shifts for the employee
+        $assignedShifts = EmployeeAssignedShift::where('employee_record_id', $employeeRecord->id)
+                        ->where('is_active', true)
+                        ->with('shiftSchedule')
+                        ->get();
 
-        // Retrieve the shift record from the database for the current date
-        $employeeShiftRecord = $employeeRecord->employeeShiftRecords()
-            ->where('shift_date', now()->toDateString())
+        // Retrieve the active shift record for the current date
+        $activeShiftRecord = EmployeeShiftRecord::where('employee_record_id', $employeeRecord->id)
+            ->whereDate('shift_date', Carbon::today())
             ->first();
 
-        // Check if the current shift has ended more than 5 hours ago
-        if ($employeeShiftRecord && $employeeShiftRecord->end_shift) {
-            $currentShiftEndTime = Carbon::parse($employeeShiftRecord->end_shift);
-            if ($currentShiftEndTime->addHours(5)->isPast()) {
-                // Update the current shift to the next one
-                $nextShiftDate = Carbon::parse($employeeShiftRecord->shift_date)->addDay();
-                // Retrieve the next shift record from the database for the next date
-                $employeeShiftRecord = $employeeRecord->employeeShiftRecords()
-                    ->where('shift_date', $nextShiftDate->toDateString())
-                    ->first();
-            }
-        }
-
-        // Pass the $employeeShiftRecord, $employeeRecord, and $defaultShift variables to the view
-        return view('employees.inout', compact('employeeShiftRecord', 'employeeRecord', 'defaultShift'));
-    }   
+        return view('employees.inout', compact('assignedShifts', 'activeShiftRecord'));
+    }
 }

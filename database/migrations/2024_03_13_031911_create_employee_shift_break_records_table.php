@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employee_shift_breaks', function (Blueprint $table) {
+        Schema::create('employee_shift_break_records', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('employee_record_id');
             $table->date('break_date');
@@ -19,7 +19,7 @@ return new class extends Migration
             $table->time('break_end')->nullable();
             $table->timestamps();
 
-            $table->foreign('employee_record_id')->references('id')->on('employee_records')->onDelete('cascade');
+            $table->foreign('employee_record_id', 'fk_shift_break_employee_record_id')->references('id')->on('employee_records')->onDelete('cascade');
         });
     }
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employee_shift_breaks');
+        Schema::dropIfExists('employee_shift_break_records');
     }
 };

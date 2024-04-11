@@ -7,19 +7,26 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
+use App\Models\EmployeeShiftRecord;
 
 class EndLunchJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $currentShiftRecordId;
+    public $nextShiftRecordId;
+
     /**
      * Create a new job instance.
+     *
+     * @param int $currentShiftRecordId
+     * @param int $nextShiftRecordId
+     * @return void
      */
-    public function __construct()
+    public function __construct($currentShiftRecordId, $nextShiftRecordId)
     {
-        //
+        $this->currentShiftRecordId = $currentShiftRecordId;
+        $this->nextShiftRecordId = $nextShiftRecordId;
     }
 
     /**
@@ -27,23 +34,17 @@ class EndLunchJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $user = Auth::user();
-        $employeeRecord = $user->employeeRecord;
+        // Retrieve the current shift record
+        $currentShiftRecord = EmployeeShiftRecord::find($this->currentShiftRecordId);
 
-        // Retrieve the shift record for the current date
-        $shiftRecord = $employeeRecord->employeeShiftRecords()
-            ->where('shift_date', Carbon::today()->toDateString())
-            ->first();
+        // Check if the current shift record exists and if the end_lunch field is not already set
+        if ($currentShiftRecord && !$currentShiftRecord->end_lunch) {
+            // Update the end_lunch field
+            $currentShiftRecord->end_lunch = now();
+            $currentShiftRecord->save();
 
-        // Get the employee's timezone
-        $employeeTimezone = $employeeRecord->user->timezone;
-
-        // Set the end_lunch field
-        if ($shiftRecord && !$shiftRecord->end_lunch) {
-            // Convert current time to employee's timezone
-            $endLunchTime = Carbon::now()->setTimezone($employeeTimezone)->toTimeString();
-            $shiftRecord->update(['end_lunch' => $endLunchTime]);
+            // Trigger the next job to update the next shift record
+            EndShiftJob::dispatch($currentShiftRecord->id, $this->nextShiftRecordId);
         }
     }
 }
-
