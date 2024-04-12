@@ -14,6 +14,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //Employee's default shift schedules to follow
         Schema::create('shift_schedules', function (Blueprint $table) {
             $table->id();
             $table->string('shift_name');

@@ -13,38 +13,20 @@ class StartLunchJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $currentShiftRecordId;
-    public $nextShiftRecordId;
+    protected $shiftRecordId;
 
-    /**
-     * Create a new job instance.
-     *
-     * @param int $currentShiftRecordId
-     * @param int $nextShiftRecordId
-     * @return void
-     */
-    public function __construct($currentShiftRecordId, $nextShiftRecordId)
+    public function __construct($shiftRecordId)
     {
-        $this->currentShiftRecordId = $currentShiftRecordId;
-        $this->nextShiftRecordId = $nextShiftRecordId;
+        $this->shiftRecordId = $shiftRecordId;
     }
 
-    /**
-     * Execute the job.
-     */
-    public function handle(): void
+    public function handle()
     {
-        // Retrieve the current shift record
-        $currentShiftRecord = EmployeeShiftRecord::find($this->currentShiftRecordId);
+        $shiftRecord = EmployeeShiftRecord::find($this->shiftRecordId);
 
-        // Check if the current shift record exists and if the start_lunch field is not already set
-        if ($currentShiftRecord && !$currentShiftRecord->start_lunch) {
-            // Update the start_lunch field
-            $currentShiftRecord->start_lunch = now();
-            $currentShiftRecord->save();
-
-            // Trigger the next job to update the next shift record
-            EndLunchJob::dispatch($currentShiftRecord->id, $this->nextShiftRecordId);
+        if ($shiftRecord && $shiftRecord->start_shift && !$shiftRecord->start_lunch) {
+            $shiftRecord->start_lunch = now();
+            $shiftRecord->save();
         }
     }
 }

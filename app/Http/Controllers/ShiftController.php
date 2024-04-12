@@ -4,67 +4,38 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\EmployeeShiftRecord;
+use Illuminate\Routing\Controller;
+use App\Jobs\ShiftJobs\StartShiftJob;
+use App\Jobs\ShiftJobs\StartLunchJob;
+use App\Jobs\ShiftJobs\EndLunchJob;
+use App\Jobs\ShiftJobs\EndShiftJob;
 
 class ShiftController extends Controller
 {
+    private function dispatchAndRedirect(Request $request, $job, $successMessage)
+    {
+        $shiftRecordId = $request->input('employeeRecordId');
+        dispatch(new $job($shiftRecordId));
+        return redirect()->route('inout')->with('success', $successMessage);
+    }
+
     public function startShift(Request $request)
     {
-        return $this->handleShiftAction($request, 'start_shift');
+        return $this->dispatchAndRedirect($request, StartShiftJob::class, 'Start Shift logged successfully.');
     }
 
     public function startLunch(Request $request)
     {
-        return $this->handleShiftAction($request, 'start_lunch');
+        return $this->dispatchAndRedirect($request, StartLunchJob::class, 'Start Lunch logged successfully.');
     }
 
     public function endLunch(Request $request)
     {
-        return $this->handleShiftAction($request, 'end_lunch');
+        return $this->dispatchAndRedirect($request, EndLunchJob::class, 'End Lunch logged successfully.');
     }
 
     public function endShift(Request $request)
     {
-        return $this->handleShiftAction($request, 'end_shift');
-    }
-
-    protected function handleShiftAction(Request $request, $action)
-    {
-        $shiftRecordId = $request->input('employeeRecordId');
-        $shiftRecord = EmployeeShiftRecord::find($shiftRecordId);
-
-        if (!$shiftRecord) {
-            return redirect()->route('inout')->with('error', 'Shift record not found.');
-        }
-
-        switch ($action) {
-            case 'start_shift':
-                if (!$shiftRecord->start_shift) {
-                    $shiftRecord->start_shift = now();
-                    $shiftRecord->save();
-                }
-                break;
-            case 'start_lunch':
-                if ($shiftRecord->start_shift && !$shiftRecord->start_lunch) {
-                    $shiftRecord->start_lunch = now();
-                    $shiftRecord->save();
-                }
-                break;
-            case 'end_lunch':
-                if ($shiftRecord->start_lunch && !$shiftRecord->end_lunch) {
-                    $shiftRecord->end_lunch = now();
-                    $shiftRecord->save();
-                }
-                break;
-            case 'end_shift':
-                if ($shiftRecord->start_shift && $shiftRecord->start_lunch && $shiftRecord->end_lunch && !$shiftRecord->end_shift) {
-                    $shiftRecord->end_shift = now();
-                    $shiftRecord->save();
-                }
-                break;
-            default:
-                return redirect()->route('inout')->with('error', 'Invalid action.');
-        }
-
-        return redirect()->route('inout')->with('success', ucfirst(str_replace('_', ' ', $action)) . ' logged successfully.');
+        return $this->dispatchAndRedirect($request, EndShiftJob::class, 'End Shift logged successfully.');
     }
 }

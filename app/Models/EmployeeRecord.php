@@ -55,4 +55,15 @@ class EmployeeRecord extends Model
     {
         return $this->belongsTo(ShiftBreak::class);
     }
+
+    public function assignedShifts()
+{
+    return $this->hasMany(EmployeeAssignedShift::class);
+}
+
+public function employeeShiftRecords()
+{
+    return $this->hasMany(EmployeeShiftRecord::class);
+}
+
 }
