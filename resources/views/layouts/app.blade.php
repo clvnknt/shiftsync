@@ -47,6 +47,7 @@
                             Welcome, {{ auth()->user()->name }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ route('myAccount') }}">My Account</a></li>
                             <li><a class="dropdown-item" href="#" id="logout-link">Logout</a></li>
                         </ul>
                     </div>

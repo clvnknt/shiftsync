@@ -40,10 +40,25 @@ class InoutController extends Controller
             // Replace the active shift record with the next shift record
             $activeShiftRecord = $nextShiftRecord;
         }
+
+        // Retrieve all current assigned shifts for the employee
+        $currentAssignedShifts = EmployeeAssignedShift::where('employee_record_id', $employeeRecord->id)
+            ->where('is_active', true)
+            ->with('shiftSchedule')
+            ->get();
+    
+        // Format time values for currently assigned shifts
+        foreach ($currentAssignedShifts as $assignedShift) {
+            $assignedShift->shiftSchedule->start_shift_time = Carbon::parse($assignedShift->shiftSchedule->start_shift_time)->format('H:i');
+            $assignedShift->shiftSchedule->lunch_start_time = Carbon::parse($assignedShift->shiftSchedule->lunch_start_time)->format('H:i');
+            $assignedShift->shiftSchedule->end_lunch_time = Carbon::parse($assignedShift->shiftSchedule->end_lunch_time)->format('H:i');
+            $assignedShift->shiftSchedule->end_shift_time = Carbon::parse($assignedShift->shiftSchedule->end_shift_time)->format('H:i');
+        }
     
         // Pass the active shift record to the view
         return view('employees.inout', [
             'activeShiftRecord' => $activeShiftRecord,
+            'currentAssignedShifts' => $currentAssignedShifts,
         ]);
     }
 }

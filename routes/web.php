@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
@@ -33,5 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/shift/end', [ShiftController::class, 'endShift'])->name('endShift');
 
     // Timesheet Route
-    Route::get('/timesheet', [TimesheetController::class, 'show'])->name('timesheet');
+    Route::get('/timesheet', [TimesheetController::class, 'showTimesheet'])->name('timesheet');
+
+    Route::get('/my-account', [AccountController::class, 'showMyAccount'])->name('myAccount');
 });

@@ -11,7 +11,7 @@ use App\Models\Shift;
 
 class TimesheetController extends Controller
 {
-    public function show()
+    public function showTimesheet()
     {
 
      return view('employees.timesheet');
