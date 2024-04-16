@@ -17,11 +17,24 @@ class CreateEmployeeShiftRecordJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $employeeTimezone;
+
+    /**
+     * Create a new job instance.
+     *
+     * @param string $employeeTimezone The timezone of the employee
+     * @return void
+     */
+    public function __construct($employeeTimezone)
+    {
+        $this->employeeTimezone = $employeeTimezone;
+    }
+
     public function handle()
     {
         try {
-            // Get the current date
-            $currentDate = Carbon::now()->toDateString();
+            // Calculate the current date using the employee's timezone
+            $currentDate = Carbon::now($this->employeeTimezone)->toDateString();
 
             // Retrieve all active assigned shifts and loop through them
             EmployeeAssignedShift::where('is_active', true)->get()->each(function ($assignedShift) use ($currentDate) {

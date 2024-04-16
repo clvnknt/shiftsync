@@ -23,10 +23,11 @@ return new class extends Migration
             $table->string('employee_middle_name');  //middle name of the employee
             $table->string('employee_last_name'); //last name of the employee
             $table->string('employee_suffix'); //suffix of the employee
-            $table->enum('employee_gender', ['male', 'female', 'other']);
+            $table->enum('employee_gender', ['male', 'female', 'other']); //employee's gender
             $table->integer('employee_age'); //age of the employee
             $table->date('employee_birthdate'); //birthdate of the employee
             $table->string('employee_profile_picture'); //profile picture of the employee
+            $table->string('employee_timezone')->default('+08:00'); //employee's default timezone
             $table->timestamps();
             
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade'); //create a connection between the users table

@@ -23,7 +23,8 @@ class EmployeeRecord extends Model
         'employee_gender', 
         'employee_age', 
         'employee_birthdate', 
-        'employee_profile_picture'
+        'employee_profile_picture',
+        'employee_timezone'
     ];
 
     public function user()

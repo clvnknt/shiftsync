@@ -6,8 +6,10 @@ use Illuminate\Console\Command;
 use App\Jobs\ShiftJobs\CheckDuplicateEmployeeShiftRecordJob;
 use App\Jobs\ShiftJobs\CreateEmployeeShiftRecordJob;
 use App\Jobs\ShiftJobs\AssignShiftOrderJob;
+use App\Jobs\ShiftJobs\AssignTimezoneJob; 
 use App\Models\EmployeeRecord;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class CreateDailyShiftRecord extends Command
 {
@@ -32,22 +34,35 @@ class CreateDailyShiftRecord extends Command
      */
     public function handle()
     {
-        // Dispatch CreateEmployeeShiftRecordJob
-        dispatch(new CreateEmployeeShiftRecordJob());
+        try {
+  
+// Retrieve all employee records and loop through them
+EmployeeRecord::all()->each(function ($employeeRecord) {
+    // Get the employee's timezone
+    $employeeTimezone = $employeeRecord->employee_timezone;
+    $currentDate = Carbon::now()->toDateString();
 
-        // Get the current date
-        $currentDate = Carbon::now()->toDateString();
 
-        // Dispatch AssignShiftOrderJob with the current date as argument
-        dispatch(new AssignShiftOrderJob($currentDate));
+    // Dispatch CreateEmployeeShiftRecordJob with the employee's timezone
+    dispatch(new CreateEmployeeShiftRecordJob($employeeTimezone))->chain([
+        new AssignTimezoneJob(),
+        new AssignShiftOrderJob($currentDate),
+        // If you have other jobs to dispatch, add them here
+    ]);
+});
 
-        // Retrieve all employee records and loop through them
-        EmployeeRecord::all()->each(function ($employeeRecord) {
-            // Dispatch CheckDuplicateEmployeeShiftRecordJob with the EmployeeRecord instance
-            dispatch(new CheckDuplicateEmployeeShiftRecordJob($employeeRecord));
-        });
+            // Retrieve all employee records and loop through them
+            EmployeeRecord::all()->each(function ($employeeRecord) {
+                // Dispatch CheckDuplicateEmployeeShiftRecordJob with the EmployeeRecord instance
+                dispatch(new CheckDuplicateEmployeeShiftRecordJob($employeeRecord));
+            });
 
-        // Output success message
-        $this->info('Dispatched jobs to create or update daily shift records.');
+            // Output success message
+            $this->info('Dispatched jobs to create or update daily shift records.');
+        } catch (\Exception $e) {
+            // Log the exception and stop further job dispatching
+            Log::error('An error occurred: ' . $e->getMessage());
+            $this->error('Failed to dispatch jobs. Check the logs for details.');
+        }
     }
 }

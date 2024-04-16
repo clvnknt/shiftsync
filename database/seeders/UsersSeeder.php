@@ -14,13 +14,11 @@ class UsersSeeder extends Seeder
             [
                 'name' => 'CKPa',
                 'email' => 'ckpa@cloudstaff.com',
-                'timezone' => 'Asia/Manila',
                 'password' => Hash::make('password123'),
             ],
             [
                 'name' => 'VincentG',
                 'email' => 'vincentg@cloudstaff.com',
-                'timezone' => 'Australia/Sydney', 
                 'password' => Hash::make('password123'),
             ],
         ];        

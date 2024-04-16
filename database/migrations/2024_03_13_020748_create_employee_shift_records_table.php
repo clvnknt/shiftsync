@@ -14,13 +14,15 @@ return new class extends Migration
         Schema::create('employee_shift_records', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('employee_record_id');
-            $table->unsignedBigInteger('employee_assigned_shift_id')->nullable(); //employee's assigned shift in th employee assigned shift table
+            $table->unsignedBigInteger('employee_assigned_shift_id')->nullable(); //employee's assigned shift
             $table->date('shift_date');
             $table->time('start_shift')->nullable();
             $table->time('start_lunch')->nullable();
             $table->time('end_lunch')->nullable();
             $table->time('end_shift')->nullable();
             $table->unsignedInteger('shift_order')->nullable();
+            $table->string('assigned_timezone')->nullable();
+
             $table->timestamps();
 
             // Correcting the foreign key constraint name
