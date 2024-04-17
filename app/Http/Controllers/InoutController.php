@@ -14,9 +14,15 @@ class InoutController extends Controller
         // Retrieve the authenticated user's employee record
         $employeeRecord = Auth::user()->employeeRecord;
     
-        // Retrieve the active shift record for the current date
+        // Get the employee's timezone
+        $timezone = $employeeRecord->employee_timezone;
+    
+        // Calculate the current date using the employee's timezone
+        $currentDate = Carbon::now($timezone)->toDateString();
+    
+        // Retrieve the active shift record for the current date and employee's timezone
         $activeShiftRecord = EmployeeShiftRecord::where('employee_record_id', $employeeRecord->id)
-            ->whereDate('shift_date', Carbon::today())
+            ->where('shift_date', $currentDate)
             ->first();
     
         // If there's no active shift record, return the view with null values
@@ -33,14 +39,14 @@ class InoutController extends Controller
         if ($isShiftLogged) {
             $nextShiftRecord = EmployeeShiftRecord::where('employee_record_id', $employeeRecord->id)
                 ->where('shift_order', '>', $activeShiftRecord->shift_order)
-                ->whereDate('shift_date', Carbon::today())
+                ->where('shift_date', $currentDate)
                 ->orderBy('shift_order')
                 ->first();
             
             // Replace the active shift record with the next shift record
             $activeShiftRecord = $nextShiftRecord;
         }
-
+    
         // Retrieve all current assigned shifts for the employee
         $currentAssignedShifts = EmployeeAssignedShift::where('employee_record_id', $employeeRecord->id)
             ->where('is_active', true)
@@ -60,5 +66,5 @@ class InoutController extends Controller
             'activeShiftRecord' => $activeShiftRecord,
             'currentAssignedShifts' => $currentAssignedShifts,
         ]);
-    }
+    }    
 }

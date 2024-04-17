@@ -35,21 +35,16 @@ class CreateDailyShiftRecord extends Command
     public function handle()
     {
         try {
-  
-// Retrieve all employee records and loop through them
-EmployeeRecord::all()->each(function ($employeeRecord) {
-    // Get the employee's timezone
-    $employeeTimezone = $employeeRecord->employee_timezone;
-    $currentDate = Carbon::now()->toDateString();
-
-
-    // Dispatch CreateEmployeeShiftRecordJob with the employee's timezone
-    dispatch(new CreateEmployeeShiftRecordJob($employeeTimezone))->chain([
-        new AssignTimezoneJob(),
-        new AssignShiftOrderJob($currentDate),
-        // If you have other jobs to dispatch, add them here
-    ]);
-});
+            // Retrieve all employee records and loop through them
+            EmployeeRecord::all()->each(function ($employeeRecord) {
+                // Get the employee's timezone
+                $employeeTimezone = $employeeRecord->employee_timezone;
+                // Dispatch CreateEmployeeShiftRecordJob with the employee's timezone
+                dispatch(new CreateEmployeeShiftRecordJob($employeeTimezone))->chain([
+                    new AssignTimezoneJob(),
+                    new AssignShiftOrderJob(),
+                ]);
+            });
 
             // Retrieve all employee records and loop through them
             EmployeeRecord::all()->each(function ($employeeRecord) {

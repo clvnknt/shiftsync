@@ -23,6 +23,7 @@
                 <div class="col-md-12 mb-3">
                     <p class="mb-1"><strong>Shift Name:</strong> {{ optional($activeShiftRecord->employeeAssignedShift)->shiftSchedule->shift_name ?? 'Not available' }}</p>
                     <p class="mb-1"><strong>Shift Date:</strong> {{ \Carbon\Carbon::parse($activeShiftRecord->shift_date)->format('F j, Y') }}</p>
+                    <p class="mb-1"><strong>Timezone:</strong> UTC {{ $activeShiftRecord->assigned_timezone }}</p>
                 </div>
             </div>
             <!-- Clock-in/Clock-out buttons -->
