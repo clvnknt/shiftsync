@@ -13,6 +13,7 @@ class EmployeeShiftRecord extends Model
         'employee_record_id',
         'employee_assigned_shift_id',
         'shift_date',
+        'end_shift_date',
         'start_shift',
         'start_lunch',
         'end_lunch',

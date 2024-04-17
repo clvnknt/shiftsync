@@ -16,13 +16,16 @@ return new class extends Migration
             $table->unsignedBigInteger('employee_record_id');
             $table->unsignedBigInteger('employee_assigned_shift_id')->nullable(); //employee's assigned shift
             $table->date('shift_date');
-            $table->time('start_shift')->nullable();
-            $table->time('start_lunch')->nullable();
-            $table->time('end_lunch')->nullable();
-            $table->time('end_shift')->nullable();
+            $table->date('end_shift_date');
+            $table->timestamp('start_shift')->nullable();
+            $table->timestamp('start_lunch')->nullable();
+            $table->timestamp('end_lunch')->nullable();
+            $table->timestamp('end_shift')->nullable();
+            $table->string('start_shift_timezone')->nullable();
+            $table->string('start_lunch_timezone')->nullable();
+            $table->string('end_lunch_timezone')->nullable();
+            $table->string('end_shift_timezone')->nullable();
             $table->unsignedInteger('shift_order')->nullable();
-            $table->string('assigned_timezone')->nullable();
-
             $table->timestamps();
 
             // Correcting the foreign key constraint name

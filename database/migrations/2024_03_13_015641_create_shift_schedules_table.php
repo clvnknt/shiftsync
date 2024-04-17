@@ -23,6 +23,7 @@ return new class extends Migration
             $table->time('lunch_start_time');
             $table->time('end_lunch_time');
             $table->time('end_shift_time');
+            $table->string('shift_timezone')->nullable();
             $table->timestamps();
         });
     }
