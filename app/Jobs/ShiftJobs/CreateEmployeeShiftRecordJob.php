@@ -38,7 +38,7 @@ class CreateEmployeeShiftRecordJob implements ShouldQueue
     {
         try {
             // Calculate the current date using the employee's timezone
-            $currentDate = Carbon::now($this->employeeTimezone)->toDateString();
+            $currentDate = Carbon::now($this->employeeTimezone)->startOfDay();
 
             // Retrieve the employee records with the provided timezone
             $employees = EmployeeRecord::where('employee_timezone', $this->employeeTimezone)->get();
@@ -48,16 +48,31 @@ class CreateEmployeeShiftRecordJob implements ShouldQueue
                 $assignedShifts = $employee->assignedShifts()->where('is_active', true)->get();
 
                 foreach ($assignedShifts as $assignedShift) {
-                    // Check if there is no existing shift record for this assigned shift and date
+                    // Retrieve the corresponding shift schedule for the assigned shift
+                    $shiftSchedule = $assignedShift->shiftSchedule;
+
+                    // Calculate the shift end date based on the shift schedule's times
+                    $shiftEndHour = Carbon::createFromFormat('H:i:s', $shiftSchedule->end_shift_time)->hour;
+
+// If the end hour is before the start hour (indicating it extends to the next day)
+if ($shiftEndHour < Carbon::createFromFormat('H:i:s', $shiftSchedule->start_shift_time)->hour) {
+    $endDate = $currentDate->copy()->addDay();
+} else {
+    $endDate = $currentDate;
+}
+
+                    // Check if there is no existing shift record for this assigned shift and date range
                     $existingShiftRecord = EmployeeShiftRecord::where('employee_assigned_shift_id', $assignedShift->id)
                         ->where('shift_date', $currentDate)
+                        ->where('end_shift_date', $endDate)
                         ->exists();
 
                     // If no existing shift record found, create a new one
                     if (!$existingShiftRecord) {
-                        // Create a new shift record for this assigned shift and date
+                        // Create a new shift record for this assigned shift and date range
                         EmployeeShiftRecord::create([
                             'shift_date' => $currentDate,
+                            'end_shift_date' => $endDate,
                             'employee_assigned_shift_id' => $assignedShift->id,
                             'employee_record_id' => $employee->id,
                             'start_shift' => null,

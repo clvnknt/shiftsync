@@ -3,34 +3,33 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 use App\Jobs\ShiftJobs\CheckDuplicateEmployeeShiftRecordJob;
 use App\Jobs\ShiftJobs\CreateEmployeeShiftRecordJob;
 use App\Jobs\ShiftJobs\AssignShiftOrderJob;
-use App\Jobs\ShiftJobs\AssignTimezoneJob; 
+use App\Jobs\ShiftJobs\AssignTimezoneJob;
 use App\Models\EmployeeRecord;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 
-class CreateDailyShiftRecord extends Command
+
+class CreateEmployeeShiftRecord extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:create-daily-shift-record';
+    protected $signature = 'app:create-employee-shift-record';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Creates or updates a shift record for each employee daily.';
+    protected $description = 'Command description';
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle()
     {
@@ -41,7 +40,6 @@ class CreateDailyShiftRecord extends Command
                 $employeeTimezone = $employeeRecord->employee_timezone;
                 // Dispatch CreateEmployeeShiftRecordJob with the employee's timezone
                 dispatch(new CreateEmployeeShiftRecordJob($employeeTimezone))->chain([
-                    new AssignTimezoneJob(),
                     new AssignShiftOrderJob(),
                 ]);
             });

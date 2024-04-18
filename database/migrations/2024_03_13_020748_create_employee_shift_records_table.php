@@ -14,21 +14,16 @@ return new class extends Migration
         Schema::create('employee_shift_records', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('employee_record_id');
-            $table->unsignedBigInteger('employee_assigned_shift_id')->nullable(); //employee's assigned shift
+            $table->unsignedBigInteger('employee_assigned_shift_id')->nullable();
             $table->date('shift_date');
             $table->date('end_shift_date');
             $table->timestamp('start_shift')->nullable();
             $table->timestamp('start_lunch')->nullable();
             $table->timestamp('end_lunch')->nullable();
             $table->timestamp('end_shift')->nullable();
-            $table->string('start_shift_timezone')->nullable();
-            $table->string('start_lunch_timezone')->nullable();
-            $table->string('end_lunch_timezone')->nullable();
-            $table->string('end_shift_timezone')->nullable();
             $table->unsignedInteger('shift_order')->nullable();
             $table->timestamps();
 
-            // Correcting the foreign key constraint name
             $table->foreign('employee_record_id', 'fk_shift_record_employee_record_id')->references('id')->on('employee_records')->onDelete('cascade');
             $table->foreign('employee_assigned_shift_id', 'fk_shift_record_assigned_shift_id')->references('id')->on('employee_assigned_shifts')->onDelete('set null');
         });

@@ -18,12 +18,12 @@ return new class extends Migration
         Schema::create('shift_schedules', function (Blueprint $table) {
             $table->id();
             $table->string('shift_name');
-            $table->time('start_shift_time');
+            $table->time('start_shift_time'); //To be used in assigning shift orders starting from 1, 2, 3 setc
             $table->time('shift_start_grace_period')->nullable();
             $table->time('lunch_start_time');
             $table->time('end_lunch_time');
             $table->time('end_shift_time');
-            $table->string('shift_timezone')->nullable();
+            $table->string('shift_timezone')->default('+08:00'); //To be used in shift orders in getting the timezone 
             $table->timestamps();
         });
     }

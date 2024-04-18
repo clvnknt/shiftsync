@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('employee_assigned_shifts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('employee_record_id'); //Employee's associated record
-            $table->unsignedBigInteger('shift_schedule_id')->nullable(); //Employee's assigned schedules in the shift_shcedules table
+            $table->unsignedBigInteger('employee_record_id');
+            $table->unsignedBigInteger('shift_schedule_id')->nullable(); //shift schedule table
             $table->boolean('is_active')->default(false);
             $table->timestamps();
 

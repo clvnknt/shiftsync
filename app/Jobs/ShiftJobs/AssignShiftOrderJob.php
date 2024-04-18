@@ -2,8 +2,8 @@
 
 namespace App\Jobs\ShiftJobs;
 
+use App\Models\EmployeeAssignedShift;
 use App\Models\EmployeeShiftRecord;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -21,37 +21,45 @@ class AssignShiftOrderJob implements ShouldQueue
     public function handle(): void
     {
         try {
-            // Retrieve all employee shift records
-            $shiftRecords = EmployeeShiftRecord::all();
+            // Retrieve all unique shift dates
+            $shiftDates = EmployeeShiftRecord::select('shift_date')->distinct()->pluck('shift_date');
 
-            // Group shift records by assigned timezone
-            $shiftRecordsByTimezone = $shiftRecords->groupBy('assigned_timezone');
+            // Iterate over each shift date
+            foreach ($shiftDates as $shiftDate) {
+                // Retrieve all shift records for this date
+                $shiftRecords = EmployeeShiftRecord::where('shift_date', $shiftDate)->get();
 
-            // Iterate over each group (each timezone)
-            foreach ($shiftRecordsByTimezone as $timezone => $timezoneShiftRecords) {
-                // Calculate the current date using the employee's timezone
-                $currentDate = Carbon::now($timezone)->toDateString();
+                // Group shift records by employee ID
+                $groupedRecords = $shiftRecords->groupBy('employee_record_id');
 
-                // Filter shift records for the current date
-                $currentDateShiftRecords = $timezoneShiftRecords->where('shift_date', $currentDate);
+                // Iterate over each group
+                foreach ($groupedRecords as $employeeId => $records) {
+                    // Retrieve the assigned shift schedule for this employee
+                    $assignedShift = EmployeeAssignedShift::where('employee_record_id', $employeeId)->first();
+                    $shiftSchedule = $assignedShift->shiftSchedule;
 
-                // Sort shift records by assigned shift ID within each timezone group
-                $currentDateShiftRecords = $currentDateShiftRecords->sortBy('employee_assigned_shift_id');
+                    // Sort shift records by the start_shift_time of the corresponding shift schedule
+                    $records = $records->sortBy(function ($record) use ($shiftSchedule) {
+                        return $shiftSchedule->start_shift_time;
+                    });
 
-                // Assign shift orders within the timezone group for the current date
-                $shiftOrder = 1;
-                foreach ($currentDateShiftRecords as $record) {
-                    $record->update(['shift_order' => $shiftOrder]);
-                    $shiftOrder++;
+                    // Initialize shift order counter
+                    $shiftOrder = 1;
+
+                    // Update shift orders for each record in this group
+                    foreach ($records as $record) {
+                        $record->update(['shift_order' => $shiftOrder]);
+                        $shiftOrder++;
+                    }
                 }
             }
 
             // Output success message
-            Log::info('Shift orders assigned for current date based on employee timezones.');
+            Log::info('Shift orders assigned based on shift dates and start shift times.');
         } catch (\Exception $e) {
             // Log any exceptions for debugging
             Log::error('Exception occurred: ' . $e->getMessage());
-            Log::error('An error occurred while assigning shift orders based on employee timezones.');
+            Log::error('An error occurred while assigning shift orders based on shift dates and start shift times.');
         }
     }
 }

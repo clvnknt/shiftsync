@@ -18,11 +18,12 @@ class AssignedShiftsSeeder extends Seeder
         // Get all employee records
         $employees = EmployeeRecord::all();
 
-        // Get two shift schedules
-        $shiftSchedules = ShiftSchedule::take(2)->get();
-
-        // Assign two shifts to each employee
+        // Assign shifts to each employee based on their timezone
         foreach ($employees as $employee) {
+            // Get the shift schedules based on the employee's timezone
+            $shiftSchedules = ShiftSchedule::where('shift_timezone', $employee->employee_timezone)->get();
+
+            // Assign shift schedules to the employee
             foreach ($shiftSchedules as $shiftSchedule) {
                 EmployeeAssignedShift::create([
                     'employee_record_id' => $employee->id,

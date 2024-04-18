@@ -19,15 +19,13 @@ class EmployeeShiftRecord extends Model
         'end_lunch',
         'end_shift',
         'shift_order',
-        'assigned_timezone'
     ];
 
-    // Define the relationship to EmployeeAssignedShift
     public function employeeAssignedShift()
     {
-        return $this->belongsTo(EmployeeAssignedShift::class);
+        return $this->belongsTo(EmployeeAssignedShift::class, 'employee_assigned_shift_id');
     }
-
+    
     public function assignedShift()
     {
         return $this->belongsTo(EmployeeAssignedShift::class, 'employee_assigned_shift_id');
@@ -37,5 +35,4 @@ class EmployeeShiftRecord extends Model
     {
     return $this->belongsTo(EmployeeRecord::class, 'employee_record_id');
     }
-
 }
