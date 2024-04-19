@@ -16,7 +16,7 @@ class ShiftSchedule extends Model
         'lunch_start_time',
         'end_lunch_time',
         'end_shift_time',
-        'shift_timezone',
+        'shift_utc_offset',
     ];
 
      // Define the reverse relationship to EmployeeAssignedShift

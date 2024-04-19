@@ -23,7 +23,6 @@
                 <div class="col-md-12 mb-3">
                     <p class="mb-1"><strong>Shift Name:</strong> {{ optional($activeShiftRecord->employeeAssignedShift)->shiftSchedule->shift_name ?? 'Not available' }}</p>
                     <p class="mb-1"><strong>Shift Date:</strong> {{ \Carbon\Carbon::parse($activeShiftRecord->shift_date)->format('F j, Y') }}</p>
-                    <p class="mb-1"><strong>Timezone:</strong> UTC {{ $activeShiftRecord->assigned_timezone }}</p>
                 </div>
             </div>
             <!-- Clock-in/Clock-out buttons -->
@@ -36,7 +35,7 @@
                                 @csrf
                                 <button type="submit" class="btn btn-lg btn-block mb-2 {{ $activeShiftRecord->start_shift ? 'btn-warning' : 'btn-success' }}" style="background-color: {{ $activeShiftRecord->start_shift ? '#fca025' : 'white' }}; border: 1px solid black; color: black; width: 100%;" {{ $activeShiftRecord->start_shift ? 'disabled' : '' }}>
                                     <img src="{{ $activeShiftRecord->start_shift ? asset('media/images/icons/inout/has_value/SS_HAS_VALUE.png') : asset('media/images/icons/inout/null/SS_NULL.png') }}" alt="Clock In Icon" class="img-fluid mb-1" style="max-width: 50px;">
-                                    <span class="d-block">Clock In: {{ $activeShiftRecord->start_shift ? \Carbon\Carbon::parse($activeShiftRecord->start_shift)->format('H:i') : '-' }}</span>
+                                    <span class="d-block">Clock In: {{ $activeShiftRecord->start_shift ? $activeShiftRecord->start_shift->format('H:i') : '-' }}</span>
                                 </button>
                             </form>
                         </div>
@@ -46,7 +45,7 @@
                                 @csrf
                                 <button type="submit" class="btn btn-lg btn-block mb-2 {{ $activeShiftRecord->start_lunch ? 'btn-warning' : 'btn-success' }}" style="background-color: {{ $activeShiftRecord->start_lunch ? '#fca025' : 'white' }}; border: 1px solid black; color: black; width: 100%;" {{ !$activeShiftRecord->start_shift ? 'disabled' : ($activeShiftRecord->start_lunch ? 'disabled' : '') }}>
                                     <img src="{{ $activeShiftRecord->start_lunch ? asset('media/images/icons/inout/has_value/LS_HAS_VALUE.png') : asset('media/images/icons/inout/null/LS_NULL.png') }}" alt="Start Lunch Icon" class="img-fluid mb-1" style="max-width: 50px;">
-                                    <span class="d-block">Start Lunch: {{ $activeShiftRecord->start_lunch ? Carbon\Carbon::parse($activeShiftRecord->start_shift)->format('H:i') : '-' }}</span>
+                                    <span class="d-block">Start Lunch: {{ $activeShiftRecord->start_lunch ? $activeShiftRecord->start_lunch->format('H:i') : '-' }}</span>
                                 </button>
                             </form>
                         </div>
@@ -56,7 +55,7 @@
                                 @csrf
                                 <button type="submit" class="btn btn-lg btn-block mb-2 {{ $activeShiftRecord->end_lunch ? 'btn-warning' : 'btn-success' }}" style="background-color: {{ $activeShiftRecord->end_lunch ? '#fca025' : 'white' }}; border: 1px solid black; color: black; width: 100%;" {{ !$activeShiftRecord->start_lunch ? 'disabled' : ($activeShiftRecord->end_lunch ? 'disabled' : '') }}>
                                     <img src="{{ $activeShiftRecord->end_lunch ? asset('media/images/icons/inout/has_value/LE_HAS_VALUE.png') : asset('media/images/icons/inout/null/LE_NULL.png') }}" alt="End Lunch Icon" class="img-fluid mb-1" style="max-width: 50px;">
-                                    <span class="d-block">End Lunch: {{ $activeShiftRecord->end_lunch ? Carbon\Carbon::parse($activeShiftRecord->start_shift)->format('H:i') : '-' }}</span>
+                                    <span class="d-block">End Lunch: {{ $activeShiftRecord->end_lunch ? $activeShiftRecord->end_lunch->format('H:i') : '-' }}</span>
                                 </button>
                             </form>
                         </div>
@@ -66,7 +65,7 @@
                                 @csrf
                                 <button type="submit" class="btn btn-lg btn-block mb-2 {{ $activeShiftRecord->end_shift ? 'btn-warning' : 'btn-danger' }}" style="background-color: {{ $activeShiftRecord->end_shift ? '#fca025' : 'white' }}; border: 1px solid black; color: black; width: 100%;" {{ !$activeShiftRecord->end_lunch ? 'disabled' : ($activeShiftRecord->end_shift ? 'disabled' : '') }}>
                                     <img src="{{ $activeShiftRecord->end_shift ? asset('media/images/icons/inout/has_value/SE_HAS_VALUE.png') : asset('media/images/icons/inout/null/SE_NULL.png') }}" alt="Clock Out Icon" class="img-fluid mb-1" style="max-width: 50px;">
-                                    <span class="d-block">Clock Out: {{ $activeShiftRecord->end_shift ? Carbon\Carbon::parse($activeShiftRecord->start_shift)->format('H:i') : '-' }}</span>
+                                    <span class="d-block">Clock Out: {{ $activeShiftRecord->end_shift ? $activeShiftRecord->end_shift->format('H:i') : '-' }}</span>
                                 </button>
                             </form>
                         </div>
@@ -94,7 +93,8 @@
                 <ul class="list-group">
                     @foreach ($currentAssignedShifts as $assignedShift)
                     <li class="list-group-item">
-                        <strong>{{ $assignedShift->shiftSchedule->shift_name }}</strong>
+                        <strong>{{ $assignedShift->shiftSchedule->shift_name }} {{ 'UTC' . (\Carbon\Carbon::createFromTimestamp(0, 'UTC')->format('P', $assignedShift->shiftSchedule->shift_timezone)) }}
+                        </strong>
                         <br>
                         <span>Start Time: {{ $assignedShift->shiftSchedule->start_shift_time }}</span>
                         <br>

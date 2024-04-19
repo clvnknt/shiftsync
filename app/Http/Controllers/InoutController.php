@@ -61,7 +61,15 @@ class InoutController extends Controller
             $assignedShift->shiftSchedule->end_shift_time = Carbon::parse($assignedShift->shiftSchedule->end_shift_time)->format('H:i');
         }
     
-        // Pass the active shift record to the view
+        // Convert active shift record times to employee's timezone
+        if ($activeShiftRecord) {
+            $activeShiftRecord->start_shift = $activeShiftRecord->start_shift ? Carbon::parse($activeShiftRecord->start_shift)->timezone($timezone) : null;
+            $activeShiftRecord->start_lunch = $activeShiftRecord->start_lunch ? Carbon::parse($activeShiftRecord->start_lunch)->timezone($timezone) : null;
+            $activeShiftRecord->end_lunch = $activeShiftRecord->end_lunch ? Carbon::parse($activeShiftRecord->end_lunch)->timezone($timezone) : null;
+            $activeShiftRecord->end_shift = $activeShiftRecord->end_shift ? Carbon::parse($activeShiftRecord->end_shift)->timezone($timezone) : null;
+        }
+    
+        // Pass the active shift record and assigned shifts to the view
         return view('employees.inout', [
             'activeShiftRecord' => $activeShiftRecord,
             'currentAssignedShifts' => $currentAssignedShifts,

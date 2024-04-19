@@ -18,10 +18,10 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>{{ date_default_timezone_get() }} (UTC+8)</th>
-                        <th>Australia/Sydney (UTC+10)</th>
-                        <th>Europe/London (UTC+0)</th>
-                        <th>America/New York (UTC-5)</th>
+                        <th>Manila, Philippines</th>
+                        <th>Brisbane, Australia</th>
+                        <th>London, United Kingdom</th>
+                        <th>Washington, DC, United States</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,7 +42,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title">Holidays</h5>
-                        <p class="card-text">Placeholder text for Container 1</p>
+                        <p class="card-text">Placeholder text for Holidays</p>
                     </div>
                 </div>
             </div>
@@ -50,43 +50,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title">Upcoming Leaves</h5>
-                        <p class="card-text">Placeholder text for Container 2</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Containers 3 and 4 below -->
-            <div class="col-md-3">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Events</h5>
-                        <p class="card-text">Placeholder text for Container 3</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">UberTickets</h5>
-                        <p class="card-text">Placeholder text for Container 4</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Additional containers next to Containers 3 and 4 -->
-            <div class="col-md-3">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">News</h5>
-                        <p class="card-text">Placeholder text for Container 5</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Pending Requests</h5>
-                        <p class="card-text">Placeholder text for Container 6</p>
+                        <p class="card-text">Placeholder text for Upcoming Leaves</p>
                     </div>
                 </div>
             </div>
@@ -101,10 +65,15 @@
             var options = {
                 hour: '2-digit',
                 minute: '2-digit',
-                hour12: false // Use 24-hour format
+                hour12: false, // Use 24-hour format
+                weekday: 'short', // Display the day of the week
+                day: '2-digit', // Display the day of the month
+                month: 'short', // Display the month
+                year: 'numeric' // Display the year
             };
+
             var phTime = new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', ...options });
-            var auTime = new Date().toLocaleTimeString('en-US', { timeZone: 'Australia/Sydney', ...options });
+            var auTime = new Date().toLocaleTimeString('en-US', { timeZone: 'Australia/Brisbane', ...options });
             var ukTime = new Date().toLocaleTimeString('en-US', { timeZone: 'Europe/London', ...options });
             var usTime = new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York', ...options });
 
