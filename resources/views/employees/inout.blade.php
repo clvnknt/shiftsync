@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'In/Out')
+@section('title', 'In/Out - StaffCentral')
 
 @section('content')
 <div class="container mt-4">
     <!-- Header: In/Out -->
     <div class="row">
         <div class="col-md-6">
-            <h2 class="mb-4">In/Out</h2>
+            <h2 class="mb-4">In/Out - StaffCentral</h2>
         </div>
     </div>
 
@@ -93,7 +93,7 @@
                 <ul class="list-group">
                     @foreach ($currentAssignedShifts as $assignedShift)
                     <li class="list-group-item">
-                        <strong>{{ $assignedShift->shiftSchedule->shift_name }} {{ 'UTC' . (\Carbon\Carbon::createFromTimestamp(0, 'UTC')->format('P', $assignedShift->shiftSchedule->shift_timezone)) }}
+                        <strong>{{ $assignedShift->shiftSchedule->shift_name }} {{ 'UTC' . \Carbon\Carbon::now($assignedShift->shiftSchedule->shift_timezone)->offsetHours }}
                         </strong>
                         <br>
                         <span>Start Time: {{ $assignedShift->shiftSchedule->start_shift_time }}</span>

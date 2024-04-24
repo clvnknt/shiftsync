@@ -2,18 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
-
-use App\Models\User;
-use App\Models\EmployeeRecord;
+use Illuminate\Http\Request;
 use App\Models\EmployeeShiftRecord;
-use App\Models\Shift;
 
 class TimesheetController extends Controller
 {
-    public function showTimesheet()
+    public function showTimesheet(Request $request)
     {
+        // Check if start_date and end_date are provided in the request
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
 
-     return view('employees.timesheet');
+            // Fetch shift records within the specified date range
+            $shiftRecords = EmployeeShiftRecord::whereBetween('shift_date', [$startDate, $endDate])->get();
+            
+            // Pass the shift records to the view
+            return view('employees.timesheet', compact('shiftRecords'));
+        }
+
+        // If start_date and end_date are not provided, simply return the view
+        return view('employees.timesheet');
     }
 }

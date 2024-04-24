@@ -6,7 +6,7 @@
 <div class="container mt-4 mb-4">
     <div class="row">
         <div class="col-md-12">
-            <h2 class="mb-4">My Account</h2>
+            <h2 class="mb-4">My Account - StaffCentral</h2>
         </div>
     </div>
     <div class="row">
