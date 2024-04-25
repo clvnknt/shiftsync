@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="{{ asset('css/login.css') }}" rel="stylesheet">
+    <style>
+        .login-container {
+            /* Remove or adjust the box-shadow property */
+            box-shadow: none;
+        }
+    </style>
 </head>
 <body>
     <div class="container">

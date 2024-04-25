@@ -3,25 +3,45 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\EmployeeRecord;
 use App\Models\EmployeeShiftRecord;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class TimesheetController extends Controller
 {
     public function showTimesheet(Request $request)
     {
-        // Check if start_date and end_date are provided in the request
-        if ($request->filled('start_date') && $request->filled('end_date')) {
-            $startDate = $request->input('start_date');
-            $endDate = $request->input('end_date');
+        // Check if the user is authenticated
+        if (Auth::check()) {
+            // Get the authenticated user's ID
+            $userId = Auth::id();
 
-            // Fetch shift records within the specified date range
-            $shiftRecords = EmployeeShiftRecord::whereBetween('shift_date', [$startDate, $endDate])->get();
-            
-            // Pass the shift records to the view
-            return view('employees.timesheet', compact('shiftRecords'));
+            // Retrieve the employee record associated with the authenticated user
+            $employeeRecord = EmployeeRecord::where('user_id', $userId)->first();
+
+            // Check if the employee record exists
+            if ($employeeRecord) {
+                // Get the employee timezone
+                $employeeTimezone = $employeeRecord->employee_timezone;
+
+                // Get the current date
+                $today = Carbon::today()->toDateString();
+
+                // Fetch shift record for today
+                $shiftRecord = EmployeeShiftRecord::where('employee_record_id', $employeeRecord->id)
+                    ->whereDate('shift_date', $today)
+                    ->first();
+
+                // Pass the shift record and employee timezone to the view
+                return view('employees.timesheet', compact('shiftRecord', 'employeeTimezone'));
+            } else {
+                // Handle case where employee record does not exist for the user
+                return response()->json(['message' => 'Employee record not found'], 404);
+            }
         }
 
-        // If start_date and end_date are not provided, simply return the view
-        return view('employees.timesheet');
+        // If the user is not authenticated, redirect to the login page
+        return redirect()->route('login');
     }
 }
