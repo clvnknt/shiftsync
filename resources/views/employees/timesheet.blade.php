@@ -103,15 +103,7 @@
                     <th>Start Lunch</th>
                     <th>Lunch Ended</th>
                     <th>Shift Ended</th>
-                    <!-- Add other table headers here -->
-                    <th>Status</th>
-                    <th>Late(IN)</th>
-                    <th>Late(BFL)</th>
-                    <th>UT</th>
                     <th>Hours Rendered</th>
-                    <th>OT (Filed)</th>
-                    <th>UT (Filed)</th>
-                    <th>ND</th>
                 </tr>
             </thead>
             <tbody>
@@ -122,15 +114,7 @@
                     <td>{{ \Carbon\Carbon::parse($shiftRecord->start_lunch)->timezone($employeeTimezone)->format('H:i') }}</td>
                     <td>{{ \Carbon\Carbon::parse($shiftRecord->end_lunch)->timezone($employeeTimezone)->format('H:i') }}</td>
                     <td>{{ \Carbon\Carbon::parse($shiftRecord->end_shift)->timezone($employeeTimezone)->format('H:i') }}</td>
-                    <!-- Add other shift-related data here -->
-                    <td>N/A</td> <!-- Placeholder for Status -->
-                    <td>N/A</td> <!-- Placeholder for Late(IN) -->
-                    <td>N/A</td> <!-- Placeholder for Late(BFL) -->
-                    <td>N/A</td> <!-- Placeholder for UT -->
                     <td>N/A</td> <!-- Placeholder for Hours Rendered -->
-                    <td>N/A</td> <!-- Placeholder for OT (Filed) -->
-                    <td>N/A</td> <!-- Placeholder for UT (Filed) -->
-                    <td>N/A</td> <!-- Placeholder for ND -->
                 </tr>
                 @else
                 <tr>
@@ -139,16 +123,7 @@
                     <td>N/A</td>
                     <td>N/A</td>
                     <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
+                    <td>N/A</td> <!-- Placeholder for Hours Rendered -->
                 </tr>
                 @endif
             </tbody>
@@ -157,122 +132,44 @@
 </div>
 
 
-        <!-- Summary -->
-        <div class="card mb-4" style="border-radius: 20px;">
-            <div class="card-body">
-                <h4 class="mb-3"><img src="{{ asset('media/images/icons/timesheet/summary.png') }}" alt="Summary Icon" class="img-fluid" style="width: 50px; height: 50px;"> Summary</h4>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th>Hours</th>
-                            <th>Description</th>
-                            <th>Hours</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Summary table data -->
-                        <tr>
-                            <td>Overall Computation:</td>
-                            <td>8 Hour/s</td>
-                            <td>Total Holiday Worked Hours (Regular):</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Total Worked Hours (Regular):</td>
-                            <td>0 Hour/s</td>
-                            <td>Total Holiday Overtime (Regular):</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Total Overtime (Regular):</td>
-                            <td>0 Hour/s</td>
-                            <td>Total Holiday Night Diff (Regular):</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Total Night Differential (Regular):</td>
-                            <td>0 Hour/s</td>
-                            <td>Total Holiday Overtime Night Diff (Regular):</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Total Overtime Night Diff. (Regular):</td>
-                            <td>0 Hour/s</td>
-                            <td>Total Worked Hours (Regular Hol & Day Off):</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Total Worked Hours (Day Off):</td>
-                            <td>0 Hour/s</td>
-                            <td>Total Overtime (Regular Hol & Day Off):</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Total Night Differential (Day Off):</td>
-                            <td>0 Hour/s</td>
-                            <td>Total Night Differential (Regular Hol & Day Off):</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Total Overtime Night Diff (Regular Hol & Day Off):</td>
-                            <td>0 Hour/s</td>
-                            <td>Total Overtime Night Diff (Day Off):</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Total Holiday Worked Hours (Special):</td>
-                            <td>0 Hour/s</td>
-                            <td>Total Leave Hours (With Pay):</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Total Holiday Overtime (Special):</td>
-                            <td>0 Hour/s</td>
-                            <td>Total Leave Hours (Without Pay):</td>
-                            <td>8 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Total Holiday Night Diff (Special):</td>
-                            <td>0 Hour/s</td>
-                            <td>Total Offset Regular Holiday:</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Total Holiday Overtime Night Diff (Special):</td>
-                            <td>0 Hour/s</td>
-                            <td>Total Offset Special Holiday:</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Total Worked Hours (Special Hol & Day Off):</td>
-                            <td>0 Hour/s</td>
-                            <td>Adjustment:</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Total Overtime (Special Hol & Day Off):</td>
-                            <td>0 Hour/s</td>
-                            <td>Holiday Premium Adjustment:</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Total Night Differential (Special Hol & Day Off):</td>
-                            <td>0 Hour/s</td>
-                            <td>Tardiness/Undertime:</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Total Overtime Night Diff (Special Hol & Day Off):</td>
-                            <td>0 Hour/s</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<!-- Summary -->
+<div class="card mb-4" style="border-radius: 20px;">
+    <div class="card-body">
+        <h4 class="mb-3"><img src="{{ asset('media/images/icons/timesheet/summary.png') }}" alt="Summary Icon" class="img-fluid" style="width: 50px; height: 50px;"> Summary</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Hours</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Summary table data -->
+                <tr>
+                    <td>Total Worked Hours (Regular):</td>
+                    <td>0 Hour/s</td>
+                </tr>
+                <tr>
+                    <td>Tardiness:</td>
+                    <td>0 Hour/s</td>
+                </tr>
+                <tr>
+                    <td>Undertime:</td>
+                    <td>0 Hour/s</td>
+                </tr>
+                <tr>
+                    <td>Overtime:</td>
+                    <td>0 Hour/s</td>
+                </tr>
+                <tr>
+                    <td>Overall Computation:</td>
+                    <td>8 Hour/s</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
+</div>
+</div>
 @endsection
 
 @section('styles')

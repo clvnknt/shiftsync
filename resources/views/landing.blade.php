@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Company In/Out System')
+@section('title', 'Landing - StaffCentral')
 
 @section('content')
     <style>
