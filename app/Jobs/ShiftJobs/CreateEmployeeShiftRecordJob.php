@@ -37,11 +37,11 @@ class CreateEmployeeShiftRecordJob implements ShouldQueue
     public function handle()
     {
         try {
-            // Calculate the current date using the employee's timezone
-            $currentDate = Carbon::now($this->employeeTimezone)->startOfDay();
+            // Get the current date using the employee's timezone
+            $currentDate = Carbon::now($this->employeeTimezone)->startOfMonth();
             
-            // Calculate the last day of the month
-            $lastDayOfMonth = Carbon::now($this->employeeTimezone)->endOfMonth()->startOfDay();
+            // Get the last day of the month
+            $lastDayOfMonth = Carbon::now($this->employeeTimezone)->endOfMonth();
 
             // Loop through each day until the end of the month
             while ($currentDate->lte($lastDayOfMonth)) {
@@ -97,11 +97,11 @@ class CreateEmployeeShiftRecordJob implements ShouldQueue
             }
 
             // Output success message
-            Log::info('Daily shift records creation or update completed successfully.');
+            Log::info('Monthly shift records creation completed successfully.');
         } catch (\Exception $e) {
             // Log any exceptions for debugging
             Log::error('Exception occurred: ' . $e->getMessage());
-            Log::error('An error occurred while creating or updating daily shift records.');
+            Log::error('An error occurred while creating monthly shift records.');
         }
     }
 }

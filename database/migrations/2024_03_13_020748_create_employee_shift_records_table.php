@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('start_lunch')->nullable();
             $table->timestamp('end_lunch')->nullable();
             $table->timestamp('end_shift')->nullable();
+            $table->timestamp('hours_rendered')->nullable();
             $table->unsignedInteger('shift_order')->nullable();
             $table->timestamps();
 

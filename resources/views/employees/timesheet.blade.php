@@ -3,19 +3,19 @@
 @section('title', 'Timesheet - StaffCentral')
 
 @section('content')
-    <!-- Your timesheet content goes here -->
     <div class="container mt-4 mb-5">
         <!-- Header: Timesheet -->
         <div class="row">
             <div class="col-md-6">
-                <h2 class="mb-4">Timesheet
+                <h2 class="mb-4">Timesheet</h2>
             </div>
         </div>
         
+        <!-- Legend -->
         <div class="row mb-4">
-            <div class="col-md-6 d-flex">
+            <div class="col-md-6 d-flex mb-4">
                 <div class="card flex-fill" style="border-radius: 20px;">
-                    <div class="card-body" style="height: 270px;"> <!-- Adjust the height here -->
+                    <div class="card-body" style="height: 270px;">
                         <h5 class="card-title"><img src="{{ asset('media/images/icons/timesheet/legend.png') }}" alt="Legend Icon" class="img-fluid" style="width: 50px; height: 50px;"> Legend</h5>
                         <div class="row">
                             <div class="col-md-6">
@@ -31,18 +31,30 @@
                     </div>
                 </div>
             </div>
-        
-        
                 
-            <div class="col-md-6 d-flex">
+            <div class="col-md-6 d-flex mb-4">
                 <div class="card flex-fill" style="border-radius: 20px;">
-                    <div class="card-body" style="height: 270px;"> <!-- Adjust the height here -->
-                        <h5 class="card-title"><img src="{{ asset('media/images/icons/timesheet/view-format.png') }}" alt="Choose View Format Icon" class="img-fluid" style="width: 50px; height: 50px;"> Choose View Format</h5>
+                    <div class="card-body" style="height: 500px;">
+                        <h5 class="card-title">
+                            <img src="{{ asset('media/images/icons/timesheet/view-format.png') }}" alt="Choose View Format Icon" class="img-fluid" style="width: 50px; height: 50px;"> View Records Format
+                        </h5>
+
+                        <!-- Shift Name Dropdown -->
+                        <div id="shiftNameDropdownContainer" class="mt-3">
+                            <label for="Choose Shift Schedule">Select Shift Name:</label>
+                            <select id="shiftNameSelect" class="form-control">
+                                <option value="">-</option>
+                                @foreach($shiftNames as $id => $shiftName)
+                                    <option value="{{ $id }}">{{ $shiftName }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         
                         <!-- Dropdown for view format -->
                         <div id="viewFormatContainer" class="mt-3">
+                            <label for="viewFormatSelect">Select Format:</label>
                             <select id="viewFormatSelect" class="form-control">
-                                <option value="">-</option> <!-- Default option with no value -->
+                                <option value="">-</option>
                                 <option value="cutoff">Cutoff Period</option>
                                 <option value="range">Date Range</option>
                             </select>
@@ -53,7 +65,6 @@
                             <label for="cutoffSelect">Select Cutoff Period:</label>
                             <select id="cutoffSelect" class="form-control">
                                 <option value="">-</option>
-                                <!-- Add cutoff period options dynamically using JavaScript -->
                             </select>
                         </div>
                         
@@ -75,105 +86,103 @@
                             </div>
                         </div>
                         
-                        <!-- Buttons for Cutoff Period view -->
-                        <div id="cutoffButtons" class="mt-3" style="display: none;">
-                            <button type="button" class="btn btn-success">View</button>
-                        </div>
+                       <!-- Buttons for Cutoff Period view -->
+<div id="cutoffButtons" class="mt-3" style="display: none;">
+    <button id="viewButton" type="button" class="btn btn-success">View</button>
+</div>
+
                         
                         <!-- Icons for Date Range view -->
                         <div id="rangeIcons" class="mt-3" style="display: none;">
-                            <button type="button" class="btn btn-success">View</button>
+                            <button type="button" class="btn btn-success" onclick="fetchRecords()">View</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        
-        
-<!-- Timesheet Table -->
-<div class="card mb-4" style="border-radius: 20px;">
-    <div class="card-body">
-        <h4 class="mb-3"><img src="{{ asset('media/images/icons/timesheet/records.png') }}" alt="Records Icon" class="img-fluid" style="width: 50px; height: 50px;"> Records</h4>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Shift Started</th>
-                    <th>Start Lunch</th>
-                    <th>Lunch Ended</th>
-                    <th>Shift Ended</th>
-                    <th>Hours Rendered</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if($shiftRecord)
-                <tr>
-                    <td>{{ \Carbon\Carbon::today()->format('F d, Y') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($shiftRecord->start_shift)->timezone($employeeTimezone)->format('H:i') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($shiftRecord->start_lunch)->timezone($employeeTimezone)->format('H:i') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($shiftRecord->end_lunch)->timezone($employeeTimezone)->format('H:i') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($shiftRecord->end_shift)->timezone($employeeTimezone)->format('H:i') }}</td>
-                    <td>N/A</td> <!-- Placeholder for Hours Rendered -->
-                </tr>
-                @else
-                <tr>
-                    <td>{{ \Carbon\Carbon::today()->format('F d, Y') }}</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td> <!-- Placeholder for Hours Rendered -->
-                </tr>
-                @endif
-            </tbody>
-        </table>
-    </div>
-</div>
+            
+        <!-- Records -->
+        <div class="card mb-4" style="border-radius: 20px;">
+            <div class="card-body">
+                <h4 class="mb-3"><img src="{{ asset('media/images/icons/timesheet/records.png') }}" alt="Records Icon" class="img-fluid" style="width: 50px; height: 50px;"> Records</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Shift Name</th>
+                            <th>Shift Schedule</th>
+                            <th>Shift Started</th>
+                            <th>Start Lunch</th>
+                            <th>Lunch Ended</th>
+                            <th>Shift Ended</th>
+                            <th>Hours Rendered</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recordsTableBody">
+                        @if($records)
+                            @foreach($records as $record)
+                                <tr>
+                                    <td>{{ $record->shift_date }}</td>
+                                    <td>{{ $record->shiftName }}</td>
+                                    <td>{{ $record->shiftSchedule }}</td>
+                                    <td>{{ $record->start_shift }}</td>
+                                    <td>{{ $record->start_lunch }}</td>
+                                    <td>{{ $record->end_lunch }}</td>
+                                    <td>{{ $record->end_shift }}</td>
+                                    <td>{{ $record->hours_rendered }}</td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="8">No records found.</td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-
-<!-- Summary -->
-<div class="card mb-4" style="border-radius: 20px;">
-    <div class="card-body">
-        <h4 class="mb-3"><img src="{{ asset('media/images/icons/timesheet/summary.png') }}" alt="Summary Icon" class="img-fluid" style="width: 50px; height: 50px;"> Summary</h4>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Description</th>
-                    <th>Hours</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Summary table data -->
-                <tr>
-                    <td>Total Worked Hours (Regular):</td>
-                    <td>0 Hour/s</td>
-                </tr>
-                <tr>
-                    <td>Tardiness:</td>
-                    <td>0 Hour/s</td>
-                </tr>
-                <tr>
-                    <td>Undertime:</td>
-                    <td>0 Hour/s</td>
-                </tr>
-                <tr>
-                    <td>Overtime:</td>
-                    <td>0 Hour/s</td>
-                </tr>
-                <tr>
-                    <td>Overall Computation:</td>
-                    <td>8 Hour/s</td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- Summary -->
+        <div class="card mb-4" style="border-radius: 20px;">
+            <div class="card-body">
+                <h4 class="mb-3"><img src="{{ asset('media/images/icons/timesheet/summary.png') }}" alt="Summary Icon" class="img-fluid" style="width: 50px; height: 50px;"> Summary</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Summary table data -->
+                        <tr>
+                            <td>Total Worked Hours (Regular):</td>
+                            <td>0 Hour/s</td>
+                        </tr>
+                        <tr>
+                            <td>Tardiness:</td>
+                            <td>0 Hour/s</td>
+                        </tr>
+                        <tr>
+                            <td>Undertime:</td>
+                            <td>0 Hour/s</td>
+                        </tr>
+                        <tr>
+                            <td>Overtime:</td>
+                            <td>0 Hour/s</td>
+                        </tr>
+                        <tr>
+                            <td>Overall Computation:</td>
+                            <td>0 Hour/s</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-</div>
-</div>
 @endsection
 
 @section('styles')
-    <!-- Additional styles specific to the timesheet page -->
     <style>
         .card {
             border: none;
@@ -187,38 +196,119 @@
 @endsection
 
 @section('scripts')
-    <!-- Additional scripts specific to the timesheet page -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Get the select element for view format
             var viewFormatSelect = document.getElementById("viewFormatSelect");
-
-            // Get the containers for cutoff, date range, cutoff buttons, and range icons
+            var shiftNameSelect = document.getElementById("shiftNameSelect");
             var cutoffContainer = document.getElementById("cutoffContainer");
             var dateRangeContainer = document.getElementById("dateRangeContainer");
             var cutoffButtonsContainer = document.getElementById("cutoffButtons");
             var rangeIconsContainer = document.getElementById("rangeIcons");
+            var viewFormatContainer = document.getElementById("viewFormatContainer");
 
-            // Add event listener to detect changes in the view format select
-            viewFormatSelect.addEventListener("change", function() {
-                // Get the selected view format
-                var selectedFormat = viewFormatSelect.value;
-
-                // Hide all containers
+            function hideAll() {
+                viewFormatContainer.style.display = "none";
                 cutoffContainer.style.display = "none";
                 dateRangeContainer.style.display = "none";
                 cutoffButtonsContainer.style.display = "none";
                 rangeIconsContainer.style.display = "none";
+            }
 
-                // Display the appropriate container(s) based on the selected format
+            function showRelated() {
+                var selectedFormat = viewFormatSelect.value;
+
                 if (selectedFormat === "cutoff") {
                     cutoffContainer.style.display = "block";
                     cutoffButtonsContainer.style.display = "block";
+                    dateRangeContainer.style.display = "none";
+                    rangeIconsContainer.style.display = "none";
                 } else if (selectedFormat === "range") {
                     dateRangeContainer.style.display = "block";
                     rangeIconsContainer.style.display = "block";
+                    cutoffContainer.style.display = "none";
+                    cutoffButtonsContainer.style.display = "none";
                 }
+            }
+
+            viewFormatSelect.addEventListener("change", function() {
+                var selectedShiftName = shiftNameSelect.value;
+                var selectedFormat = viewFormatSelect.value;
+
+                if (selectedShiftName === "-") {
+                    hideAll();
+                    return;
+                }
+
+                viewFormatContainer.style.display = "block";
+                showRelated();
+            });
+
+            shiftNameSelect.addEventListener("change", function() {
+                var selectedShiftName = shiftNameSelect.value;
+
+                if (selectedShiftName === "-") {
+                    hideAll();
+                    return;
+                }
+
+                viewFormatContainer.style.display = "block";
+                showRelated();
+            });
+
+            hideAll();
+
+            document.getElementById("viewButton").addEventListener("click", function() {
+                fetchRecords();
             });
         });
+        function fetchRecords() {
+        var shiftId = document.getElementById('shiftNameSelect').value;
+        var startDate = document.getElementById('start_date').value;
+        var endDate = document.getElementById('end_date').value;
+
+        if (!startDate || !endDate) {
+            alert("Please select both start date and end date.");
+            return;
+        }
+
+        var url = '/fetch-records';
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                shiftId: shiftId,
+                startDate: startDate,
+                endDate: endDate
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update the table with the fetched records
+            var recordsTableBody = document.getElementById('recordsTableBody');
+            recordsTableBody.innerHTML = '';
+
+            data.forEach(record => {
+                var row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${record.shift_date}</td>
+                    <td>${record.shiftName}</td>
+                    <td>${record.shiftSchedule.shift_name}</td>
+                    <td>${record.start_shift}</td>
+                    <td>${record.start_lunch}</td>
+                    <td>${record.end_lunch}</td>
+                    <td>${record.end_shift}</td>
+                    <td>${record.hours_rendered}</td>
+                `;
+                recordsTableBody.appendChild(row);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching records:', error);
+        });
+    }
     </script>
 @endsection

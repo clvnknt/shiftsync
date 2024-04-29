@@ -40,6 +40,8 @@ Route::middleware('auth')->group(function () {
 
     // Timesheet Route
     Route::get('/timesheet', [TimesheetController::class, 'showTimesheet'])->name('timesheet');
+    Route::post('/fetch-records', [TimesheetController::class, 'fetchRecords'])->name('fetch.records');
+
 
     Route::get('/my-account', [AccountController::class, 'showMyAccount'])->name('myAccount');
 });
