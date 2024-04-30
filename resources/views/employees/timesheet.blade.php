@@ -196,72 +196,81 @@
 @endsection
 
 @section('scripts')
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var viewFormatSelect = document.getElementById("viewFormatSelect");
-            var shiftNameSelect = document.getElementById("shiftNameSelect");
-            var cutoffContainer = document.getElementById("cutoffContainer");
-            var dateRangeContainer = document.getElementById("dateRangeContainer");
-            var cutoffButtonsContainer = document.getElementById("cutoffButtons");
-            var rangeIconsContainer = document.getElementById("rangeIcons");
-            var viewFormatContainer = document.getElementById("viewFormatContainer");
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // DOM elements
+        var viewFormatSelect = document.getElementById("viewFormatSelect");
+        var shiftNameSelect = document.getElementById("shiftNameSelect");
+        var cutoffContainer = document.getElementById("cutoffContainer");
+        var dateRangeContainer = document.getElementById("dateRangeContainer");
+        var cutoffButtonsContainer = document.getElementById("cutoffButtons");
+        var rangeIconsContainer = document.getElementById("rangeIcons");
+        var viewFormatContainer = document.getElementById("viewFormatContainer");
 
-            function hideAll() {
-                viewFormatContainer.style.display = "none";
-                cutoffContainer.style.display = "none";
+        // Function to hide all containers
+        function hideAll() {
+            viewFormatContainer.style.display = "none";
+            cutoffContainer.style.display = "none";
+            dateRangeContainer.style.display = "none";
+            cutoffButtonsContainer.style.display = "none";
+            rangeIconsContainer.style.display = "none";
+        }
+
+        // Function to show related containers based on selected format
+        function showRelated() {
+            var selectedFormat = viewFormatSelect.value;
+
+            if (selectedFormat === "cutoff") {
+                cutoffContainer.style.display = "block";
+                cutoffButtonsContainer.style.display = "block";
                 dateRangeContainer.style.display = "none";
-                cutoffButtonsContainer.style.display = "none";
                 rangeIconsContainer.style.display = "none";
+            } else if (selectedFormat === "range") {
+                dateRangeContainer.style.display = "block";
+                rangeIconsContainer.style.display = "block";
+                cutoffContainer.style.display = "none";
+                cutoffButtonsContainer.style.display = "none";
+            }
+        }
+
+        // Event listener for view format selection change
+        viewFormatSelect.addEventListener("change", function() {
+            var selectedShiftName = shiftNameSelect.value;
+            var selectedFormat = viewFormatSelect.value;
+
+            if (selectedShiftName === "-") {
+                hideAll();
+                return;
             }
 
-            function showRelated() {
-                var selectedFormat = viewFormatSelect.value;
-
-                if (selectedFormat === "cutoff") {
-                    cutoffContainer.style.display = "block";
-                    cutoffButtonsContainer.style.display = "block";
-                    dateRangeContainer.style.display = "none";
-                    rangeIconsContainer.style.display = "none";
-                } else if (selectedFormat === "range") {
-                    dateRangeContainer.style.display = "block";
-                    rangeIconsContainer.style.display = "block";
-                    cutoffContainer.style.display = "none";
-                    cutoffButtonsContainer.style.display = "none";
-                }
-            }
-
-            viewFormatSelect.addEventListener("change", function() {
-                var selectedShiftName = shiftNameSelect.value;
-                var selectedFormat = viewFormatSelect.value;
-
-                if (selectedShiftName === "-") {
-                    hideAll();
-                    return;
-                }
-
-                viewFormatContainer.style.display = "block";
-                showRelated();
-            });
-
-            shiftNameSelect.addEventListener("change", function() {
-                var selectedShiftName = shiftNameSelect.value;
-
-                if (selectedShiftName === "-") {
-                    hideAll();
-                    return;
-                }
-
-                viewFormatContainer.style.display = "block";
-                showRelated();
-            });
-
-            hideAll();
-
-            document.getElementById("viewButton").addEventListener("click", function() {
-                fetchRecords();
-            });
+            viewFormatContainer.style.display = "block";
+            showRelated();
         });
-        function fetchRecords() {
+
+        // Event listener for shift name selection change
+        shiftNameSelect.addEventListener("change", function() {
+            var selectedShiftName = shiftNameSelect.value;
+
+            if (selectedShiftName === "-") {
+                hideAll();
+                return;
+            }
+
+            viewFormatContainer.style.display = "block";
+            showRelated();
+        });
+
+        // Initial hide all containers
+        hideAll();
+
+        // Event listener for view button click
+        document.getElementById("viewButton").addEventListener("click", function() {
+            fetchRecords(); // Calling function to fetch records from API
+        });
+    });
+
+    // Function to fetch records from API
+    function fetchRecords() {
         var shiftId = document.getElementById('shiftNameSelect').value;
         var startDate = document.getElementById('start_date').value;
         var endDate = document.getElementById('end_date').value;
@@ -271,8 +280,9 @@
             return;
         }
 
-        var url = '/fetch-records';
+        var url = '/fetch-records'; // API endpoint
 
+        // Fetch API request to the API endpoint
         fetch(url, {
             method: 'POST',
             headers: {
@@ -285,18 +295,19 @@
                 endDate: endDate
             })
         })
-        .then(response => response.json())
+        .then(response => response.json()) // Parse response as JSON
         .then(data => {
             // Update the table with the fetched records
             var recordsTableBody = document.getElementById('recordsTableBody');
             recordsTableBody.innerHTML = '';
 
+            // Iterate over fetched records and append to the table
             data.forEach(record => {
                 var row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${record.shift_date}</td>
                     <td>${record.shiftName}</td>
-                    <td>${record.shiftSchedule.shift_name}</td>
+                    <td>${record.shiftSchedule.start_shift_time} to ${record.shiftSchedule.end_shift_time}</td>
                     <td>${record.start_shift}</td>
                     <td>${record.start_lunch}</td>
                     <td>${record.end_lunch}</td>
@@ -307,8 +318,8 @@
             });
         })
         .catch(error => {
-            console.error('Error fetching records:', error);
+            console.error('Error fetching records:', error); // Log any errors
         });
     }
-    </script>
+</script>
 @endsection

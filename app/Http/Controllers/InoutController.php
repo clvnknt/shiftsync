@@ -29,6 +29,7 @@ class InoutController extends Controller
         if (!$activeShiftRecord) {
             return view('employees.inout', [
                 'activeShiftRecord' => null,
+                'currentAssignedShifts' => [],
             ]);
         }
     
@@ -37,22 +38,44 @@ class InoutController extends Controller
     
         // If all values are logged, find the next shift record and replace the active shift
         if ($isShiftLogged) {
+            // Get the next shift order
+            $nextShiftOrder = $activeShiftRecord->shift_order + 1;
+
+            // Find the next shift record with an active assigned shift
             $nextShiftRecord = EmployeeShiftRecord::where('employee_record_id', $employeeRecord->id)
-                ->where('shift_order', '>', $activeShiftRecord->shift_order)
+                ->where('shift_order', '>=', $nextShiftOrder) // Start searching from the next shift order
                 ->where('shift_date', $currentDate)
+                ->whereHas('employeeAssignedShift', function ($query) {
+                    $query->where('is_active', true);
+                })
                 ->orderBy('shift_order')
                 ->first();
-            
+
+            // If no next shift record is found, loop back to the first shift order
+            if (!$nextShiftRecord) {
+                $nextShiftRecord = EmployeeShiftRecord::where('employee_record_id', $employeeRecord->id)
+                    ->where('shift_date', $currentDate)
+                    ->whereHas('employeeAssignedShift', function ($query) {
+                        $query->where('is_active', true);
+                    })
+                    ->orderBy('shift_order')
+                    ->first();
+            }
+
             // Replace the active shift record with the next shift record
             $activeShiftRecord = $nextShiftRecord;
         }
     
-        // Retrieve all current assigned shifts for the employee
+        // Retrieve all current assigned shifts for the employee where is_active is true
         $currentAssignedShifts = EmployeeAssignedShift::where('employee_record_id', $employeeRecord->id)
             ->where('is_active', true)
-            ->with('shiftSchedule')
+            ->whereHas('employeeShiftRecords', function ($query) use ($currentDate) {
+                $query->where('shift_date', $currentDate)
+                    ->where('is_active', true);
+            })
+            ->with(['shiftSchedule'])
             ->get();
-    
+
         // Format time values for currently assigned shifts
         foreach ($currentAssignedShifts as $assignedShift) {
             $assignedShift->shiftSchedule->start_shift_time = Carbon::parse($assignedShift->shiftSchedule->start_shift_time)->format('H:i');

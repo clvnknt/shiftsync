@@ -49,14 +49,15 @@ class TimesheetController extends Controller
                     $shiftRecord->clock_out_time = Carbon::parse($shiftRecord->clock_out_time)->setTimezone($employeeTimezone);
                 }
     
-                // Parse shift dates and times to the employee's timezone
-                $shiftRecordDate = $shiftRecord ? Carbon::parse($shiftRecord->shift_date)->timezone($employeeTimezone)->format('F d, Y') : null;
-                $shiftRecordStartTime = $shiftRecord && $shiftRecord->employeeAssignedShift ? Carbon::parse($shiftRecord->employeeAssignedShift->shiftSchedule->start_shift_time)->format('H:i') : null;
-                $shiftRecordEndTime = $shiftRecord && $shiftRecord->employeeAssignedShift ? Carbon::parse($shiftRecord->employeeAssignedShift->shiftSchedule->end_shift_time)->format('H:i') : null;
-                $shiftRecordStartShift = $shiftRecord ? Carbon::parse($shiftRecord->start_shift)->timezone($employeeTimezone)->format('H:i') : null;
-                $shiftRecordStartLunch = $shiftRecord ? Carbon::parse($shiftRecord->start_lunch)->timezone($employeeTimezone)->format('H:i') : null;
-                $shiftRecordEndLunch = $shiftRecord ? Carbon::parse($shiftRecord->end_lunch)->timezone($employeeTimezone)->format('H:i') : null;
-                $shiftRecordEndShift = $shiftRecord ? Carbon::parse($shiftRecord->end_shift)->timezone($employeeTimezone)->format('H:i') : null;
+// Parse shift dates and times to display only hours and minutes
+$shiftRecordDate = $shiftRecord ? Carbon::parse($shiftRecord->shift_date)->timezone($employeeTimezone)->format('H:i') : null;
+$shiftRecordStartTime = $shiftRecord && $shiftRecord->employeeAssignedShift ? Carbon::parse($shiftRecord->employeeAssignedShift->shiftSchedule->start_shift_time)->timezone($employeeTimezone)->format('H:i') : null;
+$shiftRecordEndTime = $shiftRecord && $shiftRecord->employeeAssignedShift ? Carbon::parse($shiftRecord->employeeAssignedShift->shiftSchedule->end_shift_time)->timezone($employeeTimezone)->format('H:i') : null;
+$shiftRecordStartShift = $shiftRecord ? Carbon::parse($shiftRecord->start_shift)->timezone($employeeTimezone)->format('H:i') : null;
+$shiftRecordStartLunch = $shiftRecord ? Carbon::parse($shiftRecord->start_lunch)->timezone($employeeTimezone)->format('H:i') : null;
+$shiftRecordEndLunch = $shiftRecord ? Carbon::parse($shiftRecord->end_lunch)->timezone($employeeTimezone)->format('H:i') : null;
+$shiftRecordEndShift = $shiftRecord ? Carbon::parse($shiftRecord->end_shift)->timezone($employeeTimezone)->format('H:i') : null;
+
     
                 // Fetch shift records for the specified date range
                 $shiftId = $request->input('shiftId');
@@ -103,7 +104,7 @@ class TimesheetController extends Controller
         return [
             'shift_date' => $record->shift_date,
             'shiftName' => $record->employeeAssignedShift->shiftSchedule->shift_name,
-            'shiftSchedule' => $record->employeeAssignedShift->shiftSchedule->toArray(), // Assuming you want the entire shift schedule details
+            'shiftSchedule' => $record->employeeAssignedShift->shiftSchedule->toArray(),
             'start_shift' => $record->start_shift,
             'start_lunch' => $record->start_lunch,
             'end_lunch' => $record->end_lunch,
