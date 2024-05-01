@@ -53,7 +53,7 @@
                                     <label for="remember" class="form-check-label">Remember Me</label>
                                 </div>
                                 <!-- Placeholder for Forgot Your Password? -->
-                                <a href="#" class="text-muted">Forgot Your Password?</a>
+                                <a href="{{ route('password.request') }}" class="text-muted">Forgot Your Password?</a>
                             </div>
 
                             <!-- Login button -->
