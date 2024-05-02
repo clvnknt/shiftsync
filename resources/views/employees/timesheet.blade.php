@@ -17,6 +17,7 @@
                 <div class="card flex-fill" style="border-radius: 20px;">
                     <div class="card-body" style="height: 270px;">
                         <h5 class="card-title"><img src="{{ asset('media/images/icons/timesheet/legend.png') }}" alt="Legend Icon" class="img-fluid" style="width: 50px; height: 50px;"> Legend</h5>
+                        <!-- Legend Items -->
                         <div class="row">
                             <div class="col-md-6">
                                 <p>OTL (Out To lunch)</p>
@@ -44,6 +45,7 @@
                             <label for="Choose Shift Schedule">Select Shift Name:</label>
                             <select id="shiftNameSelect" class="form-control">
                                 <option value="">-</option>
+                                <!-- Populate shift names -->
                                 @foreach($shiftNames as $id => $shiftName)
                                     <option value="{{ $id }}">{{ $shiftName }}</option>
                                 @endforeach
@@ -86,11 +88,10 @@
                             </div>
                         </div>
                         
-                       <!-- Buttons for Cutoff Period view -->
-<div id="cutoffButtons" class="mt-3" style="display: none;">
-    <button id="viewButton" type="button" class="btn btn-success">View</button>
-</div>
-
+                        <!-- Buttons for Cutoff Period view -->
+                        <div id="cutoffButtons" class="mt-3" style="display: none;">
+                            <button id="viewButton" type="button" class="btn btn-success">View</button>
+                        </div>
                         
                         <!-- Icons for Date Range view -->
                         <div id="rangeIcons" class="mt-3" style="display: none;">
@@ -119,6 +120,7 @@
                         </tr>
                     </thead>
                     <tbody id="recordsTableBody">
+                        <!-- Records table data -->
                         @if($records)
                             @foreach($records as $record)
                                 <tr>
@@ -197,6 +199,7 @@
 
 @section('scripts')
 <script>
+    // Script for handling view format selection
     document.addEventListener("DOMContentLoaded", function() {
         // DOM elements
         var viewFormatSelect = document.getElementById("viewFormatSelect");
@@ -307,7 +310,7 @@
                 row.innerHTML = `
                     <td>${record.shift_date}</td>
                     <td>${record.shiftName}</td>
-                    <td>${record.shiftSchedule.start_shift_time} to ${record.shiftSchedule.end_shift_time}</td>
+                    <td>${record.shiftSchedule.start_shift_time} to ${record.shiftSchedule.end_shift_time}, ${record.shiftSchedule.shiftTimezone}</td>
                     <td>${record.start_shift}</td>
                     <td>${record.start_lunch}</td>
                     <td>${record.end_lunch}</td>

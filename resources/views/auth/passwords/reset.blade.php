@@ -5,28 +5,28 @@
 
     <input type="hidden" name="token" value="{{ $token }}">
 
-    <div>
+    <div class="form-group">
         <label for="email">{{ __('Email') }}</label>
-        <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus>
+        <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus class="form-control">
         @error('email')
-            <span>{{ $message }}</span>
+            <span class="text-danger">{{ $message }}</span>
         @enderror
     </div>
 
-    <div>
+    <div class="form-group">
         <label for="password">{{ __('Password') }}</label>
-        <input id="password" type="password" name="password" required>
+        <input id="password" type="password" name="password" required class="form-control">
         @error('password')
-            <span>{{ $message }}</span>
+            <span class="text-danger">{{ $message }}</span>
         @enderror
     </div>
 
-    <div>
+    <div class="form-group">
         <label for="password_confirmation">{{ __('Confirm Password') }}</label>
-        <input id="password_confirmation" type="password" name="password_confirmation" required>
+        <input id="password_confirmation" type="password" name="password_confirmation" required class="form-control">
     </div>
 
-    <button type="submit">
+    <button type="submit" class="btn btn-primary">
         {{ __('Reset Password') }}
     </button>
 </form>

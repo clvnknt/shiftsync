@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\EmployeeRecord;
-use App\Models\EmployeeShiftRecord;
 use App\Models\EmployeeAssignedShift; 
-use App\Models\ShiftSchedule; 
+use App\Models\EmployeeShiftRecord;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,7 +15,7 @@ class TimesheetController extends Controller
     {
         // Check if the user is authenticated
         if (Auth::check()) {
-            // Get the authenticated user's ID
+            // Retrieve the authenticated user's ID
             $userId = Auth::id();
     
             // Retrieve the employee record associated with the authenticated user
@@ -30,11 +29,6 @@ class TimesheetController extends Controller
                 // Get the current date in the employee's timezone
                 $today = Carbon::now($employeeTimezone)->toDateString();
     
-                // Fetch shift record for today in the employee's timezone
-                $shiftRecord = EmployeeShiftRecord::where('employee_record_id', $employeeRecord->id)
-                    ->whereDate('shift_date', $today)
-                    ->first();
-    
                 // Fetch assigned shifts for the employee
                 $assignedShifts = EmployeeAssignedShift::where('employee_record_id', $employeeRecord->id)
                     ->with('shiftSchedule')
@@ -43,38 +37,20 @@ class TimesheetController extends Controller
                 // Get all shift names associated with the employee's assigned shifts
                 $shiftNames = $assignedShifts->pluck('shiftSchedule.shift_name', 'id');
     
-                // Convert all shift times to the employee's timezone
-                if ($shiftRecord) {
-                    $shiftRecord->clock_in_time = Carbon::parse($shiftRecord->clock_in_time)->setTimezone($employeeTimezone);
-                    $shiftRecord->clock_out_time = Carbon::parse($shiftRecord->clock_out_time)->setTimezone($employeeTimezone);
-                }
+                // Initialize variables for shift record
+                $shiftRecordDate = null;
+                $shiftRecordStartTime = null;
+                $shiftRecordEndTime = null;
+                $shiftRecordStartShift = null;
+                $shiftRecordStartLunch = null;
+                $shiftRecordEndLunch = null;
+                $shiftRecordEndShift = null;
     
-// Parse shift dates and times to display only hours and minutes
-$shiftRecordDate = $shiftRecord ? Carbon::parse($shiftRecord->shift_date)->timezone($employeeTimezone)->format('H:i') : null;
-$shiftRecordStartTime = $shiftRecord && $shiftRecord->employeeAssignedShift ? Carbon::parse($shiftRecord->employeeAssignedShift->shiftSchedule->start_shift_time)->timezone($employeeTimezone)->format('H:i') : null;
-$shiftRecordEndTime = $shiftRecord && $shiftRecord->employeeAssignedShift ? Carbon::parse($shiftRecord->employeeAssignedShift->shiftSchedule->end_shift_time)->timezone($employeeTimezone)->format('H:i') : null;
-$shiftRecordStartShift = $shiftRecord ? Carbon::parse($shiftRecord->start_shift)->timezone($employeeTimezone)->format('H:i') : null;
-$shiftRecordStartLunch = $shiftRecord ? Carbon::parse($shiftRecord->start_lunch)->timezone($employeeTimezone)->format('H:i') : null;
-$shiftRecordEndLunch = $shiftRecord ? Carbon::parse($shiftRecord->end_lunch)->timezone($employeeTimezone)->format('H:i') : null;
-$shiftRecordEndShift = $shiftRecord ? Carbon::parse($shiftRecord->end_shift)->timezone($employeeTimezone)->format('H:i') : null;
-
+                // Initialize records variable
+                $records = null;
     
-                // Fetch shift records for the specified date range
-                $shiftId = $request->input('shiftId');
-                $startDate = $request->input('startDate');
-                $endDate = $request->input('endDate');
-                
-                $records = null; // Initialize records variable
-                
-                if ($shiftId && $startDate && $endDate) {
-                    // Query the database to fetch records based on the parameters
-                    $records = EmployeeShiftRecord::where('employee_assigned_shift_id', $shiftId)
-                        ->whereBetween('shift_date', [$startDate, $endDate])
-                        ->get();
-                }
-    
-                // Pass the shift record, assigned shifts, shift name, shift names, employee timezone, and records to the view
-                return view('employees.timesheet', compact('shiftRecordDate', 'shiftRecordStartTime', 'shiftRecordEndTime', 'shiftRecordStartShift', 'shiftRecordStartLunch', 'shiftRecordEndLunch', 'shiftRecordEndShift', 'assignedShifts', 'shiftNames', 'employeeTimezone', 'shiftRecord', 'records'));
+                // Pass the necessary data to the view
+                return view('employees.timesheet', compact('shiftRecordDate', 'shiftRecordStartTime', 'shiftRecordEndTime', 'shiftRecordStartShift', 'shiftRecordStartLunch', 'shiftRecordEndLunch', 'shiftRecordEndShift', 'assignedShifts', 'shiftNames', 'employeeTimezone', 'records'));
             } else {
                 // Handle case where employee record does not exist for the user
                 return response()->json(['message' => 'Employee record not found'], 404);
@@ -85,36 +61,70 @@ $shiftRecordEndShift = $shiftRecord ? Carbon::parse($shiftRecord->end_shift)->ti
         return redirect()->route('login');
     }
     
-
     public function fetchRecords(Request $request)
-{
-    // Retrieve parameters from the request
-    $shiftId = $request->input('shiftId');
-    $startDate = $request->input('startDate');
-    $endDate = $request->input('endDate');
+    {
+        // Retrieve parameters from the request
+        $shiftId = $request->input('shiftId');
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+    
+        // Retrieve the authenticated user's ID
+        $userId = Auth::id();
+    
+        // Retrieve the employee record associated with the authenticated user
+        $employeeRecord = EmployeeRecord::where('user_id', $userId)->first();
+    
+        // Fetch records with proper joins
+        $records = EmployeeShiftRecord::with(['employeeAssignedShift.shiftSchedule'])
+            ->where('employee_assigned_shift_id', $shiftId)
+            ->whereBetween('shift_date', [$startDate, $endDate])
+            ->get();
+    
+        // Format the fetched records properly
+        $formattedRecords = $records->map(function ($record) use ($employeeRecord) {
+            // Mapping of timezone offsets to their corresponding names
+            $timezones = [
+                '+08:00' => 'PH Timezone',
+                '+10:00' => 'AU Timezone',
+                '+01:00' => 'UK Timezone',
+                '-04:00' => 'US Timezone',
+                // Add more timezone offsets and their names as needed
+            ];
+    
+            // Retrieve the shift timezone offset
+            $shiftTimezoneOffset = $record->employeeAssignedShift->shiftSchedule->shift_timezone;
+    
+            // Convert the timezone offset to the corresponding name
+            if ($shiftTimezoneOffset === '-04:00') {
+                // Convert US Timezone to EDT
+                $shiftTimezoneOffset = '-04:00'; // Set to EDT offset
+            }
+            $shiftTimezone = $timezones[$shiftTimezoneOffset] ?? 'Unknown Timezone';
+    
+            return [
+                'shift_date' => Carbon::parse($record->shift_date)->setTimezone($employeeRecord->employee_timezone)->format('F j, Y'),
+                'shiftName' => $record->employeeAssignedShift->shiftSchedule->shift_name,
+                'shiftSchedule' => [
+                    'start_shift_time' => $record->employeeAssignedShift->shiftSchedule->start_shift_time ? Carbon::parse($record->employeeAssignedShift->shiftSchedule->start_shift_time)->timezone($record->employeeAssignedShift->shiftSchedule->shift_timezone)->format('H:i') : '-',
+                    'end_shift_time' => $record->employeeAssignedShift->shiftSchedule->end_shift_time ? Carbon::parse($record->employeeAssignedShift->shiftSchedule->end_shift_time)->timezone($record->employeeAssignedShift->shiftSchedule->shift_timezone)->format('H:i') : '-',
+                    'shiftTimezone' => $shiftTimezone,
+                ],
+                'start_shift' => $this->formatTime($record->start_shift, $employeeRecord->employee_timezone),
+                'start_lunch' => $this->formatTime($record->start_lunch, $employeeRecord->employee_timezone),
+                'end_lunch' => $this->formatTime($record->end_lunch, $employeeRecord->employee_timezone),
+                'end_shift' => $this->formatTime($record->end_shift, $employeeRecord->employee_timezone),
+                'hours_rendered' => $record->hours_rendered ?: '-',
+            ];
+        });
+    
+        // Return the formatted records as JSON response
+        return response()->json($formattedRecords);
+    }
+    
 
-    // Fetch records with proper joins
-    $records = EmployeeShiftRecord::with(['employeeAssignedShift.shiftSchedule'])
-        ->where('employee_assigned_shift_id', $shiftId)
-        ->whereBetween('shift_date', [$startDate, $endDate])
-        ->get();
-
-    // Format the fetched records properly
-    $formattedRecords = $records->map(function ($record) {
-        return [
-            'shift_date' => $record->shift_date,
-            'shiftName' => $record->employeeAssignedShift->shiftSchedule->shift_name,
-            'shiftSchedule' => $record->employeeAssignedShift->shiftSchedule->toArray(),
-            'start_shift' => $record->start_shift,
-            'start_lunch' => $record->start_lunch,
-            'end_lunch' => $record->end_lunch,
-            'end_shift' => $record->end_shift,
-            'hours_rendered' => $record->hours_rendered,
-        ];
-    });
-
-    // Return the formatted records as JSON response
-    return response()->json($formattedRecords);
-}
-
+    // Function to format time with timezone
+    private function formatTime($time, $timezone)
+    {
+        return $time ? Carbon::parse($time)->setTimezone($timezone)->format('H:i') : '-';
+    }
 }
