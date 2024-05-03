@@ -87,7 +87,7 @@ class TimesheetController extends Controller
                 '+08:00' => 'PH Timezone',
                 '+10:00' => 'AU Timezone',
                 '+01:00' => 'UK Timezone',
-                '-04:00' => 'US Timezone',
+                '-05:00' => 'US Timezone',
                 // Add more timezone offsets and their names as needed
             ];
     
@@ -95,7 +95,7 @@ class TimesheetController extends Controller
             $shiftTimezoneOffset = $record->employeeAssignedShift->shiftSchedule->shift_timezone;
     
             // Convert the timezone offset to the corresponding name
-            if ($shiftTimezoneOffset === '-04:00') {
+            if ($shiftTimezoneOffset === '-05:00') {
                 // Convert US Timezone to EDT
                 $shiftTimezoneOffset = '-04:00'; // Set to EDT offset
             }

@@ -112,10 +112,10 @@
                             <th>Date</th>
                             <th>Shift Name</th>
                             <th>Shift Schedule</th>
-                            <th>Shift Started</th>
-                            <th>Start Lunch</th>
-                            <th>Lunch Ended</th>
-                            <th>Shift Ended</th>
+                            <th>SS</th>
+                            <th>SL</th>
+                            <th>LE</th>
+                            <th>SE</th>
                             <th>Hours Rendered</th>
                         </tr>
                     </thead>
@@ -159,14 +159,10 @@
                         <!-- Summary table data -->
                         <tr>
                             <td>Total Worked Hours (Regular):</td>
-                            <td>0 Hour/s</td>
+                            <td id="totalWorkedHours">0 Hour/s</td>
                         </tr>
                         <tr>
-                            <td>Tardiness:</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Undertime:</td>
+                            <td>Tardiness/Undertime:</td>
                             <td>0 Hour/s</td>
                         </tr>
                         <tr>
@@ -199,6 +195,12 @@
 
 @section('scripts')
 <script>
+    // Function to update total worked hours
+    function updateTotalWorkedHours(totalHours) {
+        var totalWorkedHoursElement = document.getElementById('totalWorkedHours');
+        totalWorkedHoursElement.textContent = totalHours + ' Hour/s';
+    }
+
     // Script for handling view format selection
     document.addEventListener("DOMContentLoaded", function() {
         // DOM elements
@@ -273,56 +275,72 @@
     });
 
     // Function to fetch records from API
-    function fetchRecords() {
-        var shiftId = document.getElementById('shiftNameSelect').value;
-        var startDate = document.getElementById('start_date').value;
-        var endDate = document.getElementById('end_date').value;
+function fetchRecords() {
+    var shiftId = document.getElementById('shiftNameSelect').value;
+    var startDate = document.getElementById('start_date').value;
+    var endDate = document.getElementById('end_date').value;
 
-        if (!startDate || !endDate) {
-            alert("Please select both start date and end date.");
-            return;
-        }
-
-        var url = '/fetch-records'; // API endpoint
-
-        // Fetch API request to the API endpoint
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({
-                shiftId: shiftId,
-                startDate: startDate,
-                endDate: endDate
-            })
-        })
-        .then(response => response.json()) // Parse response as JSON
-        .then(data => {
-            // Update the table with the fetched records
-            var recordsTableBody = document.getElementById('recordsTableBody');
-            recordsTableBody.innerHTML = '';
-
-            // Iterate over fetched records and append to the table
-            data.forEach(record => {
-                var row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${record.shift_date}</td>
-                    <td>${record.shiftName}</td>
-                    <td>${record.shiftSchedule.start_shift_time} to ${record.shiftSchedule.end_shift_time}, ${record.shiftSchedule.shiftTimezone}</td>
-                    <td>${record.start_shift}</td>
-                    <td>${record.start_lunch}</td>
-                    <td>${record.end_lunch}</td>
-                    <td>${record.end_shift}</td>
-                    <td>${record.hours_rendered}</td>
-                `;
-                recordsTableBody.appendChild(row);
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching records:', error); // Log any errors
-        });
+    if (!startDate || !endDate) {
+        alert("Please select both start date and end date.");
+        return;
     }
+
+    var url = '/fetch-records'; // API endpoint
+
+    // Fetch API request to the API endpoint
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            shiftId: shiftId,
+            startDate: startDate,
+            endDate: endDate
+        })
+    })
+    .then(response => response.json()) // Parse response as JSON
+    .then(data => {
+        console.log('Fetched data:', data); // Log fetched data
+
+        // Update the table with the fetched records
+        var recordsTableBody = document.getElementById('recordsTableBody');
+        recordsTableBody.innerHTML = '';
+
+        var totalHours = 0; // Variable to store total hours rendered
+
+        // Iterate over fetched records and append to the table
+        data.forEach(record => {
+            console.log('Processing record:', record); // Log each record
+
+            var row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${record.shift_date}</td>
+                <td>${record.shiftName}</td>
+                <td>${record.shiftSchedule.start_shift_time} to ${record.shiftSchedule.end_shift_time}, ${record.shiftSchedule.shiftTimezone}</td>
+                <td>${record.start_shift}</td>
+                <td>${record.start_lunch}</td>
+                <td>${record.end_lunch}</td>
+                <td>${record.end_shift}</td>
+                <td>${record.hours_rendered}</td>
+            `;
+            recordsTableBody.appendChild(row);
+
+            // Try parsing hours_rendered as a float
+            var hoursRendered = parseFloat(record.hours_rendered);
+            if (!isNaN(hoursRendered)) {
+                totalHours += hoursRendered; // Add rendered hours to total
+            } else {
+                console.error('Invalid hours_rendered:', record.hours_rendered); // Log invalid data
+            }
+        });
+
+        updateTotalWorkedHours(totalHours); // Update total worked hours
+    })
+    .catch(error => {
+        console.error('Error fetching records:', error); // Log any errors
+    });
+}
 </script>
 @endsection

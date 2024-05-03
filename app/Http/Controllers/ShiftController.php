@@ -9,6 +9,7 @@ use App\Jobs\ShiftJobs\StartShiftJob;
 use App\Jobs\ShiftJobs\StartLunchJob;
 use App\Jobs\ShiftJobs\EndLunchJob;
 use App\Jobs\ShiftJobs\EndShiftJob;
+use App\Jobs\ShiftJobs\CalculateHoursRenderedJob;
 
 class ShiftController extends Controller
 {
@@ -36,6 +37,11 @@ class ShiftController extends Controller
 
     public function endShift(Request $request)
     {
-        return $this->dispatchAndRedirect($request, EndShiftJob::class, 'End Shift logged successfully.');
+        $response = $this->dispatchAndRedirect($request, EndShiftJob::class, 'End Shift logged successfully.');
+
+        // After ending the shift, dispatch CalculateHoursRenderedJob
+        dispatch(new CalculateHoursRenderedJob());
+
+        return $response;
     }
 }
