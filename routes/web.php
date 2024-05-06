@@ -10,6 +10,8 @@ use App\Http\Controllers\TimesheetController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\EmailVerificationController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 
 // Public routes accessible without authentication
@@ -27,6 +29,11 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+//Email Verification Routes
+Route::get('/email/verify', [EmailVerificationController::class, 'showVerificationNotice'])->name('verification.notice');
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware(['auth', 'signed'])->name('verification.verify');
+Route::post('/email/verification-notification', [EmailVerificationController::class, 'resendVerificationNotification'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
 // Password Routes
 Route::prefix('password')->group(function () {
     // Forgot Password Routes
@@ -37,6 +44,7 @@ Route::prefix('password')->group(function () {
     Route::get('/reset/{token}', [ResetPasswordController::class, 'showResetPasswordForm'])->name('password.reset');
     Route::post('/reset', [ResetPasswordController::class, 'resetPassword'])->name('password.update');
 });
+
 
 // Protected routes requiring authentication
 Route::middleware('auth')->group(function () {

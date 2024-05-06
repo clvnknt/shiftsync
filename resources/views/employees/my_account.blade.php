@@ -35,6 +35,12 @@
                         </h5>
                         <p><strong>Name:</strong> {{ $user->name }}</p>
                         <p><strong>Email:</strong> {{ $user->email }}</p>
+                        @if ($user->hasVerifiedEmail())
+                            <p><strong>Email Verified:</strong> Yes</p>
+                        @else
+                            <p><strong>Email Verified:</strong> No</p>
+                            <p>Please verify your email address. <a href="{{ route('verification.notice') }}">Send verification email</a></p>
+                        @endif
                     </div>
                 </div>
             </div>

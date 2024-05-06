@@ -19,11 +19,27 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt(['email' => $credentials['email_or_username'], 'password' => $credentials['password']]) ||
-            Auth::attempt(['name' => $credentials['email_or_username'], 'password' => $credentials['password']])) {
+        // Extract the remember input from the request
+        $remember = $request->has('remember');
+
+        // Attempt to authenticate the user with the provided credentials and remember option
+        if (Auth::attempt(
+            [
+                'email' => $credentials['email_or_username'],
+                'password' => $credentials['password']
+            ],
+            $remember
+        ) || Auth::attempt(
+            [
+                'name' => $credentials['email_or_username'],
+                'password' => $credentials['password']
+            ],
+            $remember
+        )) {
             return redirect()->route('dashboard')->with('success', 'Logged in successfully!');
         }
 
+        // If authentication fails, redirect back with error message
         return redirect()->back()->withErrors(['email_or_username' => 'These credentials do not match our records.'])->withInput($request->only('email_or_username'));
     }
 

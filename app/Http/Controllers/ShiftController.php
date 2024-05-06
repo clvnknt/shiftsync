@@ -39,9 +39,9 @@ class ShiftController extends Controller
     {
         $response = $this->dispatchAndRedirect($request, EndShiftJob::class, 'End Shift logged successfully.');
 
-        // After ending the shift, dispatch CalculateHoursRenderedJob
-        dispatch(new CalculateHoursRenderedJob());
-
+        $employeeRecordId = $request->input('employeeRecordId');
+        dispatch(new CalculateHoursRenderedJob($employeeRecordId));
+    
         return $response;
-    }
+    }    
 }

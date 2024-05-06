@@ -39,8 +39,7 @@
                         <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ route('inout') }}">In/Out</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ route('timesheet') }}">Timesheet</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">File Ticket</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Help</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('myAccount') }}">My Account</a></li>
                     </ul>
                     <div class="nav-item dropdown ms-2">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -48,7 +47,6 @@
                             Welcome, {{ auth()->user()->name }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{{ route('myAccount') }}">My Account</a></li>
                             <li><a class="dropdown-item" href="#" id="logout-link">Logout</a></li>
                         </ul>
                     </div>
