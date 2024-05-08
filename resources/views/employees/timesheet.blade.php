@@ -20,13 +20,15 @@
                         <!-- Legend Items -->
                         <div class="row">
                             <div class="col-md-6">
-                                <p>OTL (Out To lunch)</p>
-                                <p>BFL (Back From lunch)</p>
-                                <p>OT (Over Time)</p>
+                                <p>SS - Shift Started</p>
+                                <p>LS - Lunch Started</p>
+                                <p>LE - Lunch Ended</p>
+                                <p>SE - Shift Ended</p>
                             </div>
                             <div class="col-md-6">
-                                <p>UT (Under Time)</p>
-                                <p>ND (Night Differential)</p>
+                                <p>HR - Hours Rendered</p>
+                                <p>UT - Undertime</p>
+                                <p>OT- Overtime</p>
                             </div>
                         </div>
                     </div>
@@ -116,7 +118,11 @@
                             <th>SL</th>
                             <th>LE</th>
                             <th>SE</th>
-                            <th>Hours Rendered</th>
+                            <th>HR</th>
+                            <th>Late (SS to SL)</th>
+                            <th>Late (EL to ES)</th>
+                            <th>UT</th>
+                            <th>OT</th>
                         </tr>
                     </thead>
                     <tbody id="recordsTableBody">
@@ -132,6 +138,9 @@
                                     <td>{{ $record->end_lunch }}</td>
                                     <td>{{ $record->end_shift }}</td>
                                     <td>{{ $record->hours_rendered }}</td>
+                                    <td>{{ $record->tardiness->hours_late_start_to_lunch ?? '-' }}</td>
+                                    <td>{{ $record->tardiness->hours_late_lunch_to_end ?? '-' }}</td>
+                                    <td>{{ $record->overtime->overtime_hours ?? '-' }}</td>
                                 </tr>
                             @endforeach
                         @else
@@ -158,6 +167,10 @@
                     <tbody>
                         <!-- Summary table data -->
                         <tr>
+                            <td>Overall Computation:</td>
+                            <td>0 Hour/s</td>
+                        </tr>
+                        <tr>
                             <td>Total Worked Hours (Regular):</td>
                             <td id="totalWorkedHours">0 Hour/s</td>
                         </tr>
@@ -167,10 +180,6 @@
                         </tr>
                         <tr>
                             <td>Overtime:</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Overall Computation:</td>
                             <td>0 Hour/s</td>
                         </tr>
                     </tbody>

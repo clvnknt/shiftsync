@@ -21,12 +21,9 @@ class EmployeeShiftRecord extends Model
         'shift_order',
     ];
 
-    public function employeeAssignedShift()
-    {
-        return $this->belongsTo(EmployeeAssignedShift::class, 'employee_assigned_shift_id');
-    }
     
-    public function assignedShift()
+
+    public function employeeAssignedShift()
     {
         return $this->belongsTo(EmployeeAssignedShift::class, 'employee_assigned_shift_id');
     }
@@ -35,4 +32,15 @@ class EmployeeShiftRecord extends Model
     {
     return $this->belongsTo(EmployeeRecord::class, 'employee_record_id');
     }
+
+    public function tardiness()
+    {
+        return $this->hasOne(Tardiness::class, 'employee_shift_record_id');
+    }
+
+    public function overtime()
+    {
+        return $this->hasOne(Overtime::class, 'employee_shift_record_id');
+    }
+
 }

@@ -9,7 +9,9 @@ use App\Jobs\ShiftJobs\StartShiftJob;
 use App\Jobs\ShiftJobs\StartLunchJob;
 use App\Jobs\ShiftJobs\EndLunchJob;
 use App\Jobs\ShiftJobs\EndShiftJob;
-use App\Jobs\ShiftJobs\CalculateHoursRenderedJob;
+use App\Jobs\TimesheetJobs\CalculateHoursRenderedJob;
+use App\Jobs\TimesheetJobs\CalculateTardinessUndertime;
+
 
 class ShiftController extends Controller
 {
@@ -42,6 +44,9 @@ class ShiftController extends Controller
         // After ending the shift, dispatch CalculateHoursRenderedJob for the current employee record
         $employeeRecordId = $request->input('employeeRecordId');
         dispatch(new CalculateHoursRenderedJob($employeeRecordId));
+    
+        // Dispatch CalculateTardinessUndertime job for the current employee record
+        dispatch(new CalculateTardinessUndertime($employeeRecordId));
     
         return $response;
     }

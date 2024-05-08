@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\ShiftJobs;
+namespace App\Jobs\TimesheetJobs;
 
 use App\Models\EmployeeShiftRecord;
 use Carbon\Carbon;

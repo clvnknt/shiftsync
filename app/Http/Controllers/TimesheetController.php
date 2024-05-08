@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\EmployeeRecord;
 use App\Models\EmployeeAssignedShift; 
 use App\Models\EmployeeShiftRecord;
+use App\Models\Tardiness;
+use App\Models\Overtime;
+
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,20 +40,14 @@ class TimesheetController extends Controller
                 // Get all shift names associated with the employee's assigned shifts
                 $shiftNames = $assignedShifts->pluck('shiftSchedule.shift_name', 'id');
     
-                // Initialize variables for shift record
-                $shiftRecordDate = null;
-                $shiftRecordStartTime = null;
-                $shiftRecordEndTime = null;
-                $shiftRecordStartShift = null;
-                $shiftRecordStartLunch = null;
-                $shiftRecordEndLunch = null;
-                $shiftRecordEndShift = null;
-    
-                // Initialize records variable
-                $records = null;
+                // Fetch all records for the employee
+                $records = EmployeeShiftRecord::with(['tardiness', 'overtime'])
+                    ->whereIn('employee_assigned_shift_id', $assignedShifts->pluck('id'))
+                    ->where('shift_date', $today)
+                    ->get();
     
                 // Pass the necessary data to the view
-                return view('employees.timesheet', compact('shiftRecordDate', 'shiftRecordStartTime', 'shiftRecordEndTime', 'shiftRecordStartShift', 'shiftRecordStartLunch', 'shiftRecordEndLunch', 'shiftRecordEndShift', 'assignedShifts', 'shiftNames', 'employeeTimezone', 'records'));
+                return view('employees.timesheet', compact('assignedShifts', 'shiftNames', 'employeeTimezone', 'records'));
             } else {
                 // Handle case where employee record does not exist for the user
                 return response()->json(['message' => 'Employee record not found'], 404);
@@ -60,7 +57,7 @@ class TimesheetController extends Controller
         // If the user is not authenticated, redirect to the login page
         return redirect()->route('login');
     }
-    
+        
     public function fetchRecords(Request $request)
     {
         // Retrieve parameters from the request
