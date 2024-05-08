@@ -46,14 +46,15 @@ class CalculateTardinessUndertime implements ShouldQueue
                 $startShift = Carbon::parse($record->start_shift)->setTimezone($employeeTimezone);
                 $endLunch = Carbon::parse($record->end_lunch)->setTimezone($employeeTimezone);
 
-                // Get the start shift time from the employee's assigned shift schedule (without converting to employee timezone)
-                $startShiftTime = Carbon::parse($record->employeeAssignedShift->shiftSchedule->start_shift_time);
+                // Get the shift schedule timezone
+                $shiftTimezone = $record->employeeAssignedShift->shiftSchedule->shift_timezone;
+
+                // Convert shift schedule times to Carbon instances in the same timezone as the employee
+                $startShiftTime = Carbon::createFromTimeString($record->employeeAssignedShift->shiftSchedule->start_shift_time, $shiftTimezone);
+                $endLunchTime = Carbon::createFromTimeString($record->employeeAssignedShift->shiftSchedule->end_lunch_time, $shiftTimezone);
 
                 // Calculate lateness for start shift (formula: actual - expected)
                 $latenessStartShift = max(0, $startShift->diffInMinutes($startShiftTime));
-
-                // Get the end lunch time from the employee's assigned shift schedule (without converting to employee timezone)
-                $endLunchTime = Carbon::parse($record->employeeAssignedShift->shiftSchedule->end_lunch_time);
 
                 // Calculate lateness for end lunch to end shift (formula: actual - expected)
                 $latenessEndLunchToEndShift = max(0, $endLunch->diffInMinutes($endLunchTime));
@@ -62,8 +63,10 @@ class CalculateTardinessUndertime implements ShouldQueue
                 Tardiness::create([
                     'employee_shift_record_id' => $record->id,
                     'is_late_start_shift' => $latenessStartShift > 0,
+                    // Convert minutes to hours
                     'hours_late_start_shift' => $latenessStartShift / 60, // Convert minutes to hours
                     'is_late_end_lunch' => $latenessEndLunchToEndShift > 0,
+                    // Convert minutes to hours
                     'hours_late_end_lunch' => $latenessEndLunchToEndShift / 60, // Convert minutes to hours
                 ]);
             }

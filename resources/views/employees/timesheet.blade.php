@@ -119,8 +119,8 @@
                             <th>LE</th>
                             <th>SE</th>
                             <th>HR</th>
-                            <th>Late (SS to SL)</th>
-                            <th>Late (EL to ES)</th>
+                            <th>Late (SS)</th>
+                            <th>Late (EL)</th>
                             <th>UT</th>
                             <th>OT</th>
                         </tr>
@@ -138,14 +138,25 @@
                                     <td>{{ $record->end_lunch }}</td>
                                     <td>{{ $record->end_shift }}</td>
                                     <td>{{ $record->hours_rendered }}</td>
-                                    <td>{{ $record->tardiness->hours_late_start_to_lunch ?? '-' }}</td>
-                                    <td>{{ $record->tardiness->hours_late_lunch_to_end ?? '-' }}</td>
+                                    <td>{{ $record->tardiness->hours_late_start_shift ?? '-' }}</td>
+                                    <td>{{ $record->tardiness->hours_late_end_lunch ?? '-' }}</td>
                                     <td>{{ $record->overtime->overtime_hours ?? '-' }}</td>
                                 </tr>
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="8">No records found.</td>
+                                <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
                             </tr>
                         @endif
                     </tbody>
@@ -176,7 +187,7 @@
                         </tr>
                         <tr>
                             <td>Tardiness/Undertime:</td>
-                            <td>0 Hour/s</td>
+                            <td id="totalTardinessHours">0 Hour/s</td>
                         </tr>
                         <tr>
                             <td>Overtime:</td>
@@ -283,7 +294,7 @@
         });
     });
 
-    // Function to fetch records from API
+// Function to fetch records from API
 function fetchRecords() {
     var shiftId = document.getElementById('shiftNameSelect').value;
     var startDate = document.getElementById('start_date').value;
@@ -318,6 +329,8 @@ function fetchRecords() {
         recordsTableBody.innerHTML = '';
 
         var totalHours = 0; // Variable to store total hours rendered
+        var totalLateStartShift = 0; // Variable to store total late start shift hours
+        var totalLateEndLunch = 0; // Variable to store total late end lunch hours
 
         // Iterate over fetched records and append to the table
         data.forEach(record => {
@@ -333,6 +346,8 @@ function fetchRecords() {
                 <td>${record.end_lunch}</td>
                 <td>${record.end_shift}</td>
                 <td>${record.hours_rendered}</td>
+                <td>${record.hours_late_start_shift}</td> 
+                <td>${record.hours_late_end_lunch}</td> 
             `;
             recordsTableBody.appendChild(row);
 
@@ -343,13 +358,32 @@ function fetchRecords() {
             } else {
                 console.error('Invalid hours_rendered:', record.hours_rendered); // Log invalid data
             }
+
+            // Try parsing hours_late_start_shift as a float
+            var lateStartShift = parseFloat(record.hours_late_start_shift);
+            if (!isNaN(lateStartShift)) {
+                totalLateStartShift += lateStartShift; // Add late start shift hours to total
+            }
+
+            // Try parsing hours_late_end_lunch as a float
+            var lateEndLunch = parseFloat(record.hours_late_end_lunch);
+            if (!isNaN(lateEndLunch)) {
+                totalLateEndLunch += lateEndLunch; // Add late end lunch hours to total
+            }
         });
 
         updateTotalWorkedHours(totalHours); // Update total worked hours
+        updateTotalTardinessHours(totalLateStartShift + totalLateEndLunch); // Update total tardiness hours
     })
     .catch(error => {
         console.error('Error fetching records:', error); // Log any errors
     });
+}
+
+// Function to update total tardiness hours
+function updateTotalTardinessHours(totalTardinessHours) {
+    var totalTardinessHoursElement = document.getElementById('totalTardinessHours');
+    totalTardinessHoursElement.textContent = totalTardinessHours.toFixed(2) + ' Hour/s';
 }
 </script>
 @endsection

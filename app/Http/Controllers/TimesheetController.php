@@ -29,9 +29,6 @@ class TimesheetController extends Controller
                 // Get the employee timezone
                 $employeeTimezone = $employeeRecord->employee_timezone;
     
-                // Get the current date in the employee's timezone
-                $today = Carbon::now($employeeTimezone)->toDateString();
-    
                 // Fetch assigned shifts for the employee
                 $assignedShifts = EmployeeAssignedShift::where('employee_record_id', $employeeRecord->id)
                     ->with('shiftSchedule')
@@ -40,11 +37,8 @@ class TimesheetController extends Controller
                 // Get all shift names associated with the employee's assigned shifts
                 $shiftNames = $assignedShifts->pluck('shiftSchedule.shift_name', 'id');
     
-                // Fetch all records for the employee
-                $records = EmployeeShiftRecord::with(['tardiness', 'overtime'])
-                    ->whereIn('employee_assigned_shift_id', $assignedShifts->pluck('id'))
-                    ->where('shift_date', $today)
-                    ->get();
+                // Set an empty array for records
+                $records = [];
     
                 // Pass the necessary data to the view
                 return view('employees.timesheet', compact('assignedShifts', 'shiftNames', 'employeeTimezone', 'records'));
@@ -56,7 +50,7 @@ class TimesheetController extends Controller
     
         // If the user is not authenticated, redirect to the login page
         return redirect()->route('login');
-    }
+    }    
         
     public function fetchRecords(Request $request)
     {
@@ -72,7 +66,7 @@ class TimesheetController extends Controller
         $employeeRecord = EmployeeRecord::where('user_id', $userId)->first();
     
         // Fetch records with proper joins
-        $records = EmployeeShiftRecord::with(['employeeAssignedShift.shiftSchedule'])
+        $records = EmployeeShiftRecord::with(['employeeAssignedShift.shiftSchedule', 'tardiness'])
             ->where('employee_assigned_shift_id', $shiftId)
             ->whereBetween('shift_date', [$startDate, $endDate])
             ->get();
@@ -98,6 +92,12 @@ class TimesheetController extends Controller
             }
             $shiftTimezone = $timezones[$shiftTimezoneOffset] ?? 'Unknown Timezone';
     
+            // Calculate late hours for start shift
+            $lateHoursStartShift = $record->tardiness ? $record->tardiness->hours_late_start_shift : '-';
+            
+            // Calculate late hours for end lunch
+            $lateHoursEndLunch = $record->tardiness ? $record->tardiness->hours_late_end_lunch : '-';
+    
             return [
                 'shift_date' => Carbon::parse($record->shift_date)->setTimezone($employeeRecord->employee_timezone)->format('F j, Y'),
                 'shiftName' => $record->employeeAssignedShift->shiftSchedule->shift_name,
@@ -111,6 +111,8 @@ class TimesheetController extends Controller
                 'end_lunch' => $this->formatTime($record->end_lunch, $employeeRecord->employee_timezone),
                 'end_shift' => $this->formatTime($record->end_shift, $employeeRecord->employee_timezone),
                 'hours_rendered' => $record->hours_rendered ?: '-',
+                'hours_late_start_shift' => $lateHoursStartShift,
+                'hours_late_end_lunch' => $lateHoursEndLunch, 
             ];
         });
     
@@ -118,7 +120,6 @@ class TimesheetController extends Controller
         return response()->json($formattedRecords);
     }
     
-
     // Function to format time with timezone
     private function formatTime($time, $timezone)
     {
