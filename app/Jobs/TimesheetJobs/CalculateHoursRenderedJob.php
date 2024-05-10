@@ -50,7 +50,7 @@ class CalculateHoursRenderedJob implements ShouldQueue
             $lunchBreakDuration = $startLunch->diffInMinutes($endLunch);
 
             // Subtract lunch break duration from total shift duration
-            $hoursRendered = max(0, ($totalShiftDuration - $lunchBreakDuration) / 60); // Calculate hours rendered
+            $hoursRendered = max(0, round(($totalShiftDuration - $lunchBreakDuration) / 60, 2)); // Round to 2 decimal places
 
             // Update hours_rendered column
             $shiftRecord->hours_rendered = $hoursRendered;

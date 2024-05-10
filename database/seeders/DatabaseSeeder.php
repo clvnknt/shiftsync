@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             EmployeeRecordsSeeder::class,
             RulesSeeder::class,
             SeedersAssignedShiftsSeeder::class,
+            OvertimeRulesSeeder::class,
         ]);
     }
 }

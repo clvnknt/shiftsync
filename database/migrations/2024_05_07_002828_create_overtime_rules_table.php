@@ -13,16 +13,11 @@ class CreateOvertimeRulesTable extends Migration
     {
         Schema::create('overtime_rules', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('employee_shift_record_id')->nullable();
+            $table->boolean('is_active')->default(false);
             $table->string('name');
             $table->string('condition');
-            $table->integer('regular_hours');
             $table->float('overtime_rate');
-            $table->enum('approval_status', ['pending', 'approved', 'denied'])->default('pending');
             $table->timestamps();
-
-            // Foreign key constraint
-            $table->foreign('employee_shift_record_id')->references('id')->on('employee_shift_records')->onDelete('set null');
         });
     }
 

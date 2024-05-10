@@ -121,7 +121,6 @@
                             <th>HR</th>
                             <th>Late (SS)</th>
                             <th>Late (EL)</th>
-                            <th>UT</th>
                             <th>OT</th>
                         </tr>
                     </thead>
@@ -140,13 +139,12 @@
                                     <td>{{ $record->hours_rendered }}</td>
                                     <td>{{ $record->tardiness->hours_late_start_shift ?? '-' }}</td>
                                     <td>{{ $record->tardiness->hours_late_end_lunch ?? '-' }}</td>
-                                    <td>{{ $record->overtime->overtime_hours ?? '-' }}</td>
+                                    <<td>{{ $record->overtime_hours }}</td>
                                 </tr>
                             @endforeach
                         @else
                             <tr>
                                 <td>-</td>
-                                    <td>-</td>
                                     <td>-</td>
                                     <td>-</td>
                                     <td>-</td>
@@ -331,6 +329,7 @@ function fetchRecords() {
         var totalHours = 0; // Variable to store total hours rendered
         var totalLateStartShift = 0; // Variable to store total late start shift hours
         var totalLateEndLunch = 0; // Variable to store total late end lunch hours
+        var totalOvertime = 0; // Variable to store total overtime hours
 
         // Iterate over fetched records and append to the table
         data.forEach(record => {
@@ -341,6 +340,7 @@ function fetchRecords() {
                 <td>${record.shift_date}</td>
                 <td>${record.shiftName}</td>
                 <td>${record.shiftSchedule.start_shift_time} to ${record.shiftSchedule.end_shift_time}, ${record.shiftSchedule.shiftTimezone}</td>
+
                 <td>${record.start_shift}</td>
                 <td>${record.start_lunch}</td>
                 <td>${record.end_lunch}</td>
@@ -348,6 +348,7 @@ function fetchRecords() {
                 <td>${record.hours_rendered}</td>
                 <td>${record.hours_late_start_shift}</td> 
                 <td>${record.hours_late_end_lunch}</td> 
+                <td>${record.overtime_hours}</td>
             `;
             recordsTableBody.appendChild(row);
 
@@ -370,14 +371,27 @@ function fetchRecords() {
             if (!isNaN(lateEndLunch)) {
                 totalLateEndLunch += lateEndLunch; // Add late end lunch hours to total
             }
+
+            // Try parsing overtime_hours as a float
+            var overtimeHours = parseFloat(record.overtime_hours);
+            if (!isNaN(overtimeHours)) {
+                totalOvertime += overtimeHours; // Add overtime hours to total
+            }
         });
 
         updateTotalWorkedHours(totalHours); // Update total worked hours
         updateTotalTardinessHours(totalLateStartShift + totalLateEndLunch); // Update total tardiness hours
+        updateTotalOvertime(totalOvertime); // Update total overtime hours
     })
     .catch(error => {
         console.error('Error fetching records:', error); // Log any errors
     });
+}
+
+// Function to update total overtime hours
+function updateTotalOvertime(totalOvertime) {
+    var totalOvertimeElement = document.getElementById('totalOvertimeHours');
+    totalOvertimeElement.textContent = totalOvertime.toFixed(2) + ' Hour/s';
 }
 
 // Function to update total tardiness hours

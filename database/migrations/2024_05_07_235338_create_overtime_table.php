@@ -14,7 +14,8 @@ class CreateOvertimeTable extends Migration
         Schema::create('overtime', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('employee_shift_record_id');
-            $table->boolean('is_overtime')->default(false);
+            $table->timestamp('overtime_started')->nullable();
+            $table->timestamp('overtime_ended')->nullable();
             $table->float('overtime_hours')->nullable();
             $table->timestamps();
 

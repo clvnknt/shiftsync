@@ -42,5 +42,4 @@ class EmployeeShiftRecord extends Model
     {
         return $this->hasOne(Overtime::class, 'employee_shift_record_id');
     }
-
 }

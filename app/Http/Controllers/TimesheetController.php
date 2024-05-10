@@ -66,7 +66,7 @@ class TimesheetController extends Controller
         $employeeRecord = EmployeeRecord::where('user_id', $userId)->first();
     
         // Fetch records with proper joins
-        $records = EmployeeShiftRecord::with(['employeeAssignedShift.shiftSchedule', 'tardiness'])
+        $records = EmployeeShiftRecord::with(['employeeAssignedShift.shiftSchedule', 'tardiness', 'overtime'])
             ->where('employee_assigned_shift_id', $shiftId)
             ->whereBetween('shift_date', [$startDate, $endDate])
             ->get();
@@ -102,8 +102,8 @@ class TimesheetController extends Controller
                 'shift_date' => Carbon::parse($record->shift_date)->setTimezone($employeeRecord->employee_timezone)->format('F j, Y'),
                 'shiftName' => $record->employeeAssignedShift->shiftSchedule->shift_name,
                 'shiftSchedule' => [
-                    'start_shift_time' => $record->employeeAssignedShift->shiftSchedule->start_shift_time ? Carbon::parse($record->employeeAssignedShift->shiftSchedule->start_shift_time)->timezone($record->employeeAssignedShift->shiftSchedule->shift_timezone)->format('H:i') : '-',
-                    'end_shift_time' => $record->employeeAssignedShift->shiftSchedule->end_shift_time ? Carbon::parse($record->employeeAssignedShift->shiftSchedule->end_shift_time)->timezone($record->employeeAssignedShift->shiftSchedule->shift_timezone)->format('H:i') : '-',
+                    'start_shift_time' => $record->employeeAssignedShift->shiftSchedule->start_shift_time ? Carbon::createFromTimeString($record->employeeAssignedShift->shiftSchedule->start_shift_time, $record->employeeAssignedShift->shiftSchedule->shift_timezone)->timezone($employeeRecord->employee_timezone)->format('H:i') : '-',
+                    'end_shift_time' => $record->employeeAssignedShift->shiftSchedule->end_shift_time ? Carbon::createFromTimeString($record->employeeAssignedShift->shiftSchedule->end_shift_time, $record->employeeAssignedShift->shiftSchedule->shift_timezone)->timezone($employeeRecord->employee_timezone)->format('H:i') : '-',
                     'shiftTimezone' => $shiftTimezone,
                 ],
                 'start_shift' => $this->formatTime($record->start_shift, $employeeRecord->employee_timezone),
@@ -112,7 +112,8 @@ class TimesheetController extends Controller
                 'end_shift' => $this->formatTime($record->end_shift, $employeeRecord->employee_timezone),
                 'hours_rendered' => $record->hours_rendered ?: '-',
                 'hours_late_start_shift' => $lateHoursStartShift,
-                'hours_late_end_lunch' => $lateHoursEndLunch, 
+                'hours_late_end_lunch' => $lateHoursEndLunch,
+                'overtime_hours' => $record->overtime ? $record->overtime->overtime_hours : '-',
             ];
         });
     
