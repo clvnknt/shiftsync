@@ -41,53 +41,28 @@ class CalculateOvertime implements ShouldQueue
             // Ensure that all necessary timestamps are available
             if ($record->start_shift && $record->end_shift &&
                 $record->employeeAssignedShift && $record->employeeAssignedShift->shiftSchedule) {
-                // Get the employee's assigned shift schedule
+                
+                // Convert shift end time from shift schedule to UTC
                 $shiftSchedule = $record->employeeAssignedShift->shiftSchedule;
-                
-                // Calculate the start and end of the shift considering shift timezone
-                $startShift = Carbon::createFromTimeString($record->start_shift, $shiftSchedule->shift_timezone);
-                $endShift = Carbon::createFromTimeString($record->end_shift, $shiftSchedule->shift_timezone);
-                
-                // Calculate the duration of the shift in hours
-                $shiftDuration = $startShift->floatDiffInHours($endShift);
-    
-                // Get the employee's regular working hours
-                $regularHours = $this->calculateRegularHours($record);
-    
-                // Calculate overtime hours (shift duration minus regular hours)
-                $overtimeHours = max(0, $shiftDuration - $regularHours);
-    
+                $shiftEndTime = Carbon::createFromTimeString($shiftSchedule->end_shift_time, $shiftSchedule->shift_timezone)
+                                     ->setTimezone('UTC');
+
+                // Store the actual end shift time
+                $actualEndShiftTime = Carbon::parse($record->end_shift);
+
+                // Calculate overtime based on the difference between actual end shift time and shift end time from schedule
+                $overtimeDuration = max(0, $actualEndShiftTime->floatDiffInHours($shiftEndTime));
+
                 // Store the overtime information in the overtime table
                 Overtime::create([
                     'employee_shift_record_id' => $record->id,
-                    'overtime_started' => $record->start_shift,
-                    'overtime_ended' => $record->end_shift,
-                    'overtime_hours' => $overtimeHours,
+                    'overtime_started' => $shiftEndTime, // Overtime started is the end shift time in the shift schedule
+                    'overtime_ended' => $actualEndShiftTime, // Overtime ended is the actual employee shift record end shift
+                    'overtime_hours' => $overtimeDuration,
                 ]);
             }
+
+            //Overtime Duration = Actual End Shift Time − Shift End Time from Schedule
         }
-    }
-
-    /**
-     * Calculate regular working hours for a given employee shift record.
-     *
-     * @param  EmployeeShiftRecord  $shiftRecord
-     * @return float
-     */
-    private function calculateRegularHours(EmployeeShiftRecord $shiftRecord): float
-    {
-        // Get the employee's assigned shift schedule
-        $shiftSchedule = $shiftRecord->employeeAssignedShift->shiftSchedule;
-
-        // Calculate regular working hours based on shift schedule
-        $startShift = Carbon::createFromTimeString($shiftSchedule->start_shift_time, $shiftSchedule->shift_timezone);
-        $endShift = Carbon::createFromTimeString($shiftSchedule->end_shift_time, $shiftSchedule->shift_timezone);
-        $lunchStart = Carbon::createFromTimeString($shiftSchedule->lunch_start_time, $shiftSchedule->shift_timezone);
-        $lunchEnd = Carbon::createFromTimeString($shiftSchedule->end_lunch_time, $shiftSchedule->shift_timezone);
-
-        // Calculate regular hours (shift duration minus lunch break)
-        $regularHours = $startShift->floatDiffInHours($lunchStart) + $lunchEnd->floatDiffInHours($endShift);
-
-        return $regularHours;
     }
 }

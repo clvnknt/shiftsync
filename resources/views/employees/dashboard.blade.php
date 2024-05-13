@@ -176,27 +176,28 @@
 @section('scripts')
     <!-- Function to update time every second -->
     <script>
-        function updateTime() {
-            var options = {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false, // Use 24-hour format
-                weekday: 'short', // Display the day of the week
-                day: '2-digit', // Display the day of the month
-                month: 'short', // Display the month
-                year: 'numeric' // Display the year
-            };
+function updateTime() {
+    var options = {
+        weekday: 'short', // Display the short form of the day of the week (e.g., Mon)
+        month: 'short', // Display the short form of the month (e.g., May)
+        day: 'numeric', // Display the day of the month (e.g., 13)
+        year: 'numeric', // Display the year (e.g., 2024)
+        hour: 'numeric', // Display the hour (e.g., 4)
+        minute: '2-digit', // Display the minutes (e.g., 40)
+        hour12: true // Use 12-hour format with AM/PM
+    };
 
-            var phTime = new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', ...options });
-            var auTime = new Date().toLocaleTimeString('en-US', { timeZone: 'Australia/Brisbane', ...options });
-            var ukTime = new Date().toLocaleTimeString('en-US', { timeZone: 'Europe/London', ...options });
-            var usTime = new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York', ...options });
+    var phTime = new Date().toLocaleString('en-US', { timeZone: 'Asia/Manila', ...options });
+    var auTime = new Date().toLocaleString('en-US', { timeZone: 'Australia/Brisbane', ...options });
+    var ukTime = new Date().toLocaleString('en-US', { timeZone: 'Europe/London', ...options });
+    var usTime = new Date().toLocaleString('en-US', { timeZone: 'America/New_York', ...options });
 
-            document.getElementById('ph_time').innerHTML = phTime;
-            document.getElementById('au_time').innerHTML = auTime;
-            document.getElementById('uk_time').innerHTML = ukTime;
-            document.getElementById('us_time').innerHTML = usTime;
-        }
+    document.getElementById('ph_time').innerHTML = phTime;
+    document.getElementById('au_time').innerHTML = auTime;
+    document.getElementById('uk_time').innerHTML = ukTime;
+    document.getElementById('us_time').innerHTML = usTime;
+}
+
 
         // Update time initially and then every second
         updateTime();

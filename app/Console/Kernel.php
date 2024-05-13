@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('app:create-employee-shift-record')->everyMinute();
+        $schedule->command('shift:check-end-times')->everyMinute();
     }
 
     /**

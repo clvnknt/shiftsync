@@ -3,6 +3,7 @@
 namespace App\Jobs\TimesheetJobs;
 
 use App\Models\EmployeeShiftRecord;
+use App\Models\EmployeeAssignedShift;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -37,24 +38,40 @@ class CalculateHoursRenderedJob implements ShouldQueue
 
         // Ensure all necessary timestamps are set
         if ($shiftRecord && $shiftRecord->start_shift && $shiftRecord->end_shift && $shiftRecord->start_lunch && $shiftRecord->end_lunch) {
-            // Calculate shift duration
+            // Retrieve the associated employee assigned shift
+            $assignedShift = $shiftRecord->employeeAssignedShift;
+
+            // Retrieve the associated shift schedule
+            $shiftSchedule = $assignedShift->shiftSchedule;
+
+            // Convert lunch start time and end lunch time to Carbon instances for easy manipulation
+            $startLunch = Carbon::createFromFormat('H:i:s', $shiftSchedule->lunch_start_time);
+            $endLunch = Carbon::createFromFormat('H:i:s', $shiftSchedule->end_lunch_time);
+
+            // Calculate total shift duration (excluding lunch break) in minutes
             $startShift = Carbon::parse($shiftRecord->start_shift);
             $endShift = Carbon::parse($shiftRecord->end_shift);
-            $startLunch = Carbon::parse($shiftRecord->start_lunch);
-            $endLunch = Carbon::parse($shiftRecord->end_lunch);
+            $totalShiftDurationMinutes = $startShift->diffInMinutes($endShift);
 
-            // Calculate total shift duration (excluding lunch break)
-            $totalShiftDuration = $startShift->diffInMinutes($endShift);
+            // Calculate lunch break duration in minutes
+            $lunchBreakDurationMinutes = $endLunch->diffInMinutes($startLunch);
 
-            // Calculate lunch break duration
-            $lunchBreakDuration = $startLunch->diffInMinutes($endLunch);
+            // Convert total shift duration to hours, including decimal fractions
+            $totalShiftDurationHours = $totalShiftDurationMinutes / 60;
 
-            // Subtract lunch break duration from total shift duration
-            $hoursRendered = max(0, round(($totalShiftDuration - $lunchBreakDuration) / 60, 2)); // Round to 2 decimal places
+            // Subtract lunch break duration from total shift duration if total shift duration is greater than lunch break duration
+            if ($totalShiftDurationMinutes > $lunchBreakDurationMinutes) {
+                $hoursRendered = max(0, $totalShiftDurationHours - ($lunchBreakDurationMinutes / 60));
+            } else {
+                $hoursRendered = 0; // Set hours rendered to 0 if lunch break duration exceeds total shift duration
+            }
 
             // Update hours_rendered column
             $shiftRecord->hours_rendered = $hoursRendered;
             $shiftRecord->save();
+
+            //Hours Rendered = (Total Shift Duration (Minutes) - Lunch Break Duration (Minutes)) / 60
+            //if Total Shift Duration (Minutes) > Lunch Break Duration (Minutes); Otherwise, Hours Rendered = 0.
         }
     }
 }

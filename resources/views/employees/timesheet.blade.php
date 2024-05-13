@@ -176,10 +176,6 @@
                     <tbody>
                         <!-- Summary table data -->
                         <tr>
-                            <td>Overall Computation:</td>
-                            <td>0 Hour/s</td>
-                        </tr>
-                        <tr>
                             <td>Total Worked Hours (Regular):</td>
                             <td id="totalWorkedHours">0 Hour/s</td>
                         </tr>
@@ -189,8 +185,8 @@
                         </tr>
                         <tr>
                             <td>Overtime:</td>
-                            <td>0 Hour/s</td>
-                        </tr>
+                            <td id="totalOvertimeHours">0 Hour/s</td>
+                        </tr>                        
                     </tbody>
                 </table>
             </div>
@@ -339,12 +335,12 @@ function fetchRecords() {
             row.innerHTML = `
                 <td>${record.shift_date}</td>
                 <td>${record.shiftName}</td>
-                <td>${record.shiftSchedule.start_shift_time} to ${record.shiftSchedule.end_shift_time}, ${record.shiftSchedule.shiftTimezone}</td>
+                <td>${convertToStandardTime(record.shiftSchedule.start_shift_time)} to ${convertToStandardTime(record.shiftSchedule.end_shift_time)}, ${record.shiftSchedule.shiftTimezone}</td>
 
-                <td>${record.start_shift}</td>
-                <td>${record.start_lunch}</td>
-                <td>${record.end_lunch}</td>
-                <td>${record.end_shift}</td>
+                <td>${convertToStandardTime(record.start_shift)}</td>
+                <td>${convertToStandardTime(record.start_lunch)}</td>
+                <td>${convertToStandardTime(record.end_lunch)}</td>
+                <td>${convertToStandardTime(record.end_shift)}</td>
                 <td>${record.hours_rendered}</td>
                 <td>${record.hours_late_start_shift}</td> 
                 <td>${record.hours_late_end_lunch}</td> 
@@ -398,6 +394,63 @@ function updateTotalOvertime(totalOvertime) {
 function updateTotalTardinessHours(totalTardinessHours) {
     var totalTardinessHoursElement = document.getElementById('totalTardinessHours');
     totalTardinessHoursElement.textContent = totalTardinessHours.toFixed(2) + ' Hour/s';
+}
+
+// Function to convert military time to standard time format
+function convertToStandardTime(militaryTime) {
+    // Check if military time is valid
+    if (!militaryTime) {
+        return "-";
+    }
+
+    // Extract hours and minutes from military time
+    var hours = parseInt(militaryTime.substring(0, 2), 10);
+    var minutes = parseInt(militaryTime.substring(3, 5), 10);
+
+    // Check if hours and minutes are valid
+    if (isNaN(hours) || isNaN(minutes)) {
+        return "-";
+    }
+
+    // Determine AM or PM
+    var period = hours < 12 ? "AM" : "PM";
+
+    // Convert 24-hour format to 12-hour format
+    if (hours > 12) {
+        hours -= 12;
+    } else if (hours === 0) {
+        hours = 12;
+    }
+
+    // Format the time as HH:MM AM/PM
+    return hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0') + " " + period;
+}
+
+// Function to calculate and update total overtime hours
+function updateTotalOvertimeHours() {
+    var totalOvertime = 0; // Initialize total overtime hours
+
+    // Get all rows in the records table body
+    var rows = document.getElementById('recordsTableBody').getElementsByTagName('tr');
+
+    // Loop through each row
+    for (var i = 0; i < rows.length; i++) {
+        // Get the overtime cell in the current row
+        var overtimeCell = rows[i].cells[10]; // Assuming overtime is in the 11th column (index 10)
+
+        // Get the overtime hours as a float from the cell text
+        var overtimeHours = parseFloat(overtimeCell.textContent.trim());
+
+        // Check if the parsed overtime hours is a valid number
+        if (!isNaN(overtimeHours)) {
+            // Add the overtime hours to the total
+            totalOvertime += overtimeHours;
+        }
+    }
+
+    // Update the total overtime cell in the summary table
+    var totalOvertimeCell = document.getElementById('totalOvertimeHours');
+    totalOvertimeCell.textContent = totalOvertime.toFixed(2) + ' Hour/s';
 }
 </script>
 @endsection
