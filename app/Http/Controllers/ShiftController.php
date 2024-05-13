@@ -42,7 +42,6 @@ class ShiftController extends Controller
     {
         $response = $this->dispatchAndRedirect($request, EndShiftJob::class, 'End Shift logged successfully.');
     
-        // After ending the shift, dispatch CalculateHoursRenderedJob for the current employee record
         $employeeRecordId = $request->input('employeeRecordId');
         dispatch(new CalculateHoursRenderedJob($employeeRecordId));
         dispatch(new CalculateTardiness($employeeRecordId));

@@ -3,22 +3,6 @@
 @section('title', 'My Account - StaffCentral')
 
 @section('content')
-    <style>
-        .card {
-            border-radius: 20px;
-            overflow: hidden; /* Ensure content does not overflow rounded corners */
-        }
-        .card-title {
-            display: flex;
-            align-items: center;
-        }
-        .card-title-icon {
-            margin-right: 10px;
-            width: 70px; /* Set the width of the icon */
-            height: 70px; /* Set the height of the icon */
-        }
-    </style>
-
     <div class="container mt-4">
         <div class="row">
             <div class="col-md-12">
@@ -96,4 +80,22 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('styles')
+    <style>
+        .card {
+            border-radius: 20px;
+            overflow: hidden; /* Ensure content does not overflow rounded corners */
+        }
+        .card-title {
+            display: flex;
+            align-items: center;
+        }
+        .card-title-icon {
+            margin-right: 10px;
+            width: 70px; /* Set the width of the icon */
+            height: 70px; /* Set the height of the icon */
+        }
+    </style>
 @endsection
