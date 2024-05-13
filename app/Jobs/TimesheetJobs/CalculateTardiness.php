@@ -55,6 +55,11 @@ class CalculateTardiness implements ShouldQueue
     
                 // Calculate lateness for start shift (formula: actual - expected)
                 $latenessStartShift = max(0, $startShift->diffInMinutes($startShiftTime));
+
+                // Check if the actual start time is earlier than the scheduled start time
+                if ($startShift < $startShiftTime) {
+                    $latenessStartShift = 0;
+                }
     
                 // Calculate lateness for end lunch (formula: actual - expected)
                 $latenessEndLunch = max(0, $endLunch->diffInMinutes($endLunchTime));

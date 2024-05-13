@@ -41,9 +41,14 @@ class CalculateOvertime implements ShouldQueue
             // Ensure that all necessary timestamps are available
             if ($record->start_shift && $record->end_shift &&
                 $record->employeeAssignedShift && $record->employeeAssignedShift->shiftSchedule) {
+                // Get the employee's assigned shift schedule
+                $shiftSchedule = $record->employeeAssignedShift->shiftSchedule;
+                
+                // Calculate the start and end of the shift considering shift timezone
+                $startShift = Carbon::createFromTimeString($record->start_shift, $shiftSchedule->shift_timezone);
+                $endShift = Carbon::createFromTimeString($record->end_shift, $shiftSchedule->shift_timezone);
+                
                 // Calculate the duration of the shift in hours
-                $startShift = Carbon::parse($record->start_shift);
-                $endShift = Carbon::parse($record->end_shift);
                 $shiftDuration = $startShift->floatDiffInHours($endShift);
     
                 // Get the employee's regular working hours
