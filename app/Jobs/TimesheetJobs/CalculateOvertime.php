@@ -42,10 +42,9 @@ class CalculateOvertime implements ShouldQueue
             if ($record->start_shift && $record->end_shift &&
                 $record->employeeAssignedShift && $record->employeeAssignedShift->shiftSchedule) {
                 
-                // Convert shift end time from shift schedule to UTC
+                // Parse shift end time from shift schedule
                 $shiftSchedule = $record->employeeAssignedShift->shiftSchedule;
-                $shiftEndTime = Carbon::createFromTimeString($shiftSchedule->end_shift_time, $shiftSchedule->shift_timezone)
-                                     ->setTimezone('UTC');
+                $shiftEndTime = Carbon::parse($shiftSchedule->end_shift_time);
 
                 // Store the actual end shift time
                 $actualEndShiftTime = Carbon::parse($record->end_shift);

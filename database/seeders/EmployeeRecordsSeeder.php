@@ -83,7 +83,7 @@ class EmployeeRecordsSeeder extends Seeder
                 'employee_age' => 30, // Adjust as needed
                 'employee_birthdate' => '1992-01-01', // Adjust as needed
                 'employee_profile_picture' => '', // Adjust as needed
-                'employee_timezone' => '+01:00',
+                'employee_timezone' => '+00:00',
             ]);
         }
 

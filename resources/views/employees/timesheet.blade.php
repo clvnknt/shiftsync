@@ -11,10 +11,10 @@
             </div>
         </div>
         
-        <!-- Legend -->
-        <div class="row mb-4">
-            <div class="col-md-6 d-flex mb-4">
-                <div class="card flex-fill">
+        <!-- Legend and View Records Format -->
+        <div class="row mb-2-adjusted">
+            <div class="col-md-6 d-flex mb-2">
+                <div class="card flex-fill mx-1 legend-view-card">
                     <div class="card-body">
                         <h5 class="card-title">
                             <img src="{{ asset('media/images/icons/timesheet/legend.png') }}" alt="Legend Icon" class="img-fluid" style="width: 50px; height: 50px;">
@@ -38,8 +38,8 @@
                 </div>
             </div>
             
-            <div class="col-md-6 d-flex mb-4">
-                <div class="card flex-fill">
+            <div class="col-md-6 d-flex mb-2">
+                <div class="card flex-fill mx-1 legend-view-card">
                     <div class="card-body">
                         <h5 class="card-title">
                             <img src="{{ asset('media/images/icons/timesheet/view-format.png') }}" alt="Choose View Format Icon" class="img-fluid" style="width: 50px; height: 50px;">
@@ -109,96 +109,104 @@
         </div>
             
         <!-- Records -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h4 class="mb-3">
-                    <img src="{{ asset('media/images/icons/timesheet/records.png') }}" alt="Records Icon" class="img-fluid" style="width: 50px; height: 50px;">
-                    Records
-                </h4>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Shift Name</th>
-                            <th>Shift Schedule</th>
-                            <th>SS</th>
-                            <th>SL</th>
-                            <th>LE</th>
-                            <th>SE</th>
-                            <th>HR</th>
-                            <th>Late (SS)</th>
-                            <th>Late (EL)</th>
-                            <th>OT</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recordsTableBody">
-                        <!-- Records table data -->
-                        @if($records)
-                            @foreach($records as $record)
+        <div class="row records-summary-spacing">
+            <div class="col-md-12">
+                <div class="card mx-1">
+                    <div class="card-body">
+                        <h4 class="mb-3">
+                            <img src="{{ asset('media/images/icons/timesheet/records.png') }}" alt="Records Icon" class="img-fluid" style="width: 50px; height: 50px;">
+                            Records
+                        </h4>
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <td>{{ $record->shift_date }}</td>
-                                    <td>{{ $record->shiftName }}</td>
-                                    <td>{{ $record->shiftSchedule }}</td>
-                                    <td>{{ $record->start_shift }}</td>
-                                    <td>{{ $record->start_lunch }}</td>
-                                    <td>{{ $record->end_lunch }}</td>
-                                    <td>{{ $record->end_shift }}</td>
-                                    <td>{{ $record->hours_rendered }}</td>
-                                    <td>{{ $record->tardiness->hours_late_start_shift ?? '-' }}</td>
-                                    <td>{{ $record->tardiness->hours_late_end_lunch ?? '-' }}</td>
-                                    <td>{{ $record->overtime_hours }}</td>
+                                    <th>Date</th>
+                                    <th>Shift Name</th>
+                                    <th>Shift Schedule</th>
+                                    <th>SS</th>
+                                    <th>SL</th>
+                                    <th>LE</th>
+                                    <th>SE</th>
+                                    <th>HR</th>
+                                    <th>Late (SS)</th>
+                                    <th>Late (EL)</th>
+                                    <th>OT</th>
                                 </tr>
-                            @endforeach
-                        @else
-                            <tr>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody id="recordsTableBody">
+                                <!-- Records table data -->
+                                @if($records)
+                                    @foreach($records as $record)
+                                        <tr>
+                                            <td>{{ $record->shift_date }}</td>
+                                            <td>{{ $record->shiftName }}</td>
+                                            <td>{{ $record->shiftSchedule }}</td>
+                                            <td>{{ $record->start_shift }}</td>
+                                            <td>{{ $record->start_lunch }}</td>
+                                            <td>{{ $record->end_lunch }}</td>
+                                            <td>{{ $record->end_shift }}</td>
+                                            <td>{{ $record->hours_rendered }}</td>
+                                            <td>{{ $record->tardiness->hours_late_start_shift?? '-' }}</td>
+                                            <td>{{ $record->tardiness->hours_late_end_lunch?? '-' }}</td>
+                                            <td>{{ $record->overtime_hours }}</td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Summary -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h4 class="mb-3">
-                    <img src="{{ asset('media/images/icons/timesheet/summary.png') }}" alt="Summary Icon" class="img-fluid" style="width: 50px; height: 50px;">
-                    Summary
-                </h4>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th>Hours</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Summary table data -->
-                        <tr>
-                            <td>Total Worked Hours (Regular):</td>
-                            <td id="totalWorkedHours">0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Tardiness/Undertime:</td>
-                            <td id="totalTardinessHours">0 Hour/s</td>
-                        </tr>
-                        <tr>
-                            <td>Overtime:</td>
-                            <td id="totalOvertimeHours">0 Hour/s</td>
-                        </tr>                        
-                    </tbody>
-                </table>
+        <div class="row records-summary-spacing">
+            <div class="col-md-12">
+                <div class="card mx-1">
+                    <div class="card-body">
+                        <h4 class="mb-3">
+                            <img src="{{ asset('media/images/icons/timesheet/summary.png') }}" alt="Summary Icon" class="img-fluid" style="width: 50px; height: 50px;">
+                            Summary
+                        </h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Hours</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Summary table data -->
+                                <tr>
+                                    <td>Total Worked Hours (Regular):</td>
+                                    <td id="totalWorkedHours">0 Hour/s</td>
+                                </tr>
+                                <tr>
+                                    <td>Tardiness/Undertime:</td>
+                                    <td id="totalTardinessHours">0 Hour/s</td>
+                                </tr>
+                                <tr>
+                                    <td>Overtime:</td>
+                                    <td id="totalOvertimeHours">0 Hour/s</td>
+                                </tr>                        
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -206,14 +214,30 @@
 
 @section('styles')
     <style>
-        .card {
+       .card {
             border: none;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 20px;
         }
 
-        .card-body {
+       .card-body {
             border-radius: 20px;
+        }
+
+       .mx-1 {
+            margin-left: 0.5rem!important;
+            margin-right: 0.5rem!important;
+        }
+
+       .mb-2-adjusted {
+            margin-bottom: 1.5rem!important; /* Adjusted margin-bottom for the "View Records" and "View Format" sections */
+        }
+
+       .records-summary-spacing {
+            margin-bottom: 2rem!important; /* Ensure equal spacing between "Records" and "Summary" */
+        }
+
+       .legend-view-card {
+            min-height: 400px; /* Adjust this value as needed */
         }
     </style>
 @endsection

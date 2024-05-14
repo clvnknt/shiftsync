@@ -82,9 +82,18 @@ function fetchRecords() {
     var shiftId = document.getElementById('shiftNameSelect').value;
     var startDate = document.getElementById('start_date').value;
     var endDate = document.getElementById('end_date').value;
-
-    if (!startDate || !endDate) {
+    
+    // Validate that both start date and end date are selected
+    if (!startDate ||!endDate) {
         alert("Please select both start date and end date.");
+        return;
+    }
+
+    // Validate that end date is not earlier than start date
+    var startDateObj = new Date(startDate);
+    var endDateObj = new Date(endDate);
+    if (endDateObj < startDateObj) {
+        alert("End date should not be earlier than start date.");
         return;
     }
 
@@ -103,8 +112,8 @@ function fetchRecords() {
             endDate: endDate
         })
     })
-    .then(response => response.json()) // Parse response as JSON
-    .then(data => {
+   .then(response => response.json()) // Parse response as JSON
+   .then(data => {
         console.log('Fetched data:', data); // Log fetched data
 
         // Update the table with the fetched records
@@ -142,7 +151,7 @@ function fetchRecords() {
             if (!isNaN(hoursRendered)) {
                 totalHours += hoursRendered; // Add rendered hours to total
             } else {
-                console.error('Invalid hours_rendered:', record.hours_rendered); // Log invalid data
+
             }
 
             // Try parsing hours_late_start_shift as a float
@@ -168,10 +177,11 @@ function fetchRecords() {
         updateTotalTardinessHours(totalLateStartShift + totalLateEndLunch); // Update total tardiness hours
         updateTotalOvertime(totalOvertime); // Update total overtime hours
     })
-    .catch(error => {
+   .catch(error => {
         console.error('Error fetching records:', error); // Log any errors
     });
 }
+
 
 // Function to update total overtime hours
 function updateTotalOvertime(totalOvertime) {

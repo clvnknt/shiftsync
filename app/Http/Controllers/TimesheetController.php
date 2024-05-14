@@ -64,7 +64,7 @@ class TimesheetController extends Controller
     
         // Retrieve the employee record associated with the authenticated user
         $employeeRecord = EmployeeRecord::where('user_id', $userId)->first();
-    
+        
         // Fetch records with proper joins
         $records = EmployeeShiftRecord::with(['employeeAssignedShift.shiftSchedule', 'tardiness', 'overtime'])
             ->where('employee_assigned_shift_id', $shiftId)
@@ -77,8 +77,8 @@ class TimesheetController extends Controller
             $timezones = [
                 '+08:00' => 'PH Timezone',
                 '+10:00' => 'AU Timezone',
-                '+01:00' => 'UK Timezone',
-                '-05:00' => 'US Timezone',
+                '+00:00' => 'UK Timezone',
+                '-04:00' => 'US Timezone',
             ];
     
             // Retrieve the shift timezone offset
@@ -97,8 +97,15 @@ class TimesheetController extends Controller
                 'shift_date' => Carbon::parse($record->shift_date)->setTimezone($employeeRecord->employee_timezone)->format('F j, Y'),
                 'shiftName' => $record->employeeAssignedShift->shiftSchedule->shift_name,
                 'shiftSchedule' => [
-                    'start_shift_time' => $record->employeeAssignedShift->shiftSchedule->start_shift_time ? Carbon::createFromTimeString($record->employeeAssignedShift->shiftSchedule->start_shift_time, $record->employeeAssignedShift->shiftSchedule->shift_timezone)->timezone($employeeRecord->employee_timezone)->format('H:i') : '-',
-                    'end_shift_time' => $record->employeeAssignedShift->shiftSchedule->end_shift_time ? Carbon::createFromTimeString($record->employeeAssignedShift->shiftSchedule->end_shift_time, $record->employeeAssignedShift->shiftSchedule->shift_timezone)->timezone($employeeRecord->employee_timezone)->format('H:i') : '-',
+                    'start_shift_time' => $record->employeeAssignedShift->shiftSchedule->start_shift_time ? 
+                    Carbon::createFromTimeString($record->employeeAssignedShift->shiftSchedule->start_shift_time, 'UTC')
+                        ->setTimezone($record->employeeAssignedShift->shiftSchedule->shift_timezone)
+                        ->format('H:i') : '-',
+                'end_shift_time' => $record->employeeAssignedShift->shiftSchedule->end_shift_time ? 
+                    Carbon::createFromTimeString($record->employeeAssignedShift->shiftSchedule->end_shift_time, 'UTC')
+                        ->setTimezone($record->employeeAssignedShift->shiftSchedule->shift_timezone)
+                        ->format('H:i') : '-',
+                
                     'shiftTimezone' => $shiftTimezone,
                 ],
                 'start_shift' => $this->formatTime($record->start_shift, $employeeRecord->employee_timezone),

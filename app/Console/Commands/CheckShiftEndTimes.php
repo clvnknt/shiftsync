@@ -35,11 +35,13 @@ class CheckShiftEndTimes extends Command
         // Log a debug message indicating the start of the command
         Log::debug('Starting CheckShiftEndTimes command execution.');
 
-        // Retrieve employee shift records where end_shift column is not null
-        $shifts = EmployeeShiftRecord::whereNotNull('end_shift')->get();
+        // Retrieve employee shift records where end_shift column is not null and hours_rendered is null
+        $shifts = EmployeeShiftRecord::whereNotNull('end_shift')
+            ->whereNull('hours_rendered')
+            ->get();
 
         // Log the number of shift records retrieved
-        Log::debug('Retrieved ' . $shifts->count() . ' shift records with end_shift not null.');
+        Log::debug('Retrieved ' . $shifts->count() . ' shift records with end_shift not null and hours_rendered null.');
 
         // Loop through each shift record
         foreach ($shifts as $shift) {
