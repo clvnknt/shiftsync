@@ -88,8 +88,7 @@
                     <ul class="list-group">
                         @foreach ($currentAssignedShifts as $assignedShift)
                         <li class="list-group-item">
-                            <strong>{{ $assignedShift->shiftSchedule->shift_name }} {{ 'UTC' . \Carbon\Carbon::now($assignedShift->shiftSchedule->shift_timezone)->offsetHours }}
-                            </strong>
+                            <strong>{{ $assignedShift->shiftSchedule->shift_name }} ({{ 'UTC' . \Carbon\Carbon::now($assignedShift->shiftSchedule->shift_timezone)->offsetHours }})</strong>
                             <br>
                             <span>Start Time: {{ \Carbon\Carbon::parse($assignedShift->shiftSchedule->start_shift_time)->format('h:i A') }}</span>
                             <br>

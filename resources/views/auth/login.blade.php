@@ -21,7 +21,6 @@
                         <h2 class="text-center mb-4">Login</h2>
                         <div class="text-center mb-3">
                             <button class="btn btn-primary">Sign in with Microsoft</button>
-                            <button class="btn btn-danger">Sign in with Google</button>
                         </div>
                         <div class="or-divider">
                             <hr>

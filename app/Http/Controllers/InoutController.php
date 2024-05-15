@@ -34,6 +34,39 @@ class InoutController extends Controller
             ]);
         }
     
+        // Check if start_shift and end_shift are both logged for the active shift record
+        $isShiftLogged = $activeShiftRecord->start_shift && $activeShiftRecord->end_shift;
+
+        // If all values are logged, find the next shift record and replace the active shift
+        if ($isShiftLogged) {
+            // Get the next shift order
+            $nextShiftOrder = $activeShiftRecord->shift_order + 1;
+
+            // Find the next shift record with an active assigned shift
+            $nextShiftRecord = EmployeeShiftRecord::where('employee_record_id', $employeeRecord->id)
+                ->where('shift_order', '>=', $nextShiftOrder) // Start searching from the next shift order
+                ->where('shift_date', $currentDate)
+                ->whereHas('employeeAssignedShift', function ($query) {
+                    $query->where('is_active', true);
+                })
+                ->orderBy('shift_order')
+                ->first();
+
+            // If no next shift record is found, loop back to the first shift order
+            if (!$nextShiftRecord) {
+                $nextShiftRecord = EmployeeShiftRecord::where('employee_record_id', $employeeRecord->id)
+                    ->where('shift_date', $currentDate)
+                    ->whereHas('employeeAssignedShift', function ($query) {
+                        $query->where('is_active', true);
+                    })
+                    ->orderBy('shift_order')
+                    ->first();
+            }
+
+            // Replace the active shift record with the next shift record
+            $activeShiftRecord = $nextShiftRecord;
+        }
+
         // Retrieve all current assigned shifts for the employee where is_active is true
         $currentAssignedShifts = EmployeeAssignedShift::where('employee_record_id', $employeeRecord->id)
             ->where('is_active', true)

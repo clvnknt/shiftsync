@@ -56,13 +56,16 @@ class CreateEmployeeShiftRecordJob implements ShouldQueue
                         // Retrieve the shift schedule for the assigned shift
                         $shiftSchedule = $assignedShift->shiftSchedule;
 
-                        // Calculate the shift end date based on the shift schedule's times
-                        $shiftEndHour = Carbon::createFromFormat('H:i:s', $shiftSchedule->end_shift_time)->hour;
+                        // Calculate the shift end date based on the shift schedule's times and timezone
+                        $shiftStartHour = Carbon::createFromFormat('H:i:s', $shiftSchedule->start_shift_time, $shiftSchedule->shift_timezone)->hour;
+                        $shiftEndHour = Carbon::createFromFormat('H:i:s', $shiftSchedule->end_shift_time, $shiftSchedule->shift_timezone)->hour;
 
                         // If the end hour is before the start hour (indicating it extends to the next day)
-                        if ($shiftEndHour < Carbon::createFromFormat('H:i:s', $shiftSchedule->start_shift_time)->hour) {
+                        if ($shiftEndHour < $shiftStartHour) {
+                            // If the end hour is before the start hour, set the end date to the next day
                             $endDate = $currentDate->copy()->addDay();
                         } else {
+                            // Otherwise, use the current date as the end date
                             $endDate = $currentDate;
                         }
 

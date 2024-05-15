@@ -40,7 +40,7 @@ class ShiftSchedulesSeeder extends Seeder
                 'lunch_start_time' => '11:00:00', // UTC, Converted from 12:00:00 (local time)
                 'end_lunch_time' => '12:00:00', // UTC, Converted from 13:00:00 (local time)
                 'end_shift_time' => '16:00:00', // UTC, Converted from 17:00:00 (local time)
-                'shift_timezone' => '+00:00', // UTC+00:00 (Europe/London)
+                'shift_timezone' => '+01:00', // UTC+00:00 (Europe/London)
             ],
             [
                 'shift_name' => 'Night Shift', // Timezone: Europe/London (UK)
@@ -49,7 +49,7 @@ class ShiftSchedulesSeeder extends Seeder
                 'lunch_start_time' => '23:00:00', // UTC, Converted from 00:00:00 (local time)
                 'end_lunch_time' => '00:00:00', // UTC, Converted from 01:00:00 (local time)
                 'end_shift_time' => '03:00:00', // UTC, Converted from 04:00:00 (local time, next day)
-                'shift_timezone' => '+00:00', // UTC+00:00 (Europe/London)
+                'shift_timezone' => '+01:00', // UTC+00:00 (Europe/London)
             ],
             [
                 'shift_name' => 'Day Shift', // Timezone: America/New_York

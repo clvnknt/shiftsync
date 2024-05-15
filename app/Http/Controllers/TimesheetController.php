@@ -77,7 +77,7 @@ class TimesheetController extends Controller
             $timezones = [
                 '+08:00' => 'PH Timezone',
                 '+10:00' => 'AU Timezone',
-                '+00:00' => 'UK Timezone',
+                '+01:00' => 'UK Timezone',
                 '-04:00' => 'US Timezone',
             ];
     
