@@ -18,7 +18,6 @@ return new class extends Migration
             $table->unsignedBigInteger('role_id'); //employee should be connected to one role
             $table->unsignedBigInteger('address_id'); //employee should be connected to one to two address (primary and temporary)
             $table->unsignedBigInteger('emergency_contact_id'); //employee should be connected to one emergency contact
-            $table->unsignedBigInteger('shift_break_id'); //employee should be connected to one shift break
             $table->string('employee_first_name'); //first name of the employee
             $table->string('employee_middle_name');  //middle name of the employee
             $table->string('employee_last_name'); //last name of the employee
@@ -35,7 +34,6 @@ return new class extends Migration
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade'); //creates a connection between roles table
             $table->foreign('address_id')->references('id')->on('addresses')->onDelete('cascade'); //creates a connection between addresses table
             $table->foreign('emergency_contact_id')->references('id')->on('emergency_contacts')->onDelete('cascade'); //creates a connection between emergency_contacts table
-            $table->foreign('shift_break_id')->references('id')->on('shift_breaks')->onDelete('cascade'); //creates a connection between shifts table
         });
     }
 

@@ -15,43 +15,57 @@ class CutoffPeriodsSeeder extends Seeder
      */
     public function run()
     {
-        // Define the cutoff period end dates
-        $endDates = [
-            'Asia/Manila' => '15',
-            'Europe/London' => '15',
-            'America/New_York' => '15',
-            'Australia/Sydney' => '15',
+        // Define timezones
+        $timezones = [
+            'Asia/Manila',
+            'Europe/London',
+            'America/New_York',
+            'Australia/Sydney',
         ];
 
-        foreach ($endDates as $timezone => $endDate) {
-            $currentMonth = Carbon::now()->startOfMonth()->setTimezone($timezone);
-            $endDay = intval($endDate);
+        // Define the year
+        $year = 2024;
 
-            // Create record for 1-15 period
-            $startDate1 = $currentMonth->copy()->startOfMonth();
-            $endDate1 = $currentMonth->copy()->startOfMonth()->addDays($endDay - 1)->endOfDay();
-            $utcOffset = $currentMonth->copy()->offsetHours;
-            $utcOffsetFormatted = sprintf('%+03d:00', $utcOffset);
+        // Loop through each timezone
+        foreach ($timezones as $timezone) {
+            // Set the timezone
+            date_default_timezone_set($timezone);
+            $currentMonth = Carbon::create($year, 1, 1, 0, 0, 0, $timezone);
 
-            $cutoffPeriod1 = new CutoffPeriod([
-                'period' => $currentMonth->format('F Y'),
-                'start_date' => $startDate1,
-                'end_date' => $endDate1,
-                'cutoff_timezone' => $utcOffsetFormatted,
-            ]);
-            $cutoffPeriod1->save();
+            // Loop through each month of the year
+            for ($i = 1; $i <= 12; $i++) {
+                // Set the current month
+                $currentMonth->month = $i;
 
-            // Create record for 16-end of month period
-            $startDate2 = $currentMonth->copy()->startOfMonth()->addDays($endDay);
-            $endDate2 = $currentMonth->copy()->endOfMonth();
+                // Get the number of days in the month
+                $endDay = $currentMonth->daysInMonth;
 
-            $cutoffPeriod2 = new CutoffPeriod([
-                'period' => $currentMonth->format('F Y'),
-                'start_date' => $startDate2,
-                'end_date' => $endDate2,
-                'cutoff_timezone' => $utcOffsetFormatted,
-            ]);
-            $cutoffPeriod2->save();
+                // Create record for 1-15 period
+                $startDate1 = $currentMonth->copy()->startOfMonth();
+                $endDate1 = $currentMonth->copy()->startOfMonth()->addDays(14)->endOfDay();
+                $utcOffset = $currentMonth->copy()->offsetHours;
+                $utcOffsetFormatted = sprintf('%+03d:00', $utcOffset);
+
+                // Find or create cutoff period
+                CutoffPeriod::updateOrCreate([
+                    'period' => 'Cutoff Period 1 ' . $currentMonth->format('F Y'),
+                    'start_date' => $startDate1,
+                    'end_date' => $endDate1,
+                    'cutoff_timezone' => $utcOffsetFormatted,
+                ]);
+
+                // Create record for 16-end of month period
+                $startDate2 = $currentMonth->copy()->startOfMonth()->addDays(15);
+                $endDate2 = $currentMonth->copy()->endOfMonth();
+
+                // Find or create cutoff period
+                CutoffPeriod::updateOrCreate([
+                    'period' => 'Cutoff Period 2 ' . $currentMonth->format('F Y'),
+                    'start_date' => $startDate2,
+                    'end_date' => $endDate2,
+                    'cutoff_timezone' => $utcOffsetFormatted,
+                ]);
+            }
         }
     }
 }

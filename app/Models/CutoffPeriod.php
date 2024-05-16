@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class CutoffPeriod extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'period',
+        'start_date',
+        'end_date',
+        'cutoff_timezone',
+    ];
 }

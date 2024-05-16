@@ -21,9 +21,4 @@ class EmployeeShiftBreak extends Model
     {
         return $this->belongsTo(EmployeeRecord::class);
     }
-
-    public function rules()
-    {
-        return $this->hasMany(Rule::class);
-    }
 }

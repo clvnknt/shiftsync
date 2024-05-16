@@ -18,8 +18,8 @@
 
         .footer {
             margin-top: auto;
-            background-color: #0071F8;
-            color: white;
+            background-color: #ffffff;
+            color: black;
         }
     </style>
     @yield('styles')

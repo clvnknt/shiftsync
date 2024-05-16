@@ -49,19 +49,20 @@ class CalculateOvertime implements ShouldQueue
                 // Store the actual end shift time
                 $actualEndShiftTime = Carbon::parse($record->end_shift);
 
-                // Calculate overtime based on the difference between actual end shift time and shift end time from schedule
-                $overtimeDuration = max(0, $actualEndShiftTime->floatDiffInHours($shiftEndTime));
+                // Check if the actual end shift time is past the scheduled end shift time
+                if ($actualEndShiftTime->greaterThan($shiftEndTime)) {
+                    // Calculate overtime based on the difference between actual end shift time and shift end time from schedule
+                    $overtimeDuration = max(0, $actualEndShiftTime->floatDiffInHours($shiftEndTime));
 
-                // Store the overtime information in the overtime table
-                Overtime::create([
-                    'employee_shift_record_id' => $record->id,
-                    'overtime_started' => $shiftEndTime, // Overtime started is the end shift time in the shift schedule
-                    'overtime_ended' => $actualEndShiftTime, // Overtime ended is the actual employee shift record end shift
-                    'overtime_hours' => $overtimeDuration,
-                ]);
+                    // Store the overtime information in the overtime table
+                    Overtime::create([
+                        'employee_shift_record_id' => $record->id,
+                        'overtime_started' => $shiftEndTime, // Overtime started is the end shift time in the shift schedule
+                        'overtime_ended' => $actualEndShiftTime, // Overtime ended is the actual employee shift record end shift
+                        'overtime_hours' => $overtimeDuration,
+                    ]);
+                }
             }
-
-            //Overtime Duration = Actual End Shift Time − Shift End Time from Schedule
         }
     }
 }

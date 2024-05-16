@@ -69,12 +69,18 @@
                         </div>
                         
                         <!-- Container for cutoff period dropdown -->
-                        <div id="cutoffContainer" class="mt-3" style="display: none;">
-                            <label for="cutoffSelect">Select Cutoff Period:</label>
-                            <select id="cutoffSelect" class="form-control">
-                                <option value="">-</option>
-                            </select>
-                        </div>
+                       <!-- Container for cutoff period dropdown -->
+<div id="cutoffContainer" class="mt-3">
+    <label for="cutoffSelect">Select Cutoff Period:</label>
+    <select id="cutoffSelect" class="form-control">
+        <option value="">-</option>
+        <!-- Populate assigned cutoff periods -->
+        @foreach($employeeRecord->assignedCutoffPeriods as $assignedCutoffPeriod)
+            <option value="{{ $assignedCutoffPeriod->cutoff_period_id }}">{{ $assignedCutoffPeriod->cutoffPeriod->period }}</option>
+        @endforeach
+    </select>
+</div>
+
                         
                         <!-- Container for date range input fields -->
                         <div id="dateRangeContainer" class="mt-3" style="display: none;">
@@ -109,7 +115,7 @@
         </div>
             
         <!-- Records -->
-        <div class="row records-summary-spacing">
+        <div class="row records-summary-spacing ">
             <div class="col-md-12">
                 <div class="card mx-1">
                     <div class="card-body">
@@ -124,7 +130,7 @@
                                     <th>Shift Name</th>
                                     <th>Shift Schedule</th>
                                     <th>SS</th>
-                                    <th>SL</th>
+                                    <th>LS</th>
                                     <th>LE</th>
                                     <th>SE</th>
                                     <th>HR</th>

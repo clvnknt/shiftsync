@@ -52,19 +52,18 @@ class EmployeeRecord extends Model
         return $this->belongsTo(EmergencyContact::class);
     }
 
-    public function shiftBreak()
+    public function assignedShifts()
     {
-        return $this->belongsTo(ShiftBreak::class);
+    return $this->hasMany(EmployeeAssignedShift::class);
+    }
+    
+    public function employeeShiftRecords()
+    {
+    return $this->hasMany(EmployeeShiftRecord::class);
     }
 
-    public function assignedShifts()
-{
-    return $this->hasMany(EmployeeAssignedShift::class);
-}
-
-public function employeeShiftRecords()
-{
-    return $this->hasMany(EmployeeShiftRecord::class);
-}
-
+    public function assignedCutoffPeriods()
+    {
+        return $this->hasMany(EmployeeAssignedCutoffPeriod::class);
+    }
 }

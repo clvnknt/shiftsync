@@ -22,7 +22,10 @@ class TimesheetController extends Controller
             $userId = Auth::id();
     
             // Retrieve the employee record associated with the authenticated user
-            $employeeRecord = EmployeeRecord::where('user_id', $userId)->first();
+            $employeeRecord = EmployeeRecord::where('user_id', $userId)
+                ->with('assignedCutoffPeriods.cutoffPeriod') // Eager load assigned cutoff periods
+                ->first();
+    
     
             // Check if the employee record exists
             if ($employeeRecord) {
@@ -41,7 +44,7 @@ class TimesheetController extends Controller
                 $records = [];
     
                 // Pass the necessary data to the view
-                return view('employees.timesheet', compact('assignedShifts', 'shiftNames', 'employeeTimezone', 'records'));
+                return view('employees.timesheet', compact('assignedShifts', 'shiftNames', 'employeeTimezone', 'records', 'employeeRecord'));
             } else {
                 // Handle case where employee record does not exist for the user
                 return response()->json(['message' => 'Employee record not found'], 404);

@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class CalculateHoursRenderedJob implements ShouldQueue
 {
@@ -32,38 +33,53 @@ class CalculateHoursRenderedJob implements ShouldQueue
      */
     public function handle(): void
     {
-        // Retrieve the specific employee shift record
-        $shiftRecord = EmployeeShiftRecord::find($this->employeeRecordId);
+        try {
+            // Retrieve the specific employee shift record
+            $shiftRecord = EmployeeShiftRecord::with('employeeAssignedShift.shiftSchedule')->find($this->employeeRecordId);
+            $assignedShift = $shiftRecord->employeeAssignedShift;
 
-        if (!$shiftRecord) {
-            return; // Exit if shift record is not found
-        }
+            if (!$shiftRecord) {
+                return; // Exit if shift record is not found
+            }
 
-        // Ensure all necessary timestamps are set
-        if ($this->timestampsAreSet($shiftRecord)) {
-            // Start and end shift times
-            $startShift = Carbon::parse($shiftRecord->start_shift);
-            $endShift = Carbon::parse($shiftRecord->end_shift);
+            // Ensure all necessary timestamps are set
+            if ($this->timestampsAreSet($shiftRecord)) {
+                // Start and end shift times
+                $startShift = Carbon::parse($shiftRecord->start_shift);
+                $endShift = Carbon::parse($shiftRecord->end_shift);
 
-            // Start and end lunch times
-            $startLunch = Carbon::parse($shiftRecord->start_lunch);
-            $endLunch = Carbon::parse($shiftRecord->end_lunch);
+                // Start and end lunch times based on assigned shift
+                $startLunch = Carbon::parse($shiftRecord->start_lunch);
+                $endLunch = Carbon::parse($shiftRecord->end_lunch);
 
-            // Calculate the time rendered from start shift to start lunch
-            $morningWorkMinutes = $startShift->diffInMinutes($startLunch);
+                // Retrieve the default start lunch time from the employee's assigned shift schedule
+                $defaultStartLunch = Carbon::parse($assignedShift->shiftSchedule->lunch_start_time);
 
-            // Calculate the time rendered from end lunch to end shift
-            $afternoonWorkMinutes = $endLunch->diffInMinutes($endShift);
+                // Calculate the time rendered from start shift to start lunch
+                $morningWorkMinutes = $startShift->diffInMinutes($startLunch);
 
-            // Sum the work minutes
-            $totalWorkMinutes = $morningWorkMinutes + $afternoonWorkMinutes;
+                // Check if the actual start lunch time is after the default start lunch time
+                if ($startLunch->greaterThan($defaultStartLunch)) {
+                    // Exclude the minutes between the default start lunch time and the actual start lunch time from the calculation
+                    $morningWorkMinutes -= $defaultStartLunch->diffInMinutes($startLunch);
+                }
 
-            // Convert total work minutes to hours and round to two decimal places
-            $hoursRendered = round($totalWorkMinutes / 60, 2);
+                // Calculate the time rendered from end lunch to end shift
+                $afternoonWorkMinutes = $endLunch->diffInMinutes($endShift);
 
-            // Update hours_rendered column
-            $shiftRecord->hours_rendered = $hoursRendered;
-            $shiftRecord->save();
+                // Sum the work minutes
+                $totalWorkMinutes = $morningWorkMinutes + $afternoonWorkMinutes;
+
+                // Ensure that hours rendered is not negative
+                $hoursRendered = max(round($totalWorkMinutes / 60, 2), 0);
+
+                // Update hours_rendered column
+                $shiftRecord->hours_rendered = $hoursRendered;
+                $shiftRecord->save();
+            }
+        } catch (\Exception $exception) {
+            // Log any exceptions that occur during job execution
+            Log::error('Error occurred while calculating hours rendered: ' . $exception->getMessage());
         }
     }
 
