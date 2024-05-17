@@ -38,13 +38,13 @@ class CreateEmployeeShiftRecordJob implements ShouldQueue
     {
         try {
             // Get the current date using the employee's timezone
-            $currentDate = Carbon::now($this->employeeTimezone)->startOfMonth();
+            $currentDateLocal = Carbon::now($this->employeeTimezone)->startOfMonth();
             
             // Get the last day of the month
-            $lastDayOfMonth = Carbon::now($this->employeeTimezone)->endOfMonth();
+            $lastDayOfMonthLocal = Carbon::now($this->employeeTimezone)->endOfMonth();
 
             // Loop through each day until the end of the month
-            while ($currentDate->lte($lastDayOfMonth)) {
+            while ($currentDateLocal->lte($lastDayOfMonthLocal)) {
                 // Retrieve the employee records with the provided timezone
                 $employees = EmployeeRecord::where('employee_timezone', $this->employeeTimezone)->get();
 
@@ -60,27 +60,26 @@ class CreateEmployeeShiftRecordJob implements ShouldQueue
                         $shiftStartHour = Carbon::createFromFormat('H:i:s', $shiftSchedule->start_shift_time, $shiftSchedule->shift_timezone)->hour;
                         $shiftEndHour = Carbon::createFromFormat('H:i:s', $shiftSchedule->end_shift_time, $shiftSchedule->shift_timezone)->hour;
 
-                        // If the end hour is before the start hour (indicating it extends to the next day)
-                        if ($shiftEndHour < $shiftStartHour) {
-                            // If the end hour is before the start hour, set the end date to the next day
-                            $endDate = $currentDate->copy()->addDay();
-                        } else {
-                            // Otherwise, use the current date as the end date
-                            $endDate = $currentDate;
-                        }
+                        // Adjust end date if the end hour indicates it extends to the next day
+                        $endDateLocal = ($shiftEndHour < $shiftStartHour) ?
+                            $currentDateLocal->copy()->addDay() : $currentDateLocal;
+
+                        // Convert local shift dates to UTC
+                        $currentDateUTC = $currentDateLocal->copy()->setTimezone('UTC');
+                        $endDateUTC = $endDateLocal->copy()->setTimezone('UTC');
 
                         // Check if there is no existing shift record for this assigned shift and date range
                         $existingShiftRecord = EmployeeShiftRecord::where('employee_assigned_shift_id', $assignedShift->id)
-                            ->where('shift_date', $currentDate)
-                            ->where('end_shift_date', $endDate)
+                            ->where('shift_date', $currentDateUTC)
+                            ->where('end_shift_date', $endDateUTC)
                             ->exists();
 
                         // If no existing shift record found, create a new one
                         if (!$existingShiftRecord) {
                             // Create a new shift record for this assigned shift and date range
                             EmployeeShiftRecord::create([
-                                'shift_date' => $currentDate,
-                                'end_shift_date' => $endDate,
+                                'shift_date' => $currentDateUTC,
+                                'end_shift_date' => $endDateUTC,
                                 'employee_assigned_shift_id' => $assignedShift->id,
                                 'employee_record_id' => $employee->id,
                                 'start_shift' => null,
@@ -96,7 +95,7 @@ class CreateEmployeeShiftRecordJob implements ShouldQueue
                 }
                 
                 // Move to the next day
-                $currentDate->addDay();
+                $currentDateLocal->addDay();
             }
 
             // Output success message

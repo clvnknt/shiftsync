@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Timesheet - StaffCentral')
+@section('title', 'ShiftSync - Timesheet')
 
 @section('content')
     <div class="container mt-4 mb-5">
@@ -14,10 +14,10 @@
         <!-- Legend and View Records Format -->
         <div class="row mb-2-adjusted">
             <div class="col-md-6 d-flex mb-2">
-                <div class="card flex-fill mx-1 legend-view-card">
+                <div class="card flex-fill mx-1 legend-view-card" style="background-color: #484848; color: white;">
                     <div class="card-body">
                         <h5 class="card-title">
-                            <img src="{{ asset('media/images/icons/timesheet/legend.png') }}" alt="Legend Icon" class="img-fluid" style="width: 50px; height: 50px;">
+                            <img src="{{ asset('media/images/icons/timesheet/T-L.png') }}" alt="Legend Icon" class="img-fluid" style="width: 50px; height: 50px;">
                             Legend
                         </h5>
                         <!-- Legend Items -->
@@ -39,10 +39,10 @@
             </div>
             
             <div class="col-md-6 d-flex mb-2">
-                <div class="card flex-fill mx-1 legend-view-card">
+                <div class="card flex-fill mx-1 legend-view-card" style="background-color: #484848; color: white;">
                     <div class="card-body">
                         <h5 class="card-title">
-                            <img src="{{ asset('media/images/icons/timesheet/view-format.png') }}" alt="Choose View Format Icon" class="img-fluid" style="width: 50px; height: 50px;">
+                            <img src="{{ asset('media/images/icons/timesheet/T-VRF.png') }}" alt="Choose View Format Icon" class="img-fluid" style="width: 50px; height: 50px;">
                             View Records Format
                         </h5>
 
@@ -69,18 +69,16 @@
                         </div>
                         
                         <!-- Container for cutoff period dropdown -->
-                       <!-- Container for cutoff period dropdown -->
-<div id="cutoffContainer" class="mt-3">
-    <label for="cutoffSelect">Select Cutoff Period:</label>
-    <select id="cutoffSelect" class="form-control">
-        <option value="">-</option>
-        <!-- Populate assigned cutoff periods -->
-        @foreach($employeeRecord->assignedCutoffPeriods as $assignedCutoffPeriod)
-            <option value="{{ $assignedCutoffPeriod->cutoff_period_id }}">{{ $assignedCutoffPeriod->cutoffPeriod->period }}</option>
-        @endforeach
-    </select>
-</div>
-
+                        <div id="cutoffContainer" class="mt-3">
+                            <label for="cutoffSelect">Select Cutoff Period:</label>
+                            <select id="cutoffSelect" class="form-control">
+                                <option value="">-</option>
+                                <!-- Populate assigned cutoff periods -->
+                                @foreach($employeeRecord->assignedCutoffPeriods as $assignedCutoffPeriod)
+                                    <option value="{{ $assignedCutoffPeriod->cutoff_period_id }}">{{ $assignedCutoffPeriod->cutoffPeriod->period }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         
                         <!-- Container for date range input fields -->
                         <div id="dateRangeContainer" class="mt-3" style="display: none;">
@@ -115,17 +113,17 @@
         </div>
             
         <!-- Records -->
-        <div class="row records-summary-spacing ">
+        <div class="row records-summary-spacing">
             <div class="col-md-12">
-                <div class="card mx-1">
+                <div class="card mx-1" style="background-color: #484848; color: white;">
                     <div class="card-body">
                         <h4 class="mb-3">
-                            <img src="{{ asset('media/images/icons/timesheet/records.png') }}" alt="Records Icon" class="img-fluid" style="width: 50px; height: 50px;">
+                            <img src="{{ asset('media/images/icons/timesheet/T-R.png') }}" alt="Records Icon" class="img-fluid" style="width: 50px; height: 50px;">
                             Records
                         </h4>
-                        <table class="table">
+                        <table class="table table-rounded">
                             <thead>
-                                <tr>
+                                <tr style="color: black;">
                                     <th>Date</th>
                                     <th>Shift Name</th>
                                     <th>Shift Schedule</th>
@@ -143,7 +141,7 @@
                                 <!-- Records table data -->
                                 @if($records)
                                     @foreach($records as $record)
-                                        <tr>
+                                        <tr style="color: black;">
                                             <td>{{ $record->shift_date }}</td>
                                             <td>{{ $record->shiftName }}</td>
                                             <td>{{ $record->shiftSchedule }}</td>
@@ -152,13 +150,13 @@
                                             <td>{{ $record->end_lunch }}</td>
                                             <td>{{ $record->end_shift }}</td>
                                             <td>{{ $record->hours_rendered }}</td>
-                                            <td>{{ $record->tardiness->hours_late_start_shift?? '-' }}</td>
-                                            <td>{{ $record->tardiness->hours_late_end_lunch?? '-' }}</td>
+                                            <td>{{ $record->tardiness->hours_late_start_shift ?? '-' }}</td>
+                                            <td>{{ $record->tardiness->hours_late_end_lunch ?? '-' }}</td>
                                             <td>{{ $record->overtime_hours }}</td>
                                         </tr>
                                     @endforeach
                                 @else
-                                    <tr>
+                                    <tr style="color: black;">
                                         <td>-</td>
                                         <td>-</td>
                                         <td>-</td>
@@ -182,30 +180,30 @@
         <!-- Summary -->
         <div class="row records-summary-spacing">
             <div class="col-md-12">
-                <div class="card mx-1">
+                <div class="card mx-1" style="background-color: #484848; color: white;">
                     <div class="card-body">
                         <h4 class="mb-3">
-                            <img src="{{ asset('media/images/icons/timesheet/summary.png') }}" alt="Summary Icon" class="img-fluid" style="width: 50px; height: 50px;">
+                            <img src="{{ asset('media/images/icons/timesheet/T-S.png') }}" alt="Summary Icon" class="img-fluid" style="width: 50px; height: 50px;">
                             Summary
                         </h4>
-                        <table class="table">
+                        <table class="table table-rounded">
                             <thead>
-                                <tr>
+                                <tr style="color: black;">
                                     <th>Description</th>
                                     <th>Hours</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <!-- Summary table data -->
-                                <tr>
+                                <tr style="color: black;">
                                     <td>Total Worked Hours (Regular):</td>
                                     <td id="totalWorkedHours">0 Hour/s</td>
                                 </tr>
-                                <tr>
+                                <tr style="color: black;">
                                     <td>Tardiness/Undertime:</td>
                                     <td id="totalTardinessHours">0 Hour/s</td>
                                 </tr>
-                                <tr>
+                                <tr style="color: black;">
                                     <td>Overtime:</td>
                                     <td id="totalOvertimeHours">0 Hour/s</td>
                                 </tr>                        
@@ -220,30 +218,50 @@
 
 @section('styles')
     <style>
-       .card {
+        .card {
             border: none;
             border-radius: 20px;
+            background-color: #484848; /* Card background color */
+            color: white; /* Text color */
         }
 
-       .card-body {
+        .card-body {
             border-radius: 20px;
         }
 
-       .mx-1 {
+        .mx-1 {
             margin-left: 0.5rem!important;
             margin-right: 0.5rem!important;
         }
 
-       .mb-2-adjusted {
+        .mb-2-adjusted {
             margin-bottom: 1.5rem!important; /* Adjusted margin-bottom for the "View Records" and "View Format" sections */
         }
 
-       .records-summary-spacing {
+        .records-summary-spacing {
             margin-bottom: 2rem!important; /* Ensure equal spacing between "Records" and "Summary" */
         }
 
-       .legend-view-card {
+        .legend-view-card {
             min-height: 400px; /* Adjust this value as needed */
+        }
+
+        .table thead th, 
+        .table tbody td {
+            color: black; /* Ensure header and body text is black */
+        }
+
+        .table {
+            border-radius: 20px; /* Rounded table edges */
+            overflow: hidden; /* Fixes radius issue for table */
+        }
+
+        .table thead th {
+            background-color: #e9ecef; /* Header background color */
+        }
+
+        .table tbody tr {
+            background-color: white; /* Body row background color */
         }
     </style>
 @endsection

@@ -13,13 +13,44 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background-color: #f0f0f0;
+            background-color: #333333;
+            color: #FFFFFF; /* Ensure all text is white */
         }
 
         .footer {
             margin-top: auto;
-            background-color: #ffffff;
-            color: black;
+            background-color: #484848; /* Dark Gray footer */
+            color: #FFFFFF; /* White text for footer */
+        }
+
+        .navbar {
+            background-color: #484848 !important; /* Dark Gray navbar */
+            color: #FFFFFF; /* White text for navbar */
+        }
+
+        .navbar .nav-link, .navbar .navbar-brand, .navbar .dropdown-item {
+            color: #FFFFFF !important; /* Ensure navbar links and items are white */
+        }
+
+        .navbar .dropdown-menu {
+            background-color: #484848; /* Dark Gray dropdown menu */
+        }
+
+        .navbar .dropdown-item:hover {
+            background-color: #575757; /* Slightly lighter gray on hover */
+        }
+
+        .modal-content {
+            background-color: #484848; /* Dark Gray background for modal */
+            color: #FFFFFF; /* White text for modal */
+        }
+
+        /* Center modal */
+        .modal-dialog-centered {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100% - 1rem);
         }
     </style>
     @yield('styles')
@@ -27,10 +58,10 @@
 <body>
 
 @if(auth()->check() && !in_array(request()->route()->getName(), ['login', 'landing']))
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <img src="{{ asset('media/images/staffcentral-login-logo.png') }}" alt="StaffCentral Logo" class="img-fluid me-2" style="max-height: 40px;">
+                <img src="{{ asset('media/images/logos/L-SS-WB.png') }}" alt="ShiftSync Logo" class="img-fluid me-2" style="max-height: 40px;">
             </a>
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 @auth
@@ -43,7 +74,7 @@
                     </ul>
                     <div class="nav-item dropdown ms-2">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="{{ Auth::user()->employeeRecord->employee_profile_picture ? asset('storage/' . Auth::user()->employeeRecord->employee_profile_picture) : asset('media/images/icons/inout/EmployeeDefault.png') }}" alt="Profile Picture" style="max-width: 40px; max-height: 40px;">
+                            <img src="{{ Auth::user()->employeeRecord->employee_profile_picture ? asset('storage/' . Auth::user()->employeeRecord->employee_profile_picture) : asset('media/images/icons/DP.png') }}" alt="Profile Picture" style="max-width: 40px; max-height: 40px;">
                             Welcome, {{ auth()->user()->name }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -62,14 +93,14 @@
 @if(auth()->check() && !in_array(request()->route()->getName(), ['login', 'landing']))
     <footer class="footer py-3 text-center">
         <div class="container">
-            <span>&copy; {{ date('Y') }} StaffCentral</span>
+            <span>&copy; {{ date('Y') }} ShiftSync</span>
         </div>
     </footer>
 @endif
 
 @auth
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="logoutModalLabel">Logout Confirmation</h5>
@@ -79,8 +110,8 @@
                     Are you sure you want to logout?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <a class="btn btn-primary" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                    <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>

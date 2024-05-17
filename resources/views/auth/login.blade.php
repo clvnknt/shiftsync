@@ -5,28 +5,65 @@
 @section('styles')
     <link href="{{ asset('css/login.css') }}" rel="stylesheet">
     <style>
-        .vertical-divider {
-            border-left: 1px solid #ccc;
-            height: 100%;
-            margin: 0 20px;
+        .container-fluid {
+            background-color: #333333; /* Slate Gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         .login-container {
             width: 100%;
-            max-width: 900px; /* Adjust max-width to make the card lengthier */
+            max-width: 1000px; /* Make the card wider */
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            padding: 40px; /* Increase padding for better spacing 484848 333333 */
+            background-color: #484848; /* Dark Gray card */
+            border-radius: 16px; /* Make the card's edges more rounded */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add box-shadow for depth */
+            color: #FFFFFF; /* White text color */
+            margin: 20px; /* Add margin to ensure it's centered properly */
         }
         .login-form-content {
-            flex: 1;
-            max-width: 600px; /* Adjust max-width for form content */
+            width: 100%;
+            max-width: 800px; /* Adjust max-width for form content */
+            padding: 20px; /* Add padding for better spacing */
         }
         .form-control {
             width: 100%;
-            max-width: 500px; /* Adjust max-width for input fields */
+            margin-bottom: 15px; /* Add margin-bottom for spacing between fields */
+        }
+        .form-control::placeholder {
+            color: #CCCCCC; /* Lighter placeholder text */
         }
         .logo-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            margin-bottom: -20px; /* Add space between the logo and the form */
+            text-align: center; /* Center the logo */
+        }
+        .logo-container img {
+            max-width: 50%; /* Adjust the max-width to make the logo bigger */
+            height: auto;
+        }
+        .remember-me-container {
+            margin-bottom: 15px; /* Add margin-bottom for spacing */
+        }
+        .btn-block {
+            width: 100%; /* Ensure the button takes full width */
+
+            border: none;
+            color: #FFFFFF; /* White text color */
+            padding: 10px 20px;
             text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 8px; /* Make the button's edges less rounded */
+        }
+        .text-muted {
+            color: #CCCCCC !important; /* Lighter text for muted elements */
         }
     </style>
 @endsection
@@ -34,15 +71,18 @@
 @section('content')
 <div class="container-fluid">
     <div class="row justify-content-center align-items-center min-vh-100">
-        <!-- Login Form Container -->
-        <div class="col-md-8 d-flex justify-content-center align-items-center">
-            <div class="login-container d-flex align-items-center">
+        <div class="col-md-10 d-flex justify-content-center">
+            <div class="login-container">
+                <!-- Logo content -->
+                <div class="logo-container">
+                    <img src="{{ asset('media/images/logos/L-SS-WB.png') }}" alt="Logo" class="img-fluid">
+                </div>
                 <!-- Login form content -->
                 <div class="login-form-content">
                     <form method="POST" action="{{ route('login') }}" class="login-form">
                         @csrf
                         <div class="mb-3">
-                            <h2 class>Sign in</h2>
+                            <h2>Sign in</h2>
                             <label for="email_or_username" class="form-label">Email or Username</label>
                             <input id="email_or_username" type="text" class="form-control" name="email_or_username" value="{{ old('email_or_username') }}" required autofocus placeholder="Enter your email or username">
                             @error('email_or_username')
@@ -66,18 +106,12 @@
                             </div>
 
                             <!-- Placeholder for Forgot Your Password? -->
-                            <a href="{{ route('password.request') }}" class="text-muted ml-3">Forgot Your Password?</a>
+                            <a href="{{ route('password.request') }}" class="text-white">Forgot Your Password?</a>
                         </div>
 
                         <!-- Login button -->
-                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        <button type="submit" class="btn btn-success btn-block">Login</button>
                     </form>
-                </div>
-                <!-- Vertical divider -->
-                <div class="vertical-divider"></div>
-                <!-- Logo content with header -->
-                <div class="logo-container">
-                    <img src="{{ asset('media/images/staffcentral-login-logo.png') }}" alt="Logo" class="img-fluid" style="max-width: 100%;">
                 </div>
             </div>
         </div>

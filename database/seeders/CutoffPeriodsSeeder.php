@@ -41,28 +41,28 @@ class CutoffPeriodsSeeder extends Seeder
                 $endDay = $currentMonth->daysInMonth;
 
                 // Create record for 1-15 period
-                $startDate1 = $currentMonth->copy()->startOfMonth();
-                $endDate1 = $currentMonth->copy()->startOfMonth()->addDays(14)->endOfDay();
+                $startDate1 = $currentMonth->copy()->startOfMonth()->setTimezone('UTC');
+                $endDate1 = $currentMonth->copy()->startOfMonth()->addDays(14)->endOfDay()->setTimezone('UTC');
                 $utcOffset = $currentMonth->copy()->offsetHours;
                 $utcOffsetFormatted = sprintf('%+03d:00', $utcOffset);
 
                 // Find or create cutoff period
                 CutoffPeriod::updateOrCreate([
                     'period' => 'Cutoff Period 1 ' . $currentMonth->format('F Y'),
-                    'start_date' => $startDate1,
-                    'end_date' => $endDate1,
+                    'start_date' => $startDate1->toDateTimeString(),
+                    'end_date' => $endDate1->toDateTimeString(),
                     'cutoff_timezone' => $utcOffsetFormatted,
                 ]);
 
                 // Create record for 16-end of month period
-                $startDate2 = $currentMonth->copy()->startOfMonth()->addDays(15);
-                $endDate2 = $currentMonth->copy()->endOfMonth();
+                $startDate2 = $currentMonth->copy()->startOfMonth()->addDays(15)->setTimezone('UTC');
+                $endDate2 = $currentMonth->copy()->endOfMonth()->setTimezone('UTC');
 
                 // Find or create cutoff period
                 CutoffPeriod::updateOrCreate([
                     'period' => 'Cutoff Period 2 ' . $currentMonth->format('F Y'),
-                    'start_date' => $startDate2,
-                    'end_date' => $endDate2,
+                    'start_date' => $startDate2->toDateTimeString(),
+                    'end_date' => $endDate2->toDateTimeString(),
                     'cutoff_timezone' => $utcOffsetFormatted,
                 ]);
             }
