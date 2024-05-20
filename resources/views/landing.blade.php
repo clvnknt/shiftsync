@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Landing - StaffCentral')
+@section('title', 'ShiftSync - Landing')
 
 @section('content')
     <style>
@@ -18,7 +18,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="text-center mb-4">
-                    <h1>Welcome to StaffCentral</h1>
+                    <h1>Welcome to ShiftSync</h1>
                     <p>Our system simplifies employee attendance tracking, making it easier for you to manage your workforce.</p>
                     <a href="{{ route('login') }}" class="btn btn-primary btn-lg">Get Started</a>
                 </div>

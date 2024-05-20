@@ -15,4 +15,9 @@ class CutoffPeriod extends Model
         'end_date',
         'cutoff_timezone',
     ];
+
+    public function employeeAssignedCutoffPeriods()
+    {
+        return $this->hasMany(EmployeeAssignedCutoffPeriod::class);
+    }
 }

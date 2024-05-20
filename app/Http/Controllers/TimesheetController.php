@@ -8,7 +8,7 @@ use App\Models\EmployeeAssignedShift;
 use App\Models\EmployeeShiftRecord;
 use App\Models\Tardiness;
 use App\Models\Overtime;
-
+use App\Models\CutoffPeriod;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,7 +25,6 @@ class TimesheetController extends Controller
             $employeeRecord = EmployeeRecord::where('user_id', $userId)
                 ->with('assignedCutoffPeriods.cutoffPeriod') // Eager load assigned cutoff periods
                 ->first();
-    
     
             // Check if the employee record exists
             if ($employeeRecord) {
@@ -61,6 +60,7 @@ class TimesheetController extends Controller
         $shiftId = $request->input('shiftId');
         $startDate = $request->input('startDate');
         $endDate = $request->input('endDate');
+        $cutoffPeriodId = $request->input('cutoffPeriodId'); // Add cutoffPeriodId parameter
     
         // Retrieve the authenticated user's ID
         $userId = Auth::id();
@@ -68,6 +68,24 @@ class TimesheetController extends Controller
         // Retrieve the employee record associated with the authenticated user
         $employeeRecord = EmployeeRecord::where('user_id', $userId)->first();
         
+        // Determine the date range based on the provided input
+        if ($cutoffPeriodId) {
+            // Fetch the cutoff period details
+            $cutoffPeriod = CutoffPeriod::find($cutoffPeriodId);
+
+            if (!$cutoffPeriod) {
+                return response()->json(['message' => 'Cutoff period not found'], 404);
+            }
+
+            $startDate = $cutoffPeriod->start_date;
+            $endDate = $cutoffPeriod->end_date;
+        } else {
+            // Validate that both start date and end date are provided for date range
+            if (!$startDate || !$endDate) {
+                return response()->json(['message' => 'Start date and end date are required'], 400);
+            }
+        }
+    
         // Fetch records with proper joins
         $records = EmployeeShiftRecord::with(['employeeAssignedShift.shiftSchedule', 'tardiness', 'overtime'])
             ->where('employee_assigned_shift_id', $shiftId)

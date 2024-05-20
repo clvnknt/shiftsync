@@ -14,7 +14,7 @@
                 <div class="card h-100" style="background-color: #484848; color: white;">
                     <div class="card-body">
                         <h5 class="card-title mb-3">
-                            <img src="{{ asset('media/images/icons/my_account/account-information.png') }}" alt="Account Information" class="card-title-icon">
+                            <img src="{{ asset('media/images/icons/my_account/DP.png') }}" alt="Account Information" class="card-title-icon">
                             Account Information
                         </h5>
                         <div class="row">
@@ -39,7 +39,7 @@
                 <div class="card h-100" style="background-color: #484848; color: white;">
                     <div class="card-body">
                         <h5 class="card-title mb-3">
-                            <img src="{{ asset('media/images/icons/my_account/employee-information.png') }}" alt="Employee Information" class="card-title-icon">
+                            <img src="{{ asset('media/images/icons/my_account/MA-EI.png') }}" alt="Employee Information" class="card-title-icon">
                             Employee Information
                         </h5>
                         <div class="row">
@@ -61,7 +61,7 @@
                 <div class="card h-100" style="background-color: #484848; color: white;">
                     <div class="card-body">
                         <h5 class="card-title mb-3">
-                            <img src="{{ asset('media/images/icons/my_account/address-information.png') }}" alt="Address Information" class="card-title-icon">
+                            <img src="{{ asset('media/images/icons/my_account/MA-AI.png') }}" alt="Address Information" class="card-title-icon">
                             Address Information
                         </h5>
                         <div class="row">
@@ -81,7 +81,7 @@
                 <div class="card h-100" style="background-color: #484848; color: white;">
                     <div class="card-body">
                         <h5 class="card-title mb-3">
-                            <img src="{{ asset('media/images/icons/my_account/emergency-contact-information.png') }}" alt="Emergency Contact Information" class="card-title-icon">
+                            <img src="{{ asset('media/images/icons/my_account/MA-EC.png') }}" alt="Emergency Contact Information" class="card-title-icon">
                             Emergency Contact Information
                         </h5>
                         <div class="row">

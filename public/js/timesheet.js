@@ -82,22 +82,39 @@ function fetchRecords() {
     var shiftId = document.getElementById('shiftNameSelect').value;
     var startDate = document.getElementById('start_date').value;
     var endDate = document.getElementById('end_date').value;
-    
-    // Validate that both start date and end date are selected
-    if (!startDate ||!endDate) {
-        alert("Please select both start date and end date.");
-        return;
-    }
-
-    // Validate that end date is not earlier than start date
-    var startDateObj = new Date(startDate);
-    var endDateObj = new Date(endDate);
-    if (endDateObj < startDateObj) {
-        alert("End date should not be earlier than start date.");
-        return;
-    }
+    var cutoffPeriodId = document.getElementById('cutoffSelect').value; // Get cutoffPeriodId
 
     var url = '/fetch-records'; // API endpoint
+
+    var body = {
+        shiftId: shiftId
+    };
+
+    if (viewFormatSelect.value === 'cutoff') {
+        body.cutoffPeriodId = cutoffPeriodId;
+
+        if (!cutoffPeriodId) {
+            alert("Please select a cutoff period.");
+            return;
+        }
+    } else {
+        body.startDate = startDate;
+        body.endDate = endDate;
+
+        // Validate that both start date and end date are selected
+        if (!startDate || !endDate) {
+            alert("Please select both start date and end date.");
+            return;
+        }
+
+        // Validate that end date is not earlier than start date
+        var startDateObj = new Date(startDate);
+        var endDateObj = new Date(endDate);
+        if (endDateObj < startDateObj) {
+            alert("End date should not be earlier than start date.");
+            return;
+        }
+    }
 
     // Fetch API request to the API endpoint
     fetch(url, {
@@ -106,11 +123,7 @@ function fetchRecords() {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         },
-        body: JSON.stringify({
-            shiftId: shiftId,
-            startDate: startDate,
-            endDate: endDate
-        })
+        body: JSON.stringify(body)
     })
    .then(response => response.json()) // Parse response as JSON
    .then(data => {
@@ -150,8 +163,6 @@ function fetchRecords() {
             var hoursRendered = parseFloat(record.hours_rendered);
             if (!isNaN(hoursRendered)) {
                 totalHours += hoursRendered; // Add rendered hours to total
-            } else {
-
             }
 
             // Try parsing hours_late_start_shift as a float
@@ -181,7 +192,6 @@ function fetchRecords() {
         console.error('Error fetching records:', error); // Log any errors
     });
 }
-
 
 // Function to update total overtime hours
 function updateTotalOvertime(totalOvertime) {

@@ -18,9 +18,4 @@ class Department extends Model
     {
         return $this->hasMany(Role::class);
     }
-
-    public function holidays()
-    {
-        return $this->hasMany(Holiday::class);
-    }
 }

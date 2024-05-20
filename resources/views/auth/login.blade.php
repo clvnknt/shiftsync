@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Login')
+@section('title', 'ShiftSync - Login')
 
 @section('styles')
     <link href="{{ asset('css/login.css') }}" rel="stylesheet">
