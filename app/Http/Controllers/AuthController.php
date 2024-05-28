@@ -24,19 +24,19 @@ class AuthController extends Controller
 
         // Attempt to authenticate the user with the provided credentials and remember option
         if (Auth::attempt(
-            [
-                'email' => $credentials['email_or_username'],
-                'password' => $credentials['password']
-            ],
+            ['email' => $credentials['email_or_username'], 'password' => $credentials['password']], 
             $remember
         ) || Auth::attempt(
-            [
-                'name' => $credentials['email_or_username'],
-                'password' => $credentials['password']
-            ],
+            ['name' => $credentials['email_or_username'], 'password' => $credentials['password']],
             $remember
         )) {
-            return redirect()->route('dashboard')->with('success', 'Logged in successfully!');
+            $user = Auth::user();
+
+            if ($user->is_admin) {
+                return redirect()->route('admin.dashboard')->with('success', 'Logged in successfully as admin!');
+            } else {
+                return redirect()->route('dashboard')->with('success', 'Logged in successfully!');
+            }
         }
 
         // If authentication fails, redirect back with error message

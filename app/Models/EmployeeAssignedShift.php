@@ -1,5 +1,7 @@
 <?php
 
+// app/Models/EmployeeAssignedShift.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,5 +27,11 @@ class EmployeeAssignedShift extends Model
     public function employeeShiftRecords()
     {
         return $this->hasMany(EmployeeShiftRecord::class);
+    }
+
+    // Define the relationship to EmployeeRecord
+    public function employeeRecord()
+    {
+        return $this->belongsTo(EmployeeRecord::class);
     }
 }

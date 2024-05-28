@@ -30,6 +30,54 @@
             background-color: #0056b3;
             border-color: #004085;
         }
+
+        @media (max-width: 768px) {
+            .card-body {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .card-body img {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+
+            .card-title {
+                font-size: 1.2rem;
+            }
+
+            .card-text {
+                font-size: 0.9rem;
+            }
+
+            .container-fluid {
+                padding: 0 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card {
+                margin-bottom: 20px;
+            }
+
+            .col-md-3 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+
+            .card-text {
+                font-size: 0.8rem;
+            }
+
+            .container-fluid {
+                padding: 0 10px;
+            }
+        }
     </style>
     <div class="container-fluid d-flex align-items-center justify-content-center" style="height: 100vh;">
         <div class="row justify-content-center">
