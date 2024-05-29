@@ -1,0 +1,16 @@
+<div class="sidebar d-flex flex-column align-items-start p-3 bg-dark text-white vh-100">
+    <h4 class="mb-4">ShiftSync</h4>
+    <!-- Check if currentUser is defined, show the buttons accordingly -->
+    <ng-container *ngIf="currentUser; else loggedOut">
+      <div class="w-100">
+        <p class="mb-1">Welcome, Admin {{ currentUser?.name }}</p>
+        <button class="btn btn-outline-light w-100 mt-3" (click)="navigate('/dashboard')">Dashboard</button>
+        <button class="btn btn-outline-light w-100 mt-3" (click)="navigate('/users')">Manage Users</button>
+        <button class="btn btn-outline-light w-100 mt-3" (click)="navigate('/departments')">Manage Departments</button>
+      </div>
+      <button class="btn btn-outline-primary mt-auto w-100 logout-btn" (click)="logout()">Logout</button>
+    </ng-container>
+    <ng-template #loggedOut>
+      <p>Loading user information...</p>
+    </ng-template>
+  </div>

@@ -1,0 +1,35 @@
+<div class="container mt-5">
+    <h2>Users</h2>
+    <ng-container *ngIf="currentUser; else loggedOut">
+      <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-primary" (click)="addUser()">Add User</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+              <td>{{ user.id }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                <button class="btn btn-sm btn-info" (click)="viewUser(user.id)">View</button>
+                <button class="btn btn-sm btn-warning" (click)="editUser(user.id)">Edit</button>
+                <button class="btn btn-sm btn-danger" (click)="deleteUser(user.id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+    <ng-template #loggedOut>
+      <p>User is logged out.</p>
+    </ng-template>
+  </div>
