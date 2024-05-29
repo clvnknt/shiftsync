@@ -82,7 +82,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::resource('/addresses', AddressController::class, ['as' => 'admins']);
     Route::resource('/emergency-contacts', EmergencyContactController::class, ['as' => 'admins']);
     Route::resource('/shift-schedules', ShiftScheduleController::class, ['as' => 'admins']);
-    Route::resource('employee-records', EmployeeRecordController::class, ['as' => 'admins']);
-    Route::resource('employee-assigned-shifts', EmployeeAssignedShiftController::class, ['as' => 'admins']);
-    Route::resource('employee-shift-records', EmployeeShiftRecordController::class, ['as' => 'admins']);
+    Route::resource('/employee-records', EmployeeRecordController::class, ['as' => 'admins']);
+    Route::resource('/employee-assigned-shifts', EmployeeAssignedShiftController::class, ['as' => 'admins']);
+    Route::resource('/employee-shift-records', EmployeeShiftRecordController::class, ['as' => 'admins']);
 });

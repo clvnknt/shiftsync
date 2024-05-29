@@ -1,5 +1,3 @@
-<!-- resources/views/admins/shift-schedules/show.blade.php -->
-
 @extends('admins.admin-layouts.admin-app')
 
 @section('title', 'Admin - View Shift Schedule')

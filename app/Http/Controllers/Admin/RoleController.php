@@ -20,7 +20,7 @@ class RoleController extends Controller
     public function create()
     {
         $departments = Department::all();
-        return view('admins.roles.create-address', compact('departments'));
+        return view('admins.roles.create-roles', compact('departments'));
     }
 
     public function store(Request $request)
@@ -43,14 +43,14 @@ class RoleController extends Controller
     public function show($id)
     {
         $role = Role::with('department')->find($id);
-        return view('admins.roles.read-address', compact('role'));
+        return view('admins.roles.read-roles', compact('role'));
     }
 
     public function edit($id)
     {
         $role = Role::find($id);
         $departments = Department::all();
-        return view('admins.roles.update-address', compact('role', 'departments'));
+        return view('admins.roles.update-roles', compact('role', 'departments'));
     }
 
     public function update(Request $request, $id)

@@ -30,6 +30,9 @@
             <a href="/admin/employee-assigned-shifts" class="text-white">Employee Assigned Shifts</a>
         </li>
         <li>
+            <a href="/admin/employee-shift-records" class="text-white">Employee Shift Records</a>
+        </li>
+        <li>
             <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle text-white">Settings</a>
             <ul class="collapse list-unstyled" id="pageSubmenu">
                 <li>

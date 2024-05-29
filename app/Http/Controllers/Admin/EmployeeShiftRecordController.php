@@ -1,7 +1,5 @@
 <?php
 
-// app/Http/Controllers/Admin/EmployeeShiftRecordController.php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -23,7 +21,7 @@ class EmployeeShiftRecordController extends Controller
         $employeeRecords = EmployeeRecord::all();
         $employeeAssignedShifts = EmployeeAssignedShift::all();
 
-        return view('admins.employee-shift-records.create', compact('employeeRecords', 'employeeAssignedShifts'));
+        return view('admins.employee-shift-records.create-employee-shift-record', compact('employeeRecords', 'employeeAssignedShifts'));
     }
 
     public function store(Request $request)
@@ -49,7 +47,7 @@ class EmployeeShiftRecordController extends Controller
     public function show($id)
     {
         $shiftRecord = EmployeeShiftRecord::with('employeeRecord', 'employeeAssignedShift')->find($id);
-        return view('admins.employee-shift-records.show', compact('shiftRecord'));
+        return view('admins.employee-shift-records.read-employee-shift-record', compact('shiftRecord'));
     }
 
     public function edit($id)
@@ -58,7 +56,7 @@ class EmployeeShiftRecordController extends Controller
         $employeeRecords = EmployeeRecord::all();
         $employeeAssignedShifts = EmployeeAssignedShift::all();
 
-        return view('admins.employee-shift-records.edit', compact('shiftRecord', 'employeeRecords', 'employeeAssignedShifts'));
+        return view('admins.employee-shift-records.update-employee-shift-record', compact('shiftRecord', 'employeeRecords', 'employeeAssignedShifts'));
     }
 
     public function update(Request $request, $id)
