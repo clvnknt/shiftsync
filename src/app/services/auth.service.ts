@@ -22,12 +22,16 @@ export class AuthService {
 
   login(email: string, password: string): Observable<any> {
     return this.http.post<any>('http://localhost:8000/api/login', { email, password }).pipe(
-      map(user => {
-        if (user && user.token) {
+      map(response => {
+        if (response && response.token) {
+          const user = {
+            ...response.user,
+            token: response.token
+          };
           localStorage.setItem('currentUser', JSON.stringify(user));
           this.currentUserSubject.next(user);
         }
-        return user;
+        return response;
       })
     );
   }
@@ -49,31 +53,17 @@ export class AuthService {
     );
   }
 
-  getCurrentUser(): Observable<any> {
-    const currentUser = this.currentUserValue;
-    if (!currentUser || !currentUser.token) {
-      return new Observable<any>(observer => {
-        observer.next(null);
-        observer.complete();
-      });
-    }
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${currentUser.token}`);
-    return this.http.get<any>('http://localhost:8000/api/user', { headers }).pipe(
-      map(user => {
-        this.currentUserSubject.next(user);
-        return user;
-      })
-    );
-  }
-
   clearCurrentUser(): void {
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
-    console.log('Cleared current user');
   }
 
   isAuthenticated(): boolean {
-    const currentUser = this.currentUserValue;
+    const user = localStorage.getItem('currentUser');
+    if (!user) {
+      return false;
+    }
+    const currentUser = JSON.parse(user);
     return !!(currentUser && currentUser.token);
   }
 }

@@ -1,0 +1,10 @@
+<h2>Employee Assigned Shifts</h2>
+<ul>
+  <li *ngFor="let shift of assignedShifts">
+    Employee: {{ shift.employee_record?.employee_first_name }} - Shift: {{ shift.shift_schedule?.shift_name }}
+    <a [routerLink]="['/employee-assigned-shift', shift.id]">View Details</a>
+    <a [routerLink]="['/edit-employee-assigned-shift', shift.id]">Edit</a>
+    <button (click)="deleteShift(shift.id)">Delete</button>
+  </li>
+</ul>
+<a [routerLink]="['/add-employee-assigned-shift']">Add New Assigned Shift</a>

@@ -1,0 +1,45 @@
+<div class="container mt-5">
+    <h2>Shift Schedules</h2>
+    <ng-container *ngIf="currentUser; else loggedOut">
+      <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-primary" (click)="addShiftSchedule()">Add Shift Schedule</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Start Time</th>
+              <th>Grace Period</th>
+              <th>Lunch Start</th>
+              <th>Lunch End</th>
+              <th>End Time</th>
+              <th>Timezone</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let schedule of shiftSchedules">
+              <td>{{ schedule.id }}</td>
+              <td>{{ schedule.shift_name }}</td>
+              <td>{{ schedule.start_shift_time }}</td>
+              <td>{{ schedule.shift_start_grace_period }}</td>
+              <td>{{ schedule.lunch_start_time }}</td>
+              <td>{{ schedule.end_lunch_time }}</td>
+              <td>{{ schedule.end_shift_time }}</td>
+              <td>{{ schedule.shift_timezone }}</td>
+              <td>
+                <button class="btn btn-sm btn-info" (click)="viewShiftSchedule(schedule.id)">View</button>
+                <button class="btn btn-sm btn-warning" (click)="editShiftSchedule(schedule.id)">Edit</button>
+                <button class="btn btn-sm btn-danger" (click)="deleteShiftSchedule(schedule.id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+    <ng-template #loggedOut>
+      <p>User is logged out.</p>
+    </ng-template>
+  </div>

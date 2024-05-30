@@ -15,7 +15,6 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = this.authService.currentUserValue;
 
-    // Redirect to login if not authenticated
     if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/login']);
     }
