@@ -1,6 +1,5 @@
 <?php
 
-// app/Http/Controllers/ApiAuthController.php
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -26,7 +25,10 @@ class ApiAuthController extends Controller
 
             $token = $user->createToken('admin-token')->plainTextToken;
 
-            return response()->json(['token' => $token]);
+            return response()->json([
+                'user' => $user,
+                'token' => $token,
+            ]);
         }
 
         return response()->json(['message' => 'Invalid credentials!'], 401);
