@@ -1,0 +1,103 @@
+.background-container {
+    min-height: 100vh; /* Ensure the container covers at least the viewport height */
+    background-image: url('../media/images/backgrounds/bg-login-2.jpg');
+    background-size: cover; /* Ensure the background image covers the entire container */
+    background-position: center;
+    background-repeat: no-repeat; /* Prevent the background image from repeating */
+}
+
+.login-container {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    padding: 2rem; /* Adjust padding as needed */
+    max-width: 600px; /* Adjust max-width as needed */
+    margin: auto;
+}
+
+.login-card {
+    background-color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 1.5rem; /* Adjust padding as needed */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.login-form {
+    padding: 1.5rem; /* Add padding to the form */
+}
+
+.card-body {
+    padding: 1.5rem; /* Decrease vertical padding inside the card body */
+    margin: 0; /* Remove margin */
+}
+
+.or-divider {
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.or-divider hr {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.or-text {
+    margin-bottom: 0.5rem;
+}
+
+/* Style for the Remember Me checkbox */
+.remember-me-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.remember-me-label {
+    margin-bottom: 0;
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .login-container {
+        padding: 1rem; /* Adjust padding for smaller screens */
+        max-width: 500px; /* Adjust max-width for smaller screens */
+    }
+    .login-card {
+        padding: 1rem; /* Adjust padding for smaller screens */
+    }
+
+    .login-form {
+        padding: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .or-divider {
+        margin: 1rem 0;
+    }
+
+    .or-divider hr {
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .or-text {
+        margin-bottom: 0.25rem;
+    }
+
+    .remember-me-container {
+        margin-bottom: 0.75rem;
+    }
+
+    .logo-container {
+        margin-bottom: 1.5rem;
+    }
+}
