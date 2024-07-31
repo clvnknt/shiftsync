@@ -1,6 +1,6 @@
 [submodule "shiftsync_backend"]
 	path = shiftsync_backend
-	url = git@github.com:CS-CKPa/in-and-out-system.git
+	url = git@github.com:clvnknt/in-and-out-system.git
 [submodule "shiftsync_frontend"]
 	path = shiftsync_frontend
-	url = git@github.com:CS-CKPa/aios.git
+	url = git@github.com:clvnknt/aios.git
