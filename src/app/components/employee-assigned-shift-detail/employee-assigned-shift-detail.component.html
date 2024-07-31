@@ -1,7 +1,0 @@
-<h2>Assigned Shift Details</h2>
-<div *ngIf="assignedShift">
-  <p>Employee: {{ assignedShift.employeeRecord?.name }}</p>
-  <p>Shift Schedule: {{ assignedShift.shiftSchedule?.name }}</p>
-  <p>Active: {{ assignedShift.is_active ? 'Yes' : 'No' }}</p>
-  <a [routerLink]="['/edit-employee-assigned-shift', assignedShift.id]">Edit</a>
-</div>
