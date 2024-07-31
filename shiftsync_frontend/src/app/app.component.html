@@ -1,0 +1,14 @@
+<div class="container-fluid vh-100">
+  <div class="row h-100">
+    <!-- Sidebar -->
+    <ng-container *ngIf="isLoggedIn && showSidebar">
+      <div class="col-auto p-0">
+        <app-sidebar></app-sidebar>
+      </div>
+    </ng-container>
+    <!-- Main Content -->
+    <div [class.col]="true">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

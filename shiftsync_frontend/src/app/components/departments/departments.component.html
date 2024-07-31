@@ -1,0 +1,35 @@
+<div class="container mt-5">
+    <h2>Departments</h2>
+    <ng-container *ngIf="currentUser; else loggedOut">
+      <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-primary" (click)="addDepartment()">Add Department</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let department of departments">
+              <td>{{ department.id }}</td>
+              <td>{{ department.department_name }}</td>
+              <td>{{ department.department_description }}</td>
+              <td>
+                <button class="btn btn-sm btn-info" (click)="viewDepartment(department.id)">View</button>
+                <button class="btn btn-sm btn-warning" (click)="editDepartment(department.id)">Edit</button>
+                <button class="btn btn-sm btn-danger" (click)="deleteDepartment(department.id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+    <ng-template #loggedOut>
+      <p>User is logged out.</p>
+    </ng-template>
+  </div>

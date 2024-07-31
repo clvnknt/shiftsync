@@ -1,0 +1,14 @@
+<div class="container mt-5" *ngIf="employeeRecord">
+    <h2>Employee Record Details</h2>
+    <p><strong>First Name:</strong> {{ employeeRecord.employee_first_name }}</p>
+    <p><strong>Middle Name:</strong> {{ employeeRecord.employee_middle_name }}</p>
+    <p><strong>Last Name:</strong> {{ employeeRecord.employee_last_name }}</p>
+    <p><strong>Suffix:</strong> {{ employeeRecord.employee_suffix }}</p>
+    <p><strong>Gender:</strong> {{ employeeRecord.employee_gender }}</p>
+    <p><strong>Age:</strong> {{ employeeRecord.employee_age }}</p>
+    <p><strong>Birthdate:</strong> {{ employeeRecord.employee_birthdate }}</p>
+    <p><strong>Department:</strong> {{ employeeRecord.department.department_name }}</p>
+    <p><strong>Role:</strong> {{ employeeRecord.role.role_name }}</p>
+    <p><strong>Address:</strong> {{ employeeRecord.address.address }}</p>
+    <p><strong>Emergency Contact:</strong> {{ employeeRecord.emergency_contact.name }}</p>
+  </div>

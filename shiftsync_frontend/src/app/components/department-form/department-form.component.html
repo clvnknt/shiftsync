@@ -1,0 +1,15 @@
+<div class="container mt-5">
+    <h2 *ngIf="isEdit">Edit Department</h2>
+    <h2 *ngIf="!isEdit">Add Department</h2>
+    <form (ngSubmit)="saveDepartment()">
+      <div class="mb-3">
+        <label for="departmentName" class="form-label">Name</label>
+        <input type="text" class="form-control" id="departmentName" [(ngModel)]="department.department_name" name="department_name" required />
+      </div>
+      <div class="mb-3">
+        <label for="departmentDescription" class="form-label">Description</label>
+        <input type="text" class="form-control" id="departmentDescription" [(ngModel)]="department.department_description" name="department_description" />
+      </div>
+      <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+  </div>
