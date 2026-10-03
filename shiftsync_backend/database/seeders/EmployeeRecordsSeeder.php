@@ -15,10 +15,10 @@ class EmployeeRecordsSeeder extends Seeder
     public function run(): void
     {
         // Retrieve users
-        $userCKPa = User::where('email', 'ckpa@cloudstaff.com')->first();
-        $userVincentG = User::where('email', 'vincentg@cloudstaff.com')->first();
-        $userJohnDoe = User::where('email', 'johnd@cloudstaff.com')->first();
-        $userJaneDoe = User::where('email', 'janed@cloudstaff.com')->first();
+        $userCKPa = User::where('email', 'ckpa@example.com')->first();
+        $userVincentG = User::where('email', 'vincentg@example.com')->first();
+        $userJohnDoe = User::where('email', 'johnd@example.com')->first();
+        $userJaneDoe = User::where('email', 'janed@example.com')->first();
         $department = Department::first();
         $role = Role::first();
         $address = Address::first();

@@ -56,23 +56,23 @@ Account Credentials
 **Admin Accounts**
 Name: JohnD
 
-Email: [johnd@cloudstaff.com](mailto:johnd@cloudstaff.com)
+Email: [johnd@example.com](mailto:johnd@example.com)
 Password: password123
 Admin Status: Yes
 Name: JaneD
 
-Email: [janed@cloudstaff.com](mailto:janed@cloudstaff.com)
+Email: [janed@example.com](mailto:janed@example.com)
 Password: password123
 Admin Status: Yes
 
 **User Accounts**
 Name: CKPa
 
-Email: [ckpa@cloudstaff.com](mailto:ckpa@cloudstaff.com)
+Email: [ckpa@example.com](mailto:ckpa@example.com)
 Password: password123
 Admin Status: No
 Name: VincentG
 
-Email: [vincentg@cloudstaff.com](mailto:vincentg@cloudstaff.com)
+Email: [vincentg@example.com](mailto:vincentg@example.com)
 Password: password123
 Admin Status: No
