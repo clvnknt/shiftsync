@@ -6,7 +6,7 @@ import { EmployeeAssignedShiftService } from '../../services/employee-assigned-s
 @Component({
   selector: 'app-employee-assigned-shift-form',
   templateUrl: './employee-assigned-shift-form.component.html',
-  styleUrls: ['./employee-assigned-shift-form.component.css']
+  styleUrls: ['./employee-assigned-shift-form.component.scss']
 })
 export class EmployeeAssignedShiftFormComponent implements OnInit {
   assignedShiftForm: FormGroup;

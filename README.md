@@ -7,13 +7,13 @@ The repo is a monorepo with two apps:
 | Directory | Stack | Who uses it | Default URL |
 |---|---|---|---|
 | `shiftsync_backend/` | Laravel 10 (PHP 8.1+), MySQL, Sanctum, Blade views | Employees (Blade UI) + Laravel admin panel + JSON API | http://localhost:8000 |
-| `shiftsync_frontend/` | Angular 16, Angular Material, ng-bootstrap | Admin SPA (talks to the backend API) | http://localhost:4200 |
+| `shiftsync_frontend/` | Angular 16, Angular Material, ng-bootstrap | Admin SPA (talks to the backend API), **WIP** | http://localhost:4200 |
 
 ## Features
 
 - **Employee portal (Blade):** dashboard, In/Out clock page, timesheet, my-account.
-- **Admin panel (Blade, `/admin/*`):** CRUD for users, departments, roles, addresses, emergency contacts, shift schedules, employee records, assigned shifts, shift records.
-- **Admin SPA (Angular):** CRUD for users, departments, roles, shift schedules, employee records, assigned shifts via `/api/*`.
+- **Admin panel (Blade, `/admin/*`, WIP):** CRUD for users, departments, roles, addresses, emergency contacts, shift schedules, employee records, assigned shifts, shift records.
+- **Admin SPA (Angular, WIP):** CRUD for users, departments, roles, shift schedules, employee records, assigned shifts via `/api/*`.
 - **Scheduled automation:** every minute, creates the day's shift records per employee and computes hours/tardiness/overtime for finished shifts.
 - **Auth:** session login (Blade), Sanctum tokens (API), email verification, forgot/reset password.
 
@@ -35,7 +35,7 @@ shiftsync/
 │   ├── resources/views/               employees/, admins/, auth/, layouts/
 │   ├── routes/web.php                 Blade routes (employee + /admin)
 │   ├── routes/api.php                 Sanctum API used by Angular
-│   └── LARAVEL-AND-ANGULAR-SETUP.txt  original setup notes
+│   └── .env.example                   copy to .env
 └── shiftsync_frontend/                Angular admin SPA
     └── src/app/
         ├── components/                list / detail / form component per entity
@@ -73,28 +73,19 @@ Timezones are stored as UTC offsets (e.g. `+08:00`) on `employee_records.employe
 cd shiftsync_backend
 composer install
 npm install            # only needed for Vite assets
-cp .env.example .env   # .env.example is NOT committed; see HEALING.md for a template
+cp .env.example .env   # then set DB_USERNAME / DB_PASSWORD
 php artisan key:generate
 ```
 
-Minimum `.env` values:
-
-```dotenv
-APP_URL=http://localhost:8000
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=inout_db
-DB_USERNAME=root
-DB_PASSWORD=<your password>
-QUEUE_CONNECTION=sync
-MAIL_MAILER=log        # use smtp + real creds only if you need verification/reset emails
-```
-
-Create the DB and seed:
+Create the database and an app user (MariaDB/MySQL root on Ubuntu/WSL usually needs `sudo`):
 
 ```bash
-mysql -u root -p -e "CREATE DATABASE inout_db"
+sudo mysql -e "CREATE DATABASE IF NOT EXISTS inout_db; CREATE USER IF NOT EXISTS 'shiftsync'@'localhost' IDENTIFIED BY '<password>'; GRANT ALL ON inout_db.* TO 'shiftsync'@'localhost';"
+```
+
+Put that password in `.env` as `DB_PASSWORD`, then migrate and seed:
+
+```bash
 php artisan migrate
 php artisan db:seed
 ```
@@ -133,6 +124,10 @@ Admins: Blade admin at `/admin/dashboard`, or the Angular SPA. Employees: `/logi
 cd shiftsync_backend && php artisan test   # only Laravel example tests exist
 cd shiftsync_frontend && ng test           # Angular CLI-generated spec stubs
 ```
+
+## Project status
+
+The database structure and seed data were the main focus. The employee Blade UI and scheduler work; the admin side (Blade `/admin` and the Angular SPA) is a work in progress. See `HEALING.md` for the full status table and known issues.
 
 ## Further reading
 

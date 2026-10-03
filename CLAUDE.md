@@ -52,7 +52,10 @@ ng test
 
 ## Gotchas
 
-- `.env.example` is missing; see `HEALING.md` for the template.
+- Admin side (Blade `/admin` + Angular SPA) is WIP; DB schema + seeders were the focus. Status table in `HEALING.md`.
+- Use sample identities only (`@example.com`, placeholder names) in seeds, fixtures and docs. Never reference the internship company.
+- Angular hardcodes `http://localhost:8000/api`; backend must run on :8000 for the SPA to work.
+- Blade login field is `email_or_username`.
 - Request param `employeeRecordId` in shift routes is an `employee_shift_records.id`, not an employee record id.
 - `EmployeeShiftBreak` model has no table/migration.
 - `/api/*` has no admin check.
