@@ -12,26 +12,26 @@ class UsersSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'CKPa',
-                'email' => 'ckpa@cloudstaff.com',
+                'name' => 'AliceS',
+                'email' => 'alices@example.com',
                 'password' => Hash::make('password123'),
                 'is_admin' => false,
             ],
             [
-                'name' => 'VincentG',
-                'email' => 'vincentg@cloudstaff.com',
+                'name' => 'BobJ',
+                'email' => 'bobj@example.com',
                 'password' => Hash::make('password123'),
                 'is_admin' => false,
             ],
             [
                 'name' => 'JohnD',
-                'email' => 'johnd@cloudstaff.com',
+                'email' => 'johnd@example.com',
                 'password' => Hash::make('password123'),
                 'is_admin' => true, 
             ],
             [
                 'name' => 'JaneD',
-                'email' => 'janed@cloudstaff.com',
+                'email' => 'janed@example.com',
                 'password' => Hash::make('password123'),
                 'is_admin' => true, 
             ],

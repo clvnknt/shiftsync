@@ -15,25 +15,25 @@ class EmployeeRecordsSeeder extends Seeder
     public function run(): void
     {
         // Retrieve users
-        $userCKPa = User::where('email', 'ckpa@cloudstaff.com')->first();
-        $userVincentG = User::where('email', 'vincentg@cloudstaff.com')->first();
-        $userJohnDoe = User::where('email', 'johnd@cloudstaff.com')->first();
-        $userJaneDoe = User::where('email', 'janed@cloudstaff.com')->first();
+        $userAliceS = User::where('email', 'alices@example.com')->first();
+        $userBobJ = User::where('email', 'bobj@example.com')->first();
+        $userJohnDoe = User::where('email', 'johnd@example.com')->first();
+        $userJaneDoe = User::where('email', 'janed@example.com')->first();
         $department = Department::first();
         $role = Role::first();
         $address = Address::first();
         $emergencyContact = EmergencyContact::first();
 
-        // Create employee record for CKPa
+        // Create employee record for AliceS
         EmployeeRecord::create([
-            'user_id' => $userCKPa->id,
+            'user_id' => $userAliceS->id,
             'department_id' => $department->id,
             'role_id' => $role->id,
             'address_id' => $address->id,
             'emergency_contact_id' => $emergencyContact->id,
-            'employee_first_name' => 'Calvin Kent',
-            'employee_middle_name' => 'Roman', // Adjust as needed
-            'employee_last_name' => 'Pamandanan', // Adjust as needed
+            'employee_first_name' => 'Alice',
+            'employee_middle_name' => 'Marie', // Adjust as needed
+            'employee_last_name' => 'Smith', // Adjust as needed
             'employee_suffix' => '', // Adjust as needed
             'employee_gender' => 'male', // Assuming male as default, adjust as needed
             'employee_age' => 21, // Adjust as needed
@@ -42,16 +42,16 @@ class EmployeeRecordsSeeder extends Seeder
             'employee_timezone' => '+08:00',
         ]);
 
-        // Create employee record for VincentG
+        // Create employee record for BobJ
         EmployeeRecord::create([
-            'user_id' => $userVincentG->id,
+            'user_id' => $userBobJ->id,
             'department_id' => $department->id,
             'role_id' => $role->id,
             'address_id' => $address->id,
             'emergency_contact_id' => $emergencyContact->id,
-            'employee_first_name' => 'Vincent Kurt',
+            'employee_first_name' => 'Bob',
             'employee_middle_name' => '', 
-            'employee_last_name' => 'Gonzales', 
+            'employee_last_name' => 'Johnson', 
             'employee_suffix' => '', 
             'employee_gender' => 'male', 
             'employee_age' => 27, 

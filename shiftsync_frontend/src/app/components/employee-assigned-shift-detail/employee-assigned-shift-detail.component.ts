@@ -5,7 +5,7 @@ import { EmployeeAssignedShiftService } from '../../services/employee-assigned-s
 @Component({
   selector: 'app-employee-assigned-shift-detail',
   templateUrl: './employee-assigned-shift-detail.component.html',
-  styleUrls: ['./employee-assigned-shift-detail.component.css']
+  styleUrls: ['./employee-assigned-shift-detail.component.scss']
 })
 export class EmployeeAssignedShiftDetailComponent implements OnInit {
   assignedShift: any;
