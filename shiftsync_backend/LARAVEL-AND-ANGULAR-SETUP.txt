@@ -29,10 +29,10 @@ DB_PASSWORD=Password1!
 MAIL_MAILER=smtp
 MAIL_HOST=[smtp-mail.outlook.com](http://smtp-mail.outlook.com/)
 MAIL_PORT=587
-[MAIL_USERNAME=](mailto:MAIL_USERNAME=pamandanan.calvinkent1@outlook.com)<outlook_email>
-MAIL_PASSWORD<outlook_password>
+MAIL_USERNAME=<outlook_email>
+MAIL_PASSWORD=<outlook_password>
 MAIL_ENCRYPTION=STARTTLS
-[MAIL_FROM_ADDRESS](mailto:MAIL_FROM_ADDRESS=%22pamandanan.calvinkent1@outlook.com)<”outlook_email”>
+MAIL_FROM_ADDRESS=<outlook_email>
 MAIL_FROM_NAME="Support Team"
 
 Database Setup
@@ -66,13 +66,13 @@ Password: password123
 Admin Status: Yes
 
 **User Accounts**
-Name: CKPa
+Name: AliceS
 
-Email: [ckpa@example.com](mailto:ckpa@example.com)
+Email: [alices@example.com](mailto:alices@example.com)
 Password: password123
 Admin Status: No
-Name: VincentG
+Name: BobJ
 
-Email: [vincentg@example.com](mailto:vincentg@example.com)
+Email: [bobj@example.com](mailto:bobj@example.com)
 Password: password123
 Admin Status: No

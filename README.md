@@ -122,8 +122,8 @@ ng serve                   # http://localhost:4200
 |---|---|---|---|
 | JohnD | johnd@example.com | password123 | yes |
 | JaneD | janed@example.com | password123 | yes |
-| CKPa | ckpa@example.com | password123 | no |
-| VincentG | vincentg@example.com | password123 | no |
+| AliceS | alices@example.com | password123 | no |
+| BobJ | bobj@example.com | password123 | no |
 
 Admins: Blade admin at `/admin/dashboard`, or the Angular SPA. Employees: `/login` then `/inout`.
 

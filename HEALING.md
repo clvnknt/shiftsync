@@ -13,8 +13,7 @@ Known issues, cleanup items and troubleshooting for ShiftSync. Found while revis
   ```
 - [ ] **`.env.example` missing.** `cp .env.example .env` in the setup fails. Add one (template below).
 - [ ] **Duplicate / stale READMEs.** `shiftsync_backend/README.md` is a copy of the old root README (mentions a non-existent `docs` folder). `shiftsync_frontend/README.md` is the Angular CLI default (project still named `aios`). Replace both with a pointer to the root README.
-- [ ] **`LARAVEL-AND-ANGULAR-SETUP.txt`** contains a personal email address and a sample DB password. Its content now lives in the root README; remove or scrub it.
-- [ ] **Real names in seed data.** `EmployeeRecordsSeeder.php` uses real full names for the `ckpa` and `vincentg` users. Replace them with placeholders.
+- [ ] **`LARAVEL-AND-ANGULAR-SETUP.txt`** contained a personal email address (now removed) and a sample DB password. Its content now lives in the root README; remove or scrub it.
 - [ ] Frontend `package.json` name is `aios` (old project name "IAOS"/"In and Out System").
 
 ### `.env.example` template
